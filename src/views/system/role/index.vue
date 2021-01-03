@@ -55,12 +55,22 @@
           <div slot="header" class="clearfix">
             <span class="role-span">角色列表</span>
           </div>
-          <el-table ref="table" v-loading="crud.loading" highlight-current-row style="width: 100%;" :data="crud.data" @selection-change="crud.selectionChangeHandler" @current-change="handleCurrentChange">
-            <el-table-column :selectable="checkboxT" type="selection" width="55" />
-            <el-table-column prop="name" label="名称" />
-            <el-table-column prop="dataScope" label="数据权限" />
-            <el-table-column prop="level" label="角色级别" />
-            <el-table-column :show-overflow-tooltip="true" prop="description" label="描述" />
+          <el-table
+            ref="table"
+            v-loading="crud.loading"
+            :data="crud.data"
+            border
+            highlight-current-row
+            stripe
+            style="width: 100%;"
+            @selection-change="crud.selectionChangeHandler"
+            @current-change="handleCurrentChange"
+          >
+            <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+            <el-table-column prop="name" label="名称"/>
+            <el-table-column prop="dataScope" label="数据权限"/>
+            <el-table-column prop="level" label="角色级别"/>
+            <el-table-column :show-overflow-tooltip="true" prop="description" label="描述"/>
             <el-table-column :show-overflow-tooltip="true" width="135px" prop="createTime" label="创建日期">
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -129,16 +139,15 @@
 
 <script>
 import crudRoles from '@/api/system/role'
-import { getDept, getDeptVertex } from '@/api/system/dept'
+import {getDept, getDeptVertex} from '@/api/system/dept'
 // import { getMenusTree } from '@/api/system/menu'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-import Treeselect from '@riophae/vue-treeselect'
+import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 import DateRangePicker from '@/components/DateRangePicker'
 import crudMenu from '@/api/system/menu'
 

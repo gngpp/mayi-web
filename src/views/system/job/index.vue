@@ -11,6 +11,7 @@
       v-loading="crud.loading"
       :data="crud.data"
       style="width: 100%;"
+      highlight-current-row
       border
       stripe
       @selection-change="crud.selectionChangeHandler"
@@ -64,7 +65,7 @@
 import crudJob from '@/api/system/job'
 import eHeader from './module/header'
 import eForm from './module/form'
-import CRUD, { presenter } from '@crud/crud'
+import CRUD, {presenter} from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'

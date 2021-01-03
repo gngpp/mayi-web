@@ -57,6 +57,7 @@
       ref="table"
       v-loading="crud.loading"
       lazy
+      highlight-current-row
       border
       stripe
       :load="getDeptData"
@@ -120,10 +121,9 @@
 
 <script>
 import crudDept from '@/api/system/dept'
-import Treeselect from '@riophae/vue-treeselect'
+import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
@@ -287,10 +287,14 @@ export default {
             }
             demo(data)
             this.crud.notify(this.dict.dept_status[value].label + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
+            // eslint-disable-next-line handle-callback-err
           }).catch(err => {
-            data.enabled = !data.enabled
-            console.log(err.response.data.message)
+          data.enabled = !data.enabled
+          this.$notify.error({
+            title: '错误',
+            message: '无权操作'
           })
+        })
       }).catch(() => {
         data.enabled = !data.enabled
       })

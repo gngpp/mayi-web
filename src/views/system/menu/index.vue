@@ -93,6 +93,7 @@
       ref="table"
       v-loading="crud.loading"
       lazy
+      highlight-current-row
       border
       stripe
       :load="getMenus"
@@ -157,10 +158,9 @@
 <script>
 import crudMenu from '@/api/system/menu'
 import IconSelect from '@/components/IconSelect'
-import Treeselect from '@riophae/vue-treeselect'
+import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
