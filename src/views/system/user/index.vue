@@ -24,14 +24,13 @@
             :filter-node-method="filterNode"
             class="filter-tree"
             empty-text="无部门"
-            highlight-current="true"
+            highlight-current-row
             :data="sideDeptList"
             :load="getDeptData"
             :props="defaultProps"
             :expand-on-click-node="false"
             @node-click="handleNodeClick"
             icon-class="el-icon-circle-plus"
-            indent="16"
           />
         </el-card>
       </el-col>
@@ -171,6 +170,7 @@
             v-loading="crud.loading"
             :data="crud.data"
             border
+            highlight-current-row
             style="width: 100%;"
             @selection-change="crud.selectionChangeHandler"
             :row-class-name="tableRowClassName">

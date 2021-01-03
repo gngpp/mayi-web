@@ -5,7 +5,7 @@ import store from '../store'
 import {getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
-
+import {decrypt} from '@/utils/aesEncrypt'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
@@ -33,6 +33,10 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
+    const decode = decrypt(response.data);
+    if (decode) {
+      response.data = JSON.parse(decode)
+    }
     const code = response.status
     // // 待测试
     if (response.headers.Authorization) {
@@ -40,7 +44,6 @@ service.interceptors.response.use(
       console.log('response' + token)
       setToken(token, true)
     }
-
     if (code < 200 || code > 300) {
       Notification.error({
         title: response.message

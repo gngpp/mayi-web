@@ -1,5 +1,5 @@
-import { login, getInfo, logout } from '@/api/login'
-import { getToken, setToken, removeToken, setRememberMe } from '@/utils/auth'
+import {getInfo, login, logout} from '@/api/login'
+import {getToken, removeToken, setRememberMe, setToken} from '@/utils/auth'
 
 const user = {
   state: {
@@ -32,7 +32,6 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username, userInfo.password, userInfo.code, userInfo.uuid)
           .then(res => {
-            // console.log(res.data)
             const token = 'Bearer ' + res.data.token
             setToken(token, rememberMe)
             // 保存->是否记住
