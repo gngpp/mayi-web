@@ -94,10 +94,18 @@ service.interceptors.response.use(
           })
         }
       } else if (error.response.status === 500 || error.response.status === 400) {
-        Notification.error({
-          title: 'API request failed！',
-          duration: 5000
-        })
+        const errorMsg = error.response.data.errMsg
+        if (errorMsg !== undefined) {
+          Notification.error({
+            title: errorMsg,
+            duration: 5000
+          })
+        } else {
+          Notification.error({
+            title: 'API request failed！',
+            duration: 5000
+          })
+        }
       } else if (error.response.status === 403) {
         Notification.error({
           title: '无权操作',

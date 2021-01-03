@@ -3,25 +3,37 @@
     <el-row :gutter="20">
       <!--侧边部门数据-->
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
-        <div class="head-container">
-          <el-input
-            v-model="deptName"
-            clearable
-            size="small"
-            placeholder="输入部门名称搜索"
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            @input="getDeptData"
+        <el-card
+          class="box-card"
+          shadow="hover"
+        >
+          <div slot="header" class="clearfix">
+            <span class="role-span">部门列表</span>
+          </div>
+          <div class="head-container">
+            <el-input
+              v-model="filterText"
+              clearable
+              placeholder="输入部门名称搜索"
+              prefix-icon="el-icon-search"
+              size="small"
+            />
+          </div>
+          <el-tree
+            ref="tree"
+            :filter-node-method="filterNode"
+            class="filter-tree"
+            empty-text="无部门"
+            highlight-current="true"
+            :data="sideDeptList"
+            :load="getDeptData"
+            :props="defaultProps"
+            :expand-on-click-node="false"
+            @node-click="handleNodeClick"
+            icon-class="el-icon-circle-plus"
+            indent="16"
           />
-        </div>
-        <el-tree
-          :data="sideDeptList"
-          :load="getDeptData"
-          :props="defaultProps"
-          :expand-on-click-node="false"
-          lazy
-          @node-click="handleNodeClick"
-        />
+        </el-card>
       </el-col>
       <!--用户数据-->
       <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">
@@ -55,12 +67,22 @@
                 :value="item.key"
               />
             </el-select>
-            <rrOperation />
+            <rrOperation/>
           </div>
-          <crudOperation show="" :permission="permission" />
+          <crudOperation show="" :permission="permission"/>
         </div>
         <!--表单渲染-->
-        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
+        <el-dialog
+          :before-close="crud.cancelCU"
+          :close-on-click-modal="false"
+          :title="crud.status.title"
+          :visible.sync="crud.status.cu > 0"
+          append-to-body
+          center
+          close-on-press-escape
+          modal
+          show-close
+          width="570px">
           <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="66px" size="mini">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username"/>
@@ -140,66 +162,79 @@
           </div>
         </el-dialog>
         <!--表格渲染-->
-        <el-table
-          ref="table"
-          v-loading="crud.loading"
-          :data="crud.data"
-          border
-          highlight-current-row
-          stripe
-          style="width: 100%;"
-          @selection-change="crud.selectionChangeHandler"
-        >
-          <el-table-column :selectable="checkboxT" type="selection" width="55"/>
-          <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"/>
-          <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"/>
-          <el-table-column prop="gender" label="性别"/>
-          <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"/>
-          <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱"/>
-          <el-table-column :show-overflow-tooltip="true" prop="departmentId" label="部门">
-            <template slot-scope="scope">
-              <div>{{ scope.row.department.name }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" align="center" prop="enabled">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.enabled"
-                :disabled="user.id === scope.row.id"
-                active-color="#409EFF"
-                inactive-color="#F56C6C"
-                @change="changeEnabled(scope.row, scope.row.enabled)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-permission="['admin','user:edit','user:del']"
-            label="操作"
-            width="115"
-            align="center"
-            fixed="right"
-          >
-            <template slot-scope="scope">
-              <udOperation
-                :data="scope.row"
-                :permission="permission"
-                :disabled-dle="scope.row.id === user.id"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
-        <!--分页组件-->
-        <pagination />
+        <el-card class="box-card" shadow="never">
+          <div slot="header" align="center" class="clearfix">
+            <span class="role-span">用户列表</span>
+          </div>
+          <el-table
+            ref="table"
+            v-loading="crud.loading"
+            :data="crud.data"
+            border
+            style="width: 100%;"
+            @selection-change="crud.selectionChangeHandler"
+            :row-class-name="tableRowClassName">
+            >
+            <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+            <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"/>
+            <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"/>
+            <el-table-column prop="gender" label="性别"/>
+            <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"/>
+            <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱"/>
+            <el-table-column :show-overflow-tooltip="true" prop="departmentId" label="部门">
+              <template slot-scope="scope">
+                <div>{{ scope.row.department.name }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" align="center" prop="enabled">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.enabled"
+                  :disabled="user.id === scope.row.id"
+                  active-color="#409EFF"
+                  inactive-color="#F56C6C"
+                  @change="changeEnabled(scope.row, scope.row.enabled)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.createTime) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-permission="['admin','user:edit','user:del']"
+              label="操作"
+              width="115"
+              align="center"
+              fixed="right"
+            >
+              <template slot-scope="scope">
+                <udOperation
+                  :data="scope.row"
+                  :permission="permission"
+                  :disabled-dle="scope.row.id === user.id"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页组件-->
+          <pagination/>
+        </el-card>
       </el-col>
     </el-row>
   </div>
 </template>
 
+<style>
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #ffffff;
+}
+</style>
 <script>
 import crudUser from '@/api/system/user'
 import {isvalidPhone} from '@/utils/validate'
@@ -237,6 +272,11 @@ export default {
   cruds() {
     return CRUD({title: '用户', url: 'api/users/page', crudMethod: {...crudUser}})
   },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    }
+  },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 数据字典
   dicts: ['user_status'],
@@ -253,7 +293,7 @@ export default {
     }
     return {
       height: document.documentElement.clientHeight - 180 + 'px;',
-      deptName: '',
+      filterText: '',
       departmentId: null,
       deptList: [],
       sideDeptList: [],
@@ -262,7 +302,7 @@ export default {
       from: {},
       roleList: [],
       jobData: [], roleData: [], // 多选时使用
-      defaultProps: { children: 'children', label: 'name', isLeaf: 'leaf' },
+      defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
       permission: {
         add: ['admin', 'user:add'],
         edit: ['admin', 'user:edit'],
@@ -316,16 +356,27 @@ export default {
     }
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+      if (row.enabled) {
+        return 'success-row';
+      } else {
+        return 'warning-row';
+      }
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
     changeRole(value) {
       userRoles = []
-      value.forEach(function(data, index) {
-        const role = { id: data }
+      value.forEach(function (data, index) {
+        const role = {id: data}
         userRoles.push(role)
       })
     },
     changeJob(value) {
       userJobs = []
-      value.forEach(function(data, index) {
+      value.forEach(function (data, index) {
         const job = { id: data }
         userJobs.push(job)
       })
@@ -402,7 +453,7 @@ export default {
         if (node.data.children && node.data.hasChildren) {
           resolve(node.data.children)
         }
-      }, 10)
+      }, 100)
     },
     getDept() {
       getDept({

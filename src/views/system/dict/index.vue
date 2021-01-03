@@ -23,37 +23,43 @@
           <div class="head-container">
             <div v-if="crud.props.searchToggle">
               <!-- 搜索 -->
-              <el-input v-model="query.blurry" clearable size="small" placeholder="输入名称或者描述搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-              <rrOperation />
+              <el-input v-model="query.blurry" clearable size="small" placeholder="输入名称或者描述搜索" style="width: 200px;"
+                        class="filter-item" @keyup.enter.native="crud.toQuery"/>
+              <rrOperation/>
             </div>
-            <crudOperation :permission="permission" />
+            <crudOperation :permission="permission"/>
           </div>
           <!--表格渲染-->
-          <el-table
-            ref="table"
-            v-loading="crud.loading"
-            :data="crud.data"
-            highlight-current-row
-            border
-            stripe
-            style="width: 100%;"
-            @selection-change="crud.selectionChangeHandler"
-            @current-change="handleCurrentChange"
-          >
-            <el-table-column type="selection" width="55" fixed />
-            <el-table-column :show-overflow-tooltip="true" prop="dictName" label="名称" />
-            <el-table-column :show-overflow-tooltip="true" prop="description" label="描述" />
-            <el-table-column v-permission="['admin','dict:edit','dict:del']" label="操作" width="130px" align="center" fixed="right">
-              <template slot-scope="scope">
-                <udOperation
-                  :data="scope.row"
-                  :permission="permission"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-          <!--分页组件-->
-          <pagination />
+          <el-card class="box-card" shadow="never">
+            <div slot="header" align="center" class="clearfix">
+              <span class="role-span">字典列表</span>
+            </div>
+            <el-table
+              ref="table"
+              v-loading="crud.loading"
+              :data="crud.data"
+              highlight-current-row
+              border
+              stripe
+              style="width: 100%;"
+              @selection-change="crud.selectionChangeHandler"
+              @current-change="handleCurrentChange"
+            >
+              <el-table-column type="selection" width="55" fixed />
+              <el-table-column :show-overflow-tooltip="true" prop="dictName" label="名称" />
+              <el-table-column :show-overflow-tooltip="true" prop="description" label="描述" />
+              <el-table-column v-permission="['admin','dict:edit','dict:del']" label="操作" width="130px" align="center" fixed="right">
+                <template slot-scope="scope">
+                  <udOperation
+                    :data="scope.row"
+                    :permission="permission"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--分页组件-->
+            <pagination/>
+          </el-card>
         </el-card>
       </el-col>
       <!-- 字典详情列表 -->
@@ -84,7 +90,7 @@ import checkPermission from '@/utils/permission'
 import dictDetail from './dictDetail'
 import crudDict from '@/api/system/dict'
 
-import CRUD, { presenter, header, form } from '@crud/crud'
+import CRUD, {form, header, presenter} from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import rrOperation from '@crud/RR.operation'

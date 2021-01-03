@@ -53,72 +53,85 @@
       </div>
     </el-dialog>
     <!--表格渲染-->
-    <el-table
-      ref="table"
-      v-loading="crud.loading"
-      lazy
-      highlight-current-row
-      border
-      stripe
-      :load="getDeptData"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      :data="crud.data"
-      row-key="id"
-      @select="crud.selectChange"
-      @select-all="crud.selectAllChange"
-      @selection-change="crud.selectionChangeHandler"
-    >
-      <el-table-column :selectable="checkboxT" type="selection" width="55" fixed="left" />
-      <el-table-column label="名称" prop="name" fixed="left">
-        <template slot-scope="scope">
-          <el-tag
-            disable-transitions
-            type="''"
-          > {{ scope.row.name }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="排序" prop="deptSort" sortable>
-        <template slot-scope="scope">
-          <el-tag type="info">
-            {{ scope.row.deptSort }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" prop="enabled" sortable>
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.enabled"
-            :disabled="scope.row.id === 1"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            @change="changeEnabled(scope.row, scope.row.enabled,)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建日期" sortable>
-        <template slot-scope="scope">
-          <el-tag
-            disable-transitions
-            type=""
-          > {{ parseTime( scope.row.createTime ) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column v-permission="['admin','dept:edit','dept:del']" label="操作" width="130px" align="center" fixed="right">
-        <template slot-scope="scope">
-          <udOperation
-            :data="scope.row"
-            :permission="permission"
-            :disabled-dle="scope.row.id === 1"
-            msg="确定删除吗,如果存在下级节点则一并删除，此操作不能撤销！"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card class="box-card" shadow="never">
+      <div slot="header" align="center" class="clearfix">
+        <span class="role-span">部门列表</span>
+      </div>
+      <el-table
+        ref="table"
+        v-loading="crud.loading"
+        lazy
+        highlight-current-row
+        border
+        :load="getDeptData"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :data="crud.data"
+        row-key="id"
+        @select="crud.selectChange"
+        @select-all="crud.selectAllChange"
+        @selection-change="crud.selectionChangeHandler"
+        :row-class-name="tableRowClassName">
+        >
+        <el-table-column :selectable="checkboxT" type="selection" width="55" fixed="left"/>
+        <el-table-column label="名称" prop="name" fixed="left">
+          <template slot-scope="scope">
+            <el-tag
+              disable-transitions
+              type="''"
+            > {{ scope.row.name }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="排序" prop="deptSort" sortable>
+          <template slot-scope="scope">
+            <el-tag type="info">
+              {{ scope.row.deptSort }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" prop="enabled" sortable>
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.enabled"
+              :disabled="scope.row.id === 1"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="changeEnabled(scope.row, scope.row.enabled,)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="创建日期" sortable>
+          <template slot-scope="scope">
+            <el-tag
+              disable-transitions
+              type=""
+            > {{ parseTime( scope.row.createTime ) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column v-permission="['admin','dept:edit','dept:del']" label="操作" width="130px" align="center" fixed="right">
+          <template slot-scope="scope">
+            <udOperation
+              :data="scope.row"
+              :permission="permission"
+              :disabled-dle="scope.row.id === 1"
+              msg="确定删除吗,如果存在下级节点则一并删除，此操作不能撤销！"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
+<style>
+.el-table .warning-row {
+  background: oldlace;
+}
 
+.el-table .success-row {
+  background: #ffffff;
+}
+</style>
 <script>
 import crudDept from '@/api/system/dept'
 import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
@@ -162,6 +175,13 @@ export default {
     }
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+      if (row.enabled) {
+        return 'success-row';
+      } else {
+        return 'warning-row';
+      }
+    },
     getDeptData(tree, treeNode, resolve) {
       const params = {
         page: 0,
@@ -171,7 +191,8 @@ export default {
           name: this.query.name,
           enabled: this.query.enabled,
           createTime: this.query.createTime
-        }}
+        }
+      }
       setTimeout(() => {
         // 当存在子节点则加载， 否则执行lazy加载
         if (tree.children && tree.hasChildren) {
@@ -290,10 +311,6 @@ export default {
             // eslint-disable-next-line handle-callback-err
           }).catch(err => {
           data.enabled = !data.enabled
-          this.$notify.error({
-            title: '错误',
-            message: '无权操作'
-          })
         })
       }).catch(() => {
         data.enabled = !data.enabled

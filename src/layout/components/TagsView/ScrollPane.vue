@@ -1,6 +1,10 @@
 <template>
-  <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
-    <slot />
+  <el-scrollbar
+    ref="scrollContainer"
+    :vertical="false"
+    class="scroll-container"
+    @wheel.native.prevent="handleScroll">
+    <slot></slot>
   </el-scrollbar>
 </template>
 
@@ -75,7 +79,7 @@ export default {
   width: 100%;
  ::v-deep {
     .el-scrollbar__bar {
-      bottom: 0px;
+      bottom: 1px;
     }
     .el-scrollbar__wrap {
       height: 49px;
