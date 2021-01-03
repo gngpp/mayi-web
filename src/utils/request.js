@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from '@/router/routers'
-import { Notification } from 'element-ui'
+import {Notification} from 'element-ui'
 import store from '../store'
-import { getToken, setToken } from '@/utils/auth'
+import {getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
 
@@ -96,6 +96,11 @@ service.interceptors.response.use(
       } else if (error.response.status === 500 || error.response.status === 400) {
         Notification.error({
           title: 'API request failed！',
+          duration: 5000
+        })
+      } else if (error.response.status === 403) {
+        Notification.error({
+          title: '无权操作',
           duration: 5000
         })
       }

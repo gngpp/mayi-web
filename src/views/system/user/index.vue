@@ -193,28 +193,40 @@
 
 <script>
 import crudUser from '@/api/system/user'
-import { isvalidPhone } from '@/utils/validate'
-import { getDept, getDeptVertex } from '@/api/system/dept'
-import { getLevel, getAll } from '@/api/system/role'
-import { getAllJob } from '@/api/system/job'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import {isvalidPhone} from '@/utils/validate'
+import {getDept, getDeptVertex} from '@/api/system/dept'
+import {getAll, getLevel} from '@/api/system/role'
+import {getAllJob} from '@/api/system/job'
+import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
-import Treeselect from '@riophae/vue-treeselect'
-import { mapGetters } from 'vuex'
+import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
+import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+
 let userRoles = []
 let userJobs = []
-const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roleIds: [], jobIds: [], department: { id: null }, departmentId: null, phone: null }
+const defaultForm = {
+  id: null,
+  username: null,
+  nickName: null,
+  gender: '男',
+  email: null,
+  enabled: 'false',
+  roleIds: [],
+  jobIds: [],
+  department: {id: null},
+  departmentId: null,
+  phone: null
+}
 export default {
   name: 'User',
-  components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
+  components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
-    return CRUD({ title: '用户', url: 'api/users/page', crudMethod: { ...crudUser }})
+    return CRUD({title: '用户', url: 'api/users/page', crudMethod: {...crudUser}})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 数据字典
@@ -463,10 +475,6 @@ export default {
         })
       }).catch(() => {
         data.enabled = !data.enabled
-        this.$notify.error({
-          title: '错误',
-          message: '无权操作'
-        })
       })
     },
     // 获取弹窗内角色数据
