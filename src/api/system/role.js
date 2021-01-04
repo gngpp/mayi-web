@@ -8,6 +8,13 @@ export function getAll() {
   })
 }
 
+export function setRoleStatus(id, enabled) {
+  return request({
+    url: 'api/roles/status?id=' + id + '&enabled=' + enabled,
+    method: 'patch'
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/roles/save',
@@ -46,4 +53,4 @@ export function edit(data) {
   })
 }
 
-export default { add, edit, del, get, getLevel }
+export default {add, edit, del, get, getLevel, setRoleStatus}

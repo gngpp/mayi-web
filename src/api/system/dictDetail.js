@@ -38,7 +38,7 @@ export function del(id) {
 
 export function edit(data) {
   return request({
-    url: 'api/dict/detail/edit',
+    url: 'api/dictionaries/details/update',
     method: 'put',
     data
   })

@@ -37,40 +37,6 @@
       </el-col>
       <!--用户数据-->
       <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">
-        <!--工具栏-->
-        <div class="head-container">
-          <div v-if="crud.props.searchToggle">
-            <!-- 搜索 -->
-            <el-input
-              v-model="query.blurry"
-              clearable
-              size="small"
-              placeholder="输入名称或者邮箱搜索"
-              style="width: 200px;"
-              class="filter-item"
-              @keyup.enter.native="crud.toQuery"
-            />
-            <date-range-picker v-model="query.createTime" class="date-item" />
-            <el-select
-              v-model="query.enabled"
-              clearable
-              size="small"
-              placeholder="状态"
-              class="filter-item"
-              style="width: 90px"
-              @change="crud.toQuery"
-            >
-              <el-option
-                v-for="item in enabledTypeOptions"
-                :key="item.key"
-                :label="item.display_name"
-                :value="item.key"
-              />
-            </el-select>
-            <rrOperation/>
-          </div>
-          <crudOperation show="" :permission="permission"/>
-        </div>
         <!--表单渲染-->
         <el-dialog
           :before-close="crud.cancelCU"
@@ -164,7 +130,41 @@
         <!--表格渲染-->
         <el-card class="box-card" shadow="never">
           <div slot="header" align="center" class="clearfix">
-            <span class="role-span">用户列表</span>
+            <span class="role-span">用户管理</span>
+          </div>
+          <!--工具栏-->
+          <div class="head-container">
+            <div v-if="crud.props.searchToggle">
+              <!-- 搜索 -->
+              <el-input
+                v-model="query.blurry"
+                class="filter-item"
+                clearable
+                placeholder="输入名称或者邮箱搜索"
+                size="small"
+                style="width: 200px;"
+                @keyup.enter.native="crud.toQuery"
+              />
+              <date-range-picker v-model="query.createTime" class="date-item"/>
+              <el-select
+                v-model="query.enabled"
+                class="filter-item"
+                clearable
+                placeholder="状态"
+                size="small"
+                style="width: 90px"
+                @change="crud.toQuery"
+              >
+                <el-option
+                  v-for="item in enabledTypeOptions"
+                  :key="item.key"
+                  :label="item.display_name"
+                  :value="item.key"
+                />
+              </el-select>
+              <rrOperation/>
+            </div>
+            <crudOperation :permission="permission" show=""/>
           </div>
           <el-table
             ref="table"
@@ -200,7 +200,12 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期">
               <template slot-scope="scope">
-                <span>{{ parseTime(scope.row.createTime) }}</span>
+                <el-tag
+                  disable-transitions
+                >
+                  <i class="el-icon-time"></i>
+                  {{ parseTime(scope.row.createTime) }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column

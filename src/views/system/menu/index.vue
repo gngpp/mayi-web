@@ -1,15 +1,5 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
-    <div class="head-container">
-      <div v-if="crud.props.searchToggle">
-        <!-- 搜索 -->
-        <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <date-range-picker v-model="query.createTime" class="date-item" />
-        <rrOperation />
-      </div>
-      <crudOperation :permission="permission" />
-    </div>
     <!--表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="580px">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
@@ -94,7 +84,18 @@
       shadow="hover"
     >
       <div slot="header" align="center" class="clearfix">
-        <span class="role-span">菜单列表</span>
+        <span class="role-span">菜单管理</span>
+      </div>
+      <!--工具栏-->
+      <div class="head-container">
+        <div v-if="crud.props.searchToggle">
+          <!-- 搜索 -->
+          <el-input v-model="query.blurry" class="filter-item" clearable placeholder="模糊搜索" size="small"
+                    style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
+          <date-range-picker v-model="query.createTime" class="date-item"/>
+          <rrOperation/>
+        </div>
+        <crudOperation :permission="permission"/>
       </div>
       <el-table
         ref="table"
@@ -146,7 +147,13 @@
         </el-table-column>
         <el-table-column prop="createTime" label="创建日期" width="135px">
           <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <el-tag
+              disable-transitions
+              type=""
+            >
+              <i class="el-icon-time"></i>
+              {{ parseTime(scope.row.createTime) }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column v-permission="['admin','menu:edit','menu:del']" label="操作" width="130px" align="center"

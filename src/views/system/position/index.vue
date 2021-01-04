@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
-    <div class="head-container">
-      <eHeader :dict="dict" :permission="permission"/>
-      <crudOperation :permission="permission"/>
-    </div>
     <!--表格渲染-->
     <el-card class="box-card" shadow="never">
       <div slot="header" align="center" class="clearfix">
-        <span class="role-span">职位列表</span>
+        <span class="role-span">职位管理</span>
+      </div>
+      <!--工具栏-->
+      <div class="head-container">
+        <eHeader :dict="dict" :permission="permission"/>
+        <crudOperation :permission="permission"/>
       </div>
       <el-table
         ref="table"
@@ -39,7 +39,13 @@
         </el-table-column>
         <el-table-column prop="createTime" label="创建日期">
           <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <el-tag
+              disable-transitions
+              type=""
+            >
+              <i class="el-icon-time"></i>
+              {{ parseTime(scope.row.createTime) }}
+            </el-tag>
           </template>
         </el-table-column>
         <!--   编辑与删除   -->

@@ -1,23 +1,15 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
-    <div class="head-container">
-      <div v-if="crud.props.searchToggle">
-        <!-- 搜索 -->
-        <el-input v-model="query.name" clearable size="small" placeholder="输入部门名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <date-range-picker v-model="query.createTime" class="date-item" />
-        <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
-          <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-        </el-select>
-        <rrOperation />
-      </div>
-      <crudOperation :permission="permission" />
-    </div>
     <!--表单组件-->
-    <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
+    <el-dialog
+      :before-close="crud.cancelCU"
+      :close-on-click-modal="false"
+      :title="crud.status.title"
+      :visible.sync="crud.status.cu > 0"
+      append-to-body width="500px">
       <el-form ref="form" inline :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="部门名称" prop="name">
-          <el-input v-model="form.name" style="width: 370px;" />
+          <el-input v-model="form.name" style="width: 370px;"/>
         </el-form-item>
         <el-form-item label="部门排序" prop="deptSort">
           <el-input-number
@@ -55,7 +47,22 @@
     <!--表格渲染-->
     <el-card class="box-card" shadow="never">
       <div slot="header" align="center" class="clearfix">
-        <span class="role-span">部门列表</span>
+        <span class="role-span">部门管理</span>
+      </div>
+      <!--工具栏-->
+      <div class="head-container">
+        <div v-if="crud.props.searchToggle">
+          <!-- 搜索 -->
+          <el-input v-model="query.name" class="filter-item" clearable placeholder="输入部门名称搜索" size="small"
+                    style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
+          <date-range-picker v-model="query.createTime" class="date-item"/>
+          <el-select v-model="query.enabled" class="filter-item" clearable placeholder="状态" size="small"
+                     style="width: 90px" @change="crud.toQuery">
+            <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+          </el-select>
+          <rrOperation/>
+        </div>
+        <crudOperation :permission="permission"/>
       </div>
       <el-table
         ref="table"
@@ -94,7 +101,7 @@
             <el-switch
               v-model="scope.row.enabled"
               :disabled="scope.row.id === 1"
-              active-color="#13ce66"
+              active-color="#409EFF"
               inactive-color="#ff4949"
               @change="changeEnabled(scope.row, scope.row.enabled,)"
             />
@@ -105,7 +112,9 @@
             <el-tag
               disable-transitions
               type=""
-            > {{ parseTime( scope.row.createTime ) }}
+            >
+              <i class="el-icon-time"></i>
+              {{ parseTime(scope.row.createTime) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -238,15 +247,6 @@ export default {
     },
     getDept() {
       crudDept.getDepts({ page: 0, size: 999, query: { enabled: true }}).then(res => {
-        // res.data.records.forEach(data => {
-        //   this.$set(data, 'label', data.name)
-        // })
-        // this.depts = res.data.records.map(function(obj) {
-        //   if (obj.hasChildren) {
-        //     obj.children = null
-        //   }
-        //   return obj
-        // })
         const data = res.data.records
         this.buildDept(data)
         this.depts = data

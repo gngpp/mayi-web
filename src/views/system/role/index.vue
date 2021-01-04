@@ -1,23 +1,18 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
-    <div class="head-container">
-      <div v-if="crud.props.searchToggle">
-        <!-- 搜索 -->
-        <el-input v-model="query.blurry" size="small" clearable placeholder="输入名称或者描述搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <date-range-picker v-model="query.createTime" class="date-item" />
-        <rrOperation />
-      </div>
-      <crudOperation :permission="permission" />
-    </div>
     <!-- SAVA UPDATE -->
-    <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="520px">
-      <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
+    <el-dialog
+      :before-close="crud.cancelCU"
+      :close-on-click-modal="false"
+      :title="crud.status.title"
+      :visible.sync="crud.status.cu > 0"
+      append-to-body width="520px">
+      <el-form ref="form" :model="form" :rules="rules" inline label-width="80px" size="small">
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name" style="width: 380px;" />
+          <el-input v-model="form.name" style="width: 380px;"/>
         </el-form-item>
         <el-form-item label="角色级别" prop="level">
-          <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 145px;" />
+          <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 145px;"/>
         </el-form-item>
         <el-form-item label="数据范围" prop="dataScope">
           <el-select v-model="form.dataScope" style="width: 140px" placeholder="请选择数据范围" @change="changeScope">
@@ -28,6 +23,11 @@
               :value="item"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="角色状态" prop="enabled">
+          <el-radio v-for="item in dict.role_status" :key="item.name" v-model="form.enabled" :label="item.value">
+            {{ item.label }}
+          </el-radio>
         </el-form-item>
         <el-form-item v-if="form.dataScope === '自定义'" label="数据权限" prop="departmentIds">
           <treeselect
@@ -48,12 +48,24 @@
         <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
     </el-dialog>
+
     <el-row :gutter="15">
       <!--角色列表-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card class="box-card" shadow="never">
           <div slot="header" align="center" class="clearfix">
-            <span class="role-span">角色列表</span>
+            <span class="role-span">角色管理</span>
+          </div>
+          <!--工具栏-->
+          <div class="head-container">
+            <div v-if="crud.props.searchToggle">
+              <!-- 搜索 -->
+              <el-input v-model="query.blurry" class="filter-item" clearable placeholder="输入名称或者描述搜索" size="small"
+                        style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
+              <date-range-picker v-model="query.createTime" class="date-item"/>
+              <rrOperation/>
+            </div>
+            <crudOperation :permission="permission"/>
           </div>
           <el-table
             ref="table"
@@ -71,9 +83,24 @@
             <el-table-column prop="dataScope" label="数据权限"/>
             <el-table-column prop="level" label="角色级别"/>
             <el-table-column :show-overflow-tooltip="true" prop="description" label="描述"/>
+            <el-table-column align="center" label="状态" prop="enabled">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.enabled"
+                  active-color="#409EFF"
+                  inactive-color="#F56C6C"
+                  @change="changeEnabled(scope.row, scope.row.enabled)"
+                />
+              </template>
+            </el-table-column>
             <el-table-column :show-overflow-tooltip="true" width="135px" prop="createTime" label="创建日期">
               <template slot-scope="scope">
-                <span>{{ parseTime(scope.row.createTime) }}</span>
+                <el-tag
+                  disable-transitions
+                >
+                  <i class="el-icon-time"></i>
+                  {{ parseTime(scope.row.createTime) }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column v-permission="['admin','role:edit','role:del']" label="操作" width="130px" align="center" fixed="right">
@@ -133,6 +160,18 @@
           />
         </el-card>
       </el-col>
+      <!-- 角色授权 -->
+      <el-col :lg="18" :md="8" :sm="24" :xl="7" :xs="24">
+        <el-tabs type="border-card">
+          <el-tab-pane>
+            <span slot="label"><i class="el-icon-date"></i> 我的行程</span>
+            我的行程
+          </el-tab-pane>
+          <el-tab-pane label="消息中心">消息中心</el-tab-pane>
+          <el-tab-pane label="角色管理">角色管理</el-tab-pane>
+          <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+        </el-tabs>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -140,7 +179,6 @@
 <script>
 import crudRoles from '@/api/system/role'
 import {getDept, getDeptVertex} from '@/api/system/dept'
-// import { getMenusTree } from '@/api/system/menu'
 import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -151,17 +189,28 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import DateRangePicker from '@/components/DateRangePicker'
 import crudMenu from '@/api/system/menu'
 
-const defaultForm = { id: null, name: null, description: null, dataScope: '全部', level: 3, menuIds: null, departmentIds: null }
+const defaultForm = {
+  id: null,
+  name: null,
+  description: null,
+  dataScope: '全部',
+  enabled: 'true',
+  level: 3,
+  menuIds: null,
+  departmentIds: null
+}
 export default {
   name: 'Role',
-  components: { Treeselect, pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
+  components: {Treeselect, pagination, crudOperation, rrOperation, udOperation, DateRangePicker},
   cruds() {
-    return CRUD({ title: '角色', url: 'api/roles/page', sort: ['level,asc'], crudMethod: { ...crudRoles }})
+    return CRUD({title: '角色', url: 'api/roles/page', sort: ['level,asc'], crudMethod: {...crudRoles}})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  // 设置数据字典
+  dicts: ['role_status'],
   data() {
     return {
-      defaultProps: { children: 'children', label: 'label', isLeaf: 'leaf' },
+      defaultProps: {children: 'children', label: 'label', isLeaf: 'leaf'},
       dateScopes: ['全部', '本级', '自定义'],
       level: 3,
       currentId: 0,
@@ -203,6 +252,27 @@ export default {
     })
   },
   methods: {
+    // 改变状态
+    changeEnabled(data, val) {
+      let value = 0
+      if (!val) {
+        value = 1
+      }
+      this.$confirm('此操作将 "' + this.dict.role_status[value].label + '" ' + data.name + '岗位, 是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        crudRoles.setRoleStatus(data.id, val).then(() => {
+          this.crud.notify(this.dict.role_status[value].label + '成功', 'success')
+        }).catch(err => {
+          data.enabled = !data.enabled
+          console.log(err.data.message)
+        })
+      }).catch(() => {
+        data.enabled = !data.enabled
+      })
+    },
     resetChecked() {
       // 清空菜单的选中
       this.$refs.menu.setCheckedKeys([])
@@ -224,6 +294,7 @@ export default {
     // 编辑前初始化自定义数据权限的部门信息
     [CRUD.HOOK.beforeToEdit](crud, form) {
       this.departmentData = []
+      form.enabled = `${form.enabled}`
       if (form.dataScope === '自定义') {
         this.getDeptList()
       }
