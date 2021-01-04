@@ -106,19 +106,20 @@
 
 <script>
 import myUpload from 'vue-image-crop-upload'
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 import updatePass from './center/updatePass'
 import updateEmail from './center/updateEmail'
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 import store from '@/store'
-import { isvalidPhone } from '@/utils/validate'
-import { parseTime } from '@/utils/index'
+import {isvalidPhone} from '@/utils/validate'
+import {parseTime} from '@/utils/index'
 import crud from '@/mixins/crud'
-import { editUser } from '@/api/system/user'
+import {editUser} from '@/api/system/user'
 import Avatar from '@/assets/images/avatar.png'
+
 export default {
   name: 'Center',
-  components: { updatePass, updateEmail, myUpload },
+  components: {updatePass, updateEmail, myUpload},
   mixins: [crud],
   data() {
     // 自定义验证
@@ -213,11 +214,20 @@ export default {
       padding: 11px 0;
       font-size: 13px;
     }
+
     .user-right {
       float: right;
-      a{
+
+      a {
         color: #317EF3;
       }
     }
   }
+</style>
+<style lang="scss" rel="stylesheet/scss" scoped>
+::v-deep .box-card {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  margin-bottom: 5px;
+}
 </style>

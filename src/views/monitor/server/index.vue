@@ -138,7 +138,8 @@
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/polar'
-import { initData } from '@/api/data'
+import {initData} from '@/api/data'
+
 export default {
   name: 'ServerMonitor',
   components: {
@@ -252,16 +253,20 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
  ::v-deep .box-card {
-    margin-bottom: 5px;
-    span {
-      margin-right: 28px;
-    }
-    .el-icon-refresh {
-      margin-right: 10px;
-      float: right;
-      cursor:pointer;
-    }
-  }
+   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+   border-radius: 10px;
+   margin-bottom: 5px;
+
+   span {
+     margin-right: 28px;
+   }
+
+   .el-icon-refresh {
+     margin-right: 10px;
+     float: right;
+     cursor: pointer;
+   }
+ }
   .cpu, .memory, .swap, .disk  {
     width: 20%;
     float: left;

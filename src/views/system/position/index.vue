@@ -125,7 +125,14 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
- ::v-deep .el-input-number .el-input__inner {
-    text-align: left;
-  }
+::v-deep .el-input-number .el-input__inner {
+  text-align: left;
+}
+</style>
+<style lang="scss" rel="stylesheet/scss" scoped>
+::v-deep .box-card {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  margin-bottom: 5px;
+}
 </style>
