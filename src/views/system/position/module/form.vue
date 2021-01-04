@@ -41,7 +41,7 @@
         prop="enabled"
       >
         <el-radio
-          v-for="item in jobStatus"
+          v-for="item in positionStatus"
           :key="item.id"
           v-model="form.enabled"
           :label="item.value === 'true'"
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { form } from '@crud/crud'
+import {form} from '@crud/crud'
 
 const defaultForm = {
   id: null,
@@ -83,7 +83,7 @@ const defaultForm = {
 export default {
   mixins: [form(defaultForm)],
   props: {
-    jobStatus: {
+    positionStatus: {
       type: Array,
       required: true
     }
