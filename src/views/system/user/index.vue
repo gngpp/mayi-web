@@ -104,9 +104,9 @@
                 placeholder="选择部门"
               />
             </el-form-item>
-            <el-form-item label="岗位" prop="jobList">
+            <el-form-item label="职位" prop="positionList">
               <el-select
-                v-model="jobData"
+                v-model="positionData"
                 style="width: 178px"
                 multiple
                 placeholder="请选择"
@@ -114,7 +114,7 @@
                 @change="changeJob"
               >
                 <el-option
-                  v-for="item in jobList"
+                  v-for="item in positionList"
                   :key="item.name"
                   :label="item.name"
                   :value="item.id"
@@ -240,7 +240,7 @@ import crudUser from '@/api/system/user'
 import {isvalidPhone} from '@/utils/validate'
 import {getDept, getDeptVertex} from '@/api/system/dept'
 import {getAll, getLevel} from '@/api/system/role'
-import {getAllJob} from '@/api/system/job'
+import {getAllPosition} from '@/api/system/job'
 import CRUD, {crud, form, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -252,7 +252,7 @@ import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 let userRoles = []
-let userJobs = []
+let userPositions = []
 const defaultForm = {
   id: null,
   username: null,
@@ -261,7 +261,7 @@ const defaultForm = {
   email: null,
   enabled: 'false',
   roleIds: [],
-  jobIds: [],
+  positionIds: [],
   department: {id: null},
   departmentId: null,
   phone: null
@@ -297,11 +297,11 @@ export default {
       departmentId: null,
       deptList: [],
       sideDeptList: [],
-      jobList: [],
+      positionList: [],
       level: 3,
       from: {},
       roleList: [],
-      jobData: [], roleData: [], // 多选时使用
+      positionData: [], roleData: [], // 多选时使用
       defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
       permission: {
         add: ['admin', 'user:add'],
@@ -309,8 +309,8 @@ export default {
         del: ['admin', 'user:del']
       },
       enabledTypeOptions: [
-        { key: 'true', display_name: '激活' },
-        { key: 'false', display_name: '锁定' }
+        {key: 'true', display_name: '激活'},
+        {key: 'false', display_name: '锁定'}
       ],
       rules: {
         username: [
@@ -375,10 +375,10 @@ export default {
       })
     },
     changeJob(value) {
-      userJobs = []
+      userPositions = []
       value.forEach(function (data, index) {
-        const job = { id: data }
-        userJobs.push(job)
+        const job = {id: data}
+        userPositions.push(job)
       })
     },
     deleteTag(value) {
@@ -397,26 +397,26 @@ export default {
         this.getSupDept(form.department.id)
       }
       this.getRoleLevel()
-      this.getJobs()
+      this.getPositionList()
       form.enabled = form.enabled.toString()
     },
     // 新增前将多选的值设置为空
     [CRUD.HOOK.beforeToAdd]() {
-      this.jobData = []
+      this.positionData = []
       this.roleData = []
     },
     // 初始化编辑时候的角色与岗位
     [CRUD.HOOK.beforeToEdit](crud, form) {
-      this.jobData = []
+      this.positionData = []
       this.roleData = []
-      this.getJobs()
+      this.getPositionList()
       crudUser.getUserRoleIds(form.id).then(res => {
         this.roleData = res.data
         userRoles = res.data
       })
       crudUser.getUserJobIds(form.id).then(res => {
-        this.jobData = res.data
-        userJobs = res.data
+        this.positionData = res.data
+        userPositions = res.data
       })
     },
     // 提交前做的操作
@@ -427,7 +427,7 @@ export default {
           type: 'warning'
         })
         return false
-      } else if (this.jobData.length === 0) {
+      } else if (this.positionData.length === 0) {
         this.$message({
           message: '岗位不能为空',
           type: 'warning'
@@ -441,7 +441,7 @@ export default {
         return false
       }
       crud.form.roleIds = this.roleData
-      crud.form.jobIds = this.jobData
+      crud.form.positionIds = this.positionData
       crud.form.departmentId = crud.form.department.id
       delete crud.form.department
       delete crud.form.createTime
@@ -517,7 +517,7 @@ export default {
         value = 1
       }
       data.departmentId = data.department.id
-      data.jobIds = []
+      data.positionIds = []
       data.roleIds = []
       this.$confirm('此操作将 "' + this.dict.user_status[value].label + '" ' + data.username + ', 是否继续？', '提示', {
         confirmButtonText: '确定',
@@ -544,7 +544,7 @@ export default {
       }).catch(() => { })
     },
     // 获取弹窗内岗位数据
-    getJobs() {
+    getPositionList() {
       const params = {
         page: 0,
         size: 999,
@@ -552,9 +552,10 @@ export default {
           enabled: true
         }
       }
-      getAllJob(params).then(res => {
-        this.jobList = res.data.records
-      }).catch(() => { })
+      getAllPosition(params).then(res => {
+        this.positionList = res.data.records
+      }).catch(() => {
+      })
     },
     // 获取权限级别
     getRoleLevel() {

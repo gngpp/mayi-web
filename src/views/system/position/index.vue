@@ -8,7 +8,7 @@
     <!--表格渲染-->
     <el-card class="box-card" shadow="never">
       <div slot="header" align="center" class="clearfix">
-        <span class="role-span">岗位列表</span>
+        <span class="role-span">职位列表</span>
       </div>
       <el-table
         ref="table"
@@ -44,7 +44,7 @@
         </el-table-column>
         <!--   编辑与删除   -->
         <el-table-column
-          v-permission="['admin','job:edit','job:del']"
+          v-permission="['admin','position:edit','position:del']"
           label="操作"
           width="130px"
           align="center"
@@ -61,7 +61,7 @@
       <!--分页组件-->
       <pagination/>
       <!--表单渲染-->
-      <eForm :job-status="dict.job_status"/>
+      <eForm :position-status="dict.position_status"/>
     </el-card>
   </div>
 </template>
@@ -76,25 +76,25 @@ import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
 
 export default {
-  name: 'Job',
-  components: { eHeader, eForm, crudOperation, pagination, udOperation },
+  name: 'Position',
+  components: {eHeader, eForm, crudOperation, pagination, udOperation},
   cruds() {
     return CRUD({
       title: '岗位',
-      url: 'api/jobs/page',
+      url: 'api/positions/page',
       sort: ['jobSort,asc', 'id,desc'],
-      crudMethod: { ...crudJob }
+      crudMethod: {...crudJob}
     })
   },
   mixins: [presenter()],
   // 数据字典
-  dicts: ['job_status'],
+  dicts: ['position_status'],
   data() {
     return {
       permission: {
-        add: ['admin', 'job:add'],
-        edit: ['admin', 'job:edit'],
-        del: ['admin', 'job:del']
+        add: ['admin', 'position:add'],
+        edit: ['admin', 'position:edit'],
+        del: ['admin', 'position:del']
       }
     }
   },
@@ -105,13 +105,13 @@ export default {
       if (!val) {
         value = 1
       }
-      this.$confirm('此操作将 "' + this.dict.job_status[value].label + '" ' + data.name + '岗位, 是否继续？', '提示', {
+      this.$confirm('此操作将 "' + this.dict.position_status[value].label + '" ' + data.name + '岗位, 是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         crudJob.edit(data).then(() => {
-          this.crud.notify(this.dict.job_status[value].label + '成功', 'success')
+          this.crud.notify(this.dict.position_status[value].label + '成功', 'success')
         }).catch(err => {
           data.enabled = !data.enabled
           console.log(err.data.message)

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { encrypt } from '@/utils/rsaEncrypt'
+import {encrypt} from '@/utils/rsaEncrypt'
 
 export function add(data) {
   return request({
@@ -26,7 +26,7 @@ export function getUserRoleIds(id) {
 
 export function getUserJobIds(id) {
   return request({
-    url: 'api/users/job/' + id,
+    url: 'api/users/position/' + id,
     method: 'post'
   })
 }

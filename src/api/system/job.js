@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getAllJob(data) {
+export function getAllPosition(data) {
   return request({
-    url: 'api/jobs/page',
+    url: 'api/positions/page',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function getAllJob(data) {
 
 export function add(data) {
   return request({
-    url: 'api/jobs/save',
+    url: 'api/positions/save',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/jobs/delete',
+    url: 'api/positions/delete',
     method: 'delete',
     data: ids
   })
@@ -26,10 +26,10 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/jobs/update',
+    url: 'api/positions/update',
     method: 'put',
     data
   })
 }
 
-export default { add, edit, del, getAllJob: getAllJob }
+export default {add, edit, del, getAllJob: getAllPosition}
