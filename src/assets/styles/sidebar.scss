@@ -12,7 +12,8 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    // background-color: $menuBg;
+    background-color: #545c64;
     height: 100%;
     position: fixed;
     font-size: 16px;
@@ -80,7 +81,8 @@
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-      background-color: $subMenuBg !important;
+      //background-color: $subMenuBg !important;
+      background-color: #545c64;
 
       &:hover {
         background-color: $subMenuHover !important;
@@ -204,7 +206,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #99a9bf;
+      background: #a21f1f;
       border-radius: 20px;
     }
   }

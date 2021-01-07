@@ -73,9 +73,9 @@
             :data="crud.data"
             border
             highlight-current-row
-            stripe
             style="width: 100%;"
             @selection-change="crud.selectionChangeHandler"
+            :row-class-name="tableRowClassName"
             @current-change="handleCurrentChange"
           >
             <el-table-column :selectable="checkboxT" type="selection" width="55"/>
@@ -160,18 +160,7 @@
           />
         </el-card>
       </el-col>
-      <!-- 角色授权 -->
-      <el-col :lg="18" :md="8" :sm="24" :xl="7" :xs="24">
-        <el-tabs type="border-card">
-          <el-tab-pane>
-            <span slot="label"><i class="el-icon-date"></i> 我的行程</span>
-            我的行程
-          </el-tab-pane>
-          <el-tab-pane label="消息中心">消息中心</el-tab-pane>
-          <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-          <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
-        </el-tabs>
-      </el-col>
+
     </el-row>
   </div>
 </template>
@@ -252,6 +241,13 @@ export default {
     })
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+      if (row.enabled) {
+        return 'success-row';
+      } else {
+        return 'warning-row';
+      }
+    },
     // 改变状态
     changeEnabled(data, val) {
       let value = 0

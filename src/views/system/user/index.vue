@@ -62,7 +62,7 @@
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="部门" prop="department">
+            <el-form-item label="部门" prop="department.id">
               <treeselect
                 v-model="form.department.id"
                 :options="deptList"
@@ -182,7 +182,7 @@
             <el-table-column prop="gender" label="性别"/>
             <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"/>
             <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱"/>
-            <el-table-column :show-overflow-tooltip="true" prop="departmentId" label="部门">
+            <el-table-column :show-overflow-tooltip="true" label="部门" prop="department">
               <template slot-scope="scope">
                 <div>{{ scope.row.department.name }}</div>
               </template>
@@ -268,7 +268,7 @@ const defaultForm = {
   enabled: 'false',
   roleIds: [],
   positionIds: [],
-  department: {id: null},
+  department: {id: null, name: null},
   departmentId: null,
   phone: null
 }
@@ -301,11 +301,11 @@ export default {
       height: document.documentElement.clientHeight - 180 + 'px;',
       filterText: '',
       departmentId: null,
+      department: {id: null, name: null},
       deptList: [],
       sideDeptList: [],
       positionList: [],
       level: 3,
-      from: {},
       roleList: [],
       positionData: [], roleData: [], // 多选时使用
       defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
@@ -396,12 +396,12 @@ export default {
     },
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.getRoles()
       if (form.id == null) {
         this.getDept()
       } else {
         this.getSupDept(form.department.id)
       }
+      this.getRoles()
       this.getRoleLevel()
       this.getPositionList()
       form.enabled = form.enabled.toString()
@@ -449,7 +449,7 @@ export default {
       crud.form.roleIds = this.roleData
       crud.form.positionIds = this.positionData
       crud.form.departmentId = crud.form.department.id
-      delete crud.form.department
+      // delete crud.form.department
       delete crud.form.createTime
       return true
     },
