@@ -198,7 +198,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期">
+            <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="createTime" sortable width="168px">
               <template slot-scope="scope">
                 <el-tag
                   disable-transitions

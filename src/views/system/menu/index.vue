@@ -145,7 +145,7 @@
             <span v-else>是</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建日期" width="135px">
+        <el-table-column label="创建日期" prop="createTime" sortable width="168px">
           <template slot-scope="scope">
             <el-tag
               disable-transitions
