@@ -2,7 +2,8 @@
   <div class="app-container">
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
-        <el-input v-model="query.filter" clearable size="small" placeholder="全表模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.filter" class="filter-item" clearable placeholder="模糊搜索" size="small"
+                  style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
         <rrOperation />
       </div>
       <crudOperation>
@@ -21,22 +22,29 @@
       </crudOperation>
     </div>
     <!--表格渲染-->
-    <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="userName" label="用户名" />
-      <el-table-column prop="nickName" label="用户昵称" />
-      <el-table-column prop="dept" label="部门" />
-      <el-table-column prop="ip" label="登录IP" />
-      <el-table-column :show-overflow-tooltip="true" prop="address" label="登录地点" />
-      <el-table-column prop="browser" label="浏览器" />
+    <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;"
+              @selection-change="crud.selectionChangeHandler">
+      <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+      <el-table-column label="用户名" prop="username"/>
+      <el-table-column prop="nickName" label="用户昵称"/>
+      <el-table-column label="部门" prop="department"/>
+      <el-table-column prop="ip" label="登录IP"/>
+      <el-table-column :show-overflow-tooltip="true" label="登录地点" prop="ipRegion"/>
+      <el-table-column prop="browser" label="浏览器"/>
       <el-table-column prop="loginTime" label="登录时间">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.loginTime) }}</span>
+          <el-tag
+            disable-transitions
+          >
+            <i class="el-icon-time"></i>
+            {{ parseTime(scope.row.loginTime) }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="70px" fixed="right">
+      <el-table-column fixed="right" label="操作" width="70px">
         <template slot-scope="scope">
           <el-popover
+            v-if="user.id !== scope.row.id"
             :ref="scope.$index"
             v-permission="['admin']"
             placement="top"
@@ -45,9 +53,10 @@
             <p>确定强制退出该用户吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" type="text" @click="$refs[scope.$index].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="delMethod(scope.row.key, scope.$index)">确定</el-button>
+              <el-button :loading="delLoading" type="danger" @click="delMethod(scope.row.id, scope.$index)">确定
+              </el-button>
             </div>
-            <el-button slot="reference" size="mini" type="text">强退</el-button>
+            <el-button slot="reference" size="mini" type="danger">强退</el-button>
           </el-popover>
         </template>
       </el-table-column>
@@ -58,23 +67,37 @@
 </template>
 
 <script>
-import { del } from '@/api/monitor/online'
-import CRUD, { presenter, header, crud } from '@crud/crud'
+import {del} from '@/api/monitor/online'
+import CRUD, {crud, header, presenter} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'OnlineUser',
-  components: { pagination, crudOperation, rrOperation },
+  components: {pagination, crudOperation, rrOperation},
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   cruds() {
-    return CRUD({ url: 'auth/online', title: '在线用户' })
+    return CRUD({url: 'api/online/page', title: '在线用户'})
   },
   mixins: [presenter(), header(), crud()],
   data() {
     return {
       delLoading: false,
-      permission: {}
+      permission: {},
+      form: {
+        userName: null,
+        nickName: null,
+        department: null,
+        ip: null,
+        browser: null,
+        loginTime: null
+      }
     }
   },
   created() {
@@ -87,22 +110,25 @@ export default {
     }
   },
   methods: {
-    doDelete(datas) {
-      this.$confirm(`确认强退选中的${datas.length}个用户?`, '提示', {
+    doDelete(data) {
+      this.$confirm(`确认强退选中的${data.length}个用户?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.delMethod(datas)
-      }).catch(() => {})
+        const ids = []
+        data.forEach(val => {
+          ids.push(val.id)
+        })
+        this.delMethod(ids)
+      }).catch(() => {
+      })
     },
     // 踢出用户
     delMethod(key, index) {
-      const ids = []
+      let ids = []
       if (key instanceof Array) {
-        key.forEach(val => {
-          ids.push(val.key)
-        })
+        ids = key
       } else ids.push(key)
       this.delLoading = true
       del(ids).then(() => {
@@ -119,6 +145,9 @@ export default {
           this.$refs[index].doClose()
         }
       })
+    },
+    checkboxT(row, rowIndex) {
+      return row.id !== this.user.id
     }
   }
 }

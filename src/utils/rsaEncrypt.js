@@ -28,32 +28,3 @@ export function decrypt(txt) {
   return encryptor.decrypt(txt)
 }
 
-
-JSEncrypt.prototype.decryptLong = function (string) {
-  var k = this.getKey();
-  var maxLength = ((k.n.bitLength() + 7) >> 3);
-  //var maxLength = 128;
-  try {
-
-    var str = bytesToHex(string);
-    //var b=hex2Bytes(str);
-
-    var inputLen = str.length;
-
-    var ct = "";
-    if (str.length > maxLength) {
-
-      var lt = str.match(/.{1,256}/g);
-      lt.forEach(function (entry) {
-        var t1 = k.decrypt(entry);
-        ct += t1;
-      });
-      return ct;
-    }
-    var y = k.decrypt(bytesToHex(string));
-    return y;
-  } catch (ex) {
-    return false;
-  }
-}
-

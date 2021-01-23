@@ -138,7 +138,6 @@
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/polar'
-import {initData} from '@/api/data'
 
 export default {
   name: 'ServerMonitor',
@@ -149,6 +148,7 @@ export default {
     return {
       show: false,
       monitor: null,
+      socket: null,
       url: 'api/monitor',
       data: {},
       cpuInfo: {
@@ -221,31 +221,50 @@ export default {
   },
   created() {
     this.init()
-    this.monitor = window.setInterval(() => {
-      setTimeout(() => {
-        this.init()
-      }, 2)
-    }, 3500)
+    // this.monitor = window.setInterval(() => {
+    //   setTimeout(() => {
+    //     this.init()
+    //   }, 2)
+    // }, 3500)
   },
   destroyed() {
+    this.socket.close()
     clearInterval(this.monitor)
   },
   methods: {
     init() {
-      initData(this.url, {}).then(res => {
-        this.data = res.data
-        this.show = true
-        if (this.cpuInfo.xAxis.data.length >= 8) {
-          this.cpuInfo.xAxis.data.cpu
-          this.memoryInfo.xAxis.data.shift()
-          this.cpuInfo.series[0].data.shift()
-          this.memoryInfo.series[0].data.shift()
+      // initData(this.url, {}).then(res => {
+      //   this.data = res.data
+      //   this.show = true
+      //   if (this.cpuInfo.xAxis.data.length >= 8) {
+      //     this.cpuInfo.xAxis.data.cpu
+      //     this.memoryInfo.xAxis.data.shift()
+      //     this.cpuInfo.series[0].data.shift()
+      //     this.memoryInfo.series[0].data.shift()
+      //   }
+      //   this.cpuInfo.xAxis.data.push(res.data.datetime)
+      //   this.memoryInfo.xAxis.data.push(res.data.datetime)
+      //   this.cpuInfo.series[0].data.push(parseFloat(res.data.memory.used))
+      //   this.memoryInfo.series[0].data.push(parseFloat(res.data.memory.usageRate))
+      // })
+      let url = 'ws://localhost:8888/' + this.url
+      this.socket = new WebSocket(url)
+      // 获得消息事件
+      let that = this;
+      this.socket.onmessage = function (res) {
+        that.data = JSON.parse(res.data)
+        that.show = true
+        if (that.cpuInfo.xAxis.data.length >= 8) {
+          that.cpuInfo.xAxis.data.cpu
+          that.memoryInfo.xAxis.data.shift()
+          that.cpuInfo.series[0].data.shift()
+          that.memoryInfo.series[0].data.shift()
         }
-        this.cpuInfo.xAxis.data.push(res.data.datetime)
-        this.memoryInfo.xAxis.data.push(res.data.datetime)
-        this.cpuInfo.series[0].data.push(parseFloat(res.data.memory.used))
-        this.memoryInfo.series[0].data.push(parseFloat(res.data.memory.usageRate))
-      })
+        that.cpuInfo.xAxis.data.push(that.data.datetime)
+        that.memoryInfo.xAxis.data.push(that.data.datetime)
+        that.cpuInfo.series[0].data.push(parseFloat(that.data.memory.used))
+        that.memoryInfo.series[0].data.push(parseFloat(that.data.memory.usageRate))
+      }
     }
   }
 }

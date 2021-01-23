@@ -91,7 +91,7 @@ function CRUD(options) {
       // 页码
       page: 0,
       // 每页数据条数
-      size: 9999,
+      size: 10,
       // 总数据条数
       total: 0
     },
@@ -416,8 +416,9 @@ function CRUD(options) {
      */
     resetDataStatus() {
       const dataStatus = {}
-      function resetStatus(datas) {
-        datas.forEach(e => {
+
+      function resetStatus(data) {
+        data.forEach(e => {
           dataStatus[crud.getDataId(e)] = {
             delete: 0,
             edit: 0
@@ -427,6 +428,7 @@ function CRUD(options) {
           }
         })
       }
+
       resetStatus(crud.data)
       crud.dataStatus = dataStatus
     },
