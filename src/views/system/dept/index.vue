@@ -154,22 +154,28 @@ import DateRangePicker from '@/components/DateRangePicker'
 const defaultForm = { id: null, name: null, isTop: '1', subCount: 0, pid: null, deptSort: 999, enabled: 'true' }
 export default {
   name: 'Dept',
-  components: { Treeselect, crudOperation, rrOperation, udOperation, DateRangePicker },
+  components: {Treeselect, crudOperation, rrOperation, udOperation, DateRangePicker},
   cruds() {
-    return CRUD({ title: '部门', url: 'api/departments/page', crudMethod: { ...crudDept }})
+    return CRUD({title: '部门', pageSize: 9999, url: 'api/departments/page', crudMethod: {...crudDept}})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 设置数据字典
   dicts: ['dept_status'],
+  created() {
+    this.crud.page = {
+      page: 1,
+      size: 999
+    }
+  },
   data() {
     return {
       depts: [],
       rules: {
         name: [
-          { required: true, message: '请输入名称', trigger: 'blur' }
+          {required: true, message: '请输入名称', trigger: 'blur'}
         ],
         deptSort: [
-          { required: true, message: '请输入序号', trigger: 'blur', type: 'number' }
+          {required: true, message: '请输入序号', trigger: 'blur', type: 'number'}
         ]
       },
       permission: {

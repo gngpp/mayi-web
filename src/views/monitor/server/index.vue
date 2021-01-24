@@ -13,7 +13,7 @@
           <span>
             项目已不间断运行：{{ data.operatingSystem.runningDay }}
           </span>
-          <i class="el-icon-refresh" style="margin-left: 40px" @click="init" />
+          <i class="el-icon-refresh" style="margin-left: 40px" @click="reset"/>
         </div>
       </el-card>
       <el-card class="box-card">
@@ -232,6 +232,14 @@ export default {
     clearInterval(this.monitor)
   },
   methods: {
+    reset() {
+      if (this.socket) {
+        this.socket.close()
+        this.init()
+      } else {
+        this.init()
+      }
+    },
     init() {
       // initData(this.url, {}).then(res => {
       //   this.data = res.data

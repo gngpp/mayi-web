@@ -19,6 +19,7 @@ function CRUD(options) {
     title: '',
     // 请求数据的url
     url: '',
+    pageSize: null,
     // 表格数据
     data: [],
     // 选择项
@@ -89,7 +90,7 @@ function CRUD(options) {
     },
     page: {
       // 页码
-      page: 0,
+      page: 1,
       // 每页数据条数
       size: 10,
       // 总数据条数
@@ -131,7 +132,7 @@ function CRUD(options) {
       return new Promise((resolve, reject) => {
         crud.loading = true
         // 请求数据
-        initData(crud.url, crud.getQueryParams()).then(data => {
+        initData(crud.url, crud.getQueryParams()).then(res => {
           const table = crud.getTable()
           if (table && table.lazy) { // 懒加载子节点数据，清掉已加载的数据
             table.store.states.treeData = {}
@@ -139,15 +140,15 @@ function CRUD(options) {
           }
           // crud.page.total = data.totalElements
           // crud.data = data.content
-          crud.page.total = data.data.total
-          crud.data = data.data.records
+          crud.page.total = res.data.total
+          crud.data = res.data.records
           crud.resetDataStatus()
           // time 毫秒后显示表格
           setTimeout(() => {
             crud.loading = false
             callVmHook(crud, CRUD.HOOK.afterRefresh)
           }, crud.time)
-          resolve(data)
+          resolve(res)
         }).catch(err => {
           crud.loading = false
           reject(err)
@@ -277,11 +278,11 @@ function CRUD(options) {
         return
       }
       crud.status.edit = CRUD.STATUS.PROCESSING
-      crud.crudMethod.edit(crud.form).then(() => {
+      crud.crudMethod.edit(crud.form).then(data => {
         crud.status.edit = CRUD.STATUS.NORMAL
         crud.getDataStatus(crud.getDataId(crud.form)).edit = CRUD.STATUS.NORMAL
         crud.editSuccessNotify()
-        crud.resetForm()
+        crud.resetForm(data)
         callVmHook(crud, CRUD.HOOK.afterSubmit)
         crud.refresh()
       }).catch(() => {
@@ -349,8 +350,11 @@ function CRUD(options) {
       Object.keys(crud.params).length !== 0 && Object.keys(crud.params).forEach(item => {
         if (crud.params[item] === null || crud.params[item] === '') crud.params[item] = undefined
       })
+      if (crud.pageSize) {
+        crud.page.size = crud.pageSize
+      }
       return {
-        page: crud.page.page - 1,
+        page: crud.page.page,
         size: crud.page.size,
         sort: crud.sort,
         query: {
@@ -361,6 +365,7 @@ function CRUD(options) {
     },
     // 当前页改变
     pageChangeHandler(e) {
+      console.log(e)
       crud.page.page = e
       crud.refresh()
     },

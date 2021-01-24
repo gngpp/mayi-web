@@ -186,11 +186,22 @@ import DateRangePicker from '@/components/DateRangePicker'
 const defaultForm = { id: null, title: null, menuSort: 999, routePath: null, componentPath: null, componentName: null, iframe: false, roles: [], pid: null, icon: null, cache: false, hidden: false, type: 0, permission: null }
 export default {
   name: 'Menu',
-  components: { Treeselect, IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker },
+  components: {Treeselect, IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker},
   cruds() {
-    return CRUD({ title: '菜单', url: 'api/menus/page', crudMethod: { ...crudMenu }})
+
+    return CRUD({title: '菜单', pageSize: 9999, url: 'api/menus/page', crudMethod: {...crudMenu}})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  created() {
+    this.crud.page = {
+      // 页码
+      page: 1,
+      // 每页数据条数
+      size: 9999,
+      // 总数据条数
+      total: 0
+    }
+  },
   data() {
     return {
       menus: [],
