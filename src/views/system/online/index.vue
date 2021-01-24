@@ -56,7 +56,7 @@
               <el-button :loading="delLoading" type="danger" @click="delMethod(scope.row.id, scope.$index)">确定
               </el-button>
             </div>
-            <el-button slot="reference" size="mini" type="danger">强退</el-button>
+            <el-button slot="reference" plain size="mini" type="danger">强退</el-button>
           </el-popover>
         </template>
       </el-table-column>

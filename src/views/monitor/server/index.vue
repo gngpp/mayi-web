@@ -221,11 +221,6 @@ export default {
   },
   created() {
     this.init()
-    // this.monitor = window.setInterval(() => {
-    //   setTimeout(() => {
-    //     this.init()
-    //   }, 2)
-    // }, 3500)
   },
   destroyed() {
     this.socket.close()
@@ -233,6 +228,10 @@ export default {
   },
   methods: {
     reset() {
+      this.cpuInfo.xAxis.data = []
+      this.cpuInfo.series.data = []
+      this.memoryInfo.xAxis.data = []
+      this.memoryInfo.series.data = []
       if (this.socket) {
         this.socket.close()
         this.init()
@@ -241,24 +240,11 @@ export default {
       }
     },
     init() {
-      // initData(this.url, {}).then(res => {
-      //   this.data = res.data
-      //   this.show = true
-      //   if (this.cpuInfo.xAxis.data.length >= 8) {
-      //     this.cpuInfo.xAxis.data.cpu
-      //     this.memoryInfo.xAxis.data.shift()
-      //     this.cpuInfo.series[0].data.shift()
-      //     this.memoryInfo.series[0].data.shift()
-      //   }
-      //   this.cpuInfo.xAxis.data.push(res.data.datetime)
-      //   this.memoryInfo.xAxis.data.push(res.data.datetime)
-      //   this.cpuInfo.series[0].data.push(parseFloat(res.data.memory.used))
-      //   this.memoryInfo.series[0].data.push(parseFloat(res.data.memory.usageRate))
-      // })
       let url = 'ws://localhost:8888/' + this.url
       this.socket = new WebSocket(url)
       // 获得消息事件
       let that = this;
+
       this.socket.onmessage = function (res) {
         that.data = JSON.parse(res.data)
         that.show = true
