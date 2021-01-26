@@ -19,6 +19,7 @@ function CRUD(options) {
     title: '',
     // 请求数据的url
     url: '',
+    // 分页大小
     pageSize: null,
     // 表格数据
     data: [],
@@ -359,7 +360,7 @@ function CRUD(options) {
         sort: crud.sort,
         query: {
           ...crud.query,
-          ...crud.params
+          ...crud.params,
         }
       }
     },
