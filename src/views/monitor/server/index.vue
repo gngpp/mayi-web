@@ -178,7 +178,7 @@ export default {
             normal: {
               color: '#6fbae1',
               lineStyle: {
-                color: '#6fbae1' // 改变折线颜色
+                color: '#ff0000' // 改变折线颜色
               }
             }
           }
@@ -211,7 +211,7 @@ export default {
             normal: {
               color: '#6fbae1',
               lineStyle: {
-                color: '#6fbae1' // 改变折线颜色
+                color: '#ff0000' // 改变折线颜色
               }
             }
           }
@@ -248,15 +248,9 @@ export default {
       this.socket.onmessage = function (res) {
         that.data = JSON.parse(res.data)
         that.show = true
-        if (that.cpuInfo.xAxis.data.length >= 8) {
-          that.cpuInfo.xAxis.data.cpu
-          that.memoryInfo.xAxis.data.shift()
-          that.cpuInfo.series[0].data.shift()
-          that.memoryInfo.series[0].data.shift()
-        }
         that.cpuInfo.xAxis.data.push(that.data.datetime)
         that.memoryInfo.xAxis.data.push(that.data.datetime)
-        that.cpuInfo.series[0].data.push(parseFloat(that.data.memory.used))
+        that.cpuInfo.series[0].data.push(parseFloat(that.data.cpu.used))
         that.memoryInfo.series[0].data.push(parseFloat(that.data.memory.usageRate))
       }
     }
