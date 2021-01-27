@@ -17,7 +17,7 @@
             :loading="crud.delAllLoading"
             @click="confirmDelAll()"
           >
-            清空
+            清空当页
           </el-button>
         </crudOperation>
       </div>
@@ -80,7 +80,7 @@
 
 <script>
 import Search from './search'
-import {delAllInfo} from '@/api/monitor/log'
+import {delAllInfo, delLog} from '@/api/monitor/log'
 import CRUD, {presenter} from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
@@ -103,16 +103,32 @@ export default {
   },
   methods: {
     confirmDelAll() {
-      this.$confirm(`确认清空所有操作日志吗?`, '提示', {
+      this.$confirm(`确认当页操作日志吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.crud.delAllLoading = true
-        delAllInfo().then(res => {
+        const ids = []
+        let isDel = false;
+        this.crud.data.forEach(res => {
+          isDel = true
+          ids.push(res.id)
+        })
+        if (!isDel) {
+          this.$notify({
+            type: 'warning',
+            title: '当前列表没有日志'
+          })
+          return
+        }
+        delLog(ids).then(res => {
           this.crud.delAllLoading = false
           this.crud.dleChangePage(1)
-          this.crud.delSuccessNotify()
+          this.$notify({
+            title: '清空成功',
+            type: 'success'
+          })
           this.crud.toQuery()
         }).catch(err => {
           this.crud.delAllLoading = false
