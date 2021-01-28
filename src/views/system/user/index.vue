@@ -177,6 +177,17 @@
             :row-class-name="tableRowClassName">
             >
             <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+            <el-table-column label="头像" prop="avatarName">
+              <template slot-scope="scope">
+                <div>
+                  <el-image
+                    :src="scope.row.avatarName ? baseApi + '/avatar/' + scope.row.avatarName : require('@/assets/images/avatar.png')"
+                    style="width: 50px;height: 50px;cursor: pointer;width: 50px;height: 50px;border-radius: 10px;"
+                  >
+                  </el-image>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"/>
             <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"/>
             <el-table-column prop="gender" label="性别"/>
@@ -256,6 +267,7 @@ import DateRangePicker from '@/components/DateRangePicker'
 import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
 import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import Avatar from '@/assets/images/avatar.png'
 
 let userRoles = []
 let userPositions = []
@@ -298,6 +310,7 @@ export default {
       }
     }
     return {
+      avatar: Avatar,
       height: document.documentElement.clientHeight - 180 + 'px;',
       filterText: '',
       departmentId: null,
@@ -339,7 +352,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
+      'user',
+      'baseApi'
     ])
   },
   created() {

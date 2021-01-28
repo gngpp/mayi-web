@@ -100,7 +100,6 @@
           <json-view
             v-if="isJson"
             :data="errorInfo"
-            line-height="20"
             modal
             show-close
           ></json-view>
@@ -126,7 +125,7 @@
 </template>
 
 <script>
-import {delAllError, delLog} from '@/api/monitor/log'
+import {delLog} from '@/api/monitor/log'
 import Search from './search'
 import CRUD, {presenter} from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
