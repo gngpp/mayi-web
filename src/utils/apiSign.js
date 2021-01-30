@@ -1,6 +1,5 @@
 import CryptoJS from 'crypto-js'
-import {decryptByCBC, encryptByCBC} from '@/utils/aesEncrypt'
-import CryptoJs from "crypto-js";
+import CryptoJs from 'crypto-js'
 
 const key = CryptoJs.enc.Utf8.parse("1234567890ABCDEF"); //16位
 const iv = CryptoJs.enc.Utf8.parse("TRYTOCN394402133");
@@ -23,7 +22,7 @@ export function encryption(data) {
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7  // 后台用的是pad.Pkcs5,前台对应为Pkcs7
   });
-  return CryptoJS.enc.Base64.stringify(encryptResult.ciphertext)
+  return Base64.encode(encryptResult.ciphertext.toString())
 }
 
 export function decryption(data) {

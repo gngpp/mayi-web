@@ -22,13 +22,14 @@ service.interceptors.request.use(
       config.headers.Authorization = getToken()
     }
     let params = {
-      han: 'ss',
+      app_key: 1234567,
+      secret_key: '',
       timestamp: new Date().getTime(),
-      nonce: Math.random()
+      nonce_str: Math.random()
     }
-    let encryption1 = encryption(params);
-    console.log(encryption1)
-    config.params = encryption1
+    let paramAndSignature = encryption(params);
+    console.log(paramAndSignature)
+    config.headers['Content'] = paramAndSignature
     config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
