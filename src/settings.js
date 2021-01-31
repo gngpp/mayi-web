@@ -44,6 +44,10 @@ module.exports = {
    */
   showFooter: true,
   /**
+   * 签名模式
+   */
+  signatureModel: 'SECRET',
+  /**
    * app key
    */
   appKey: 1234567,
