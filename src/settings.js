@@ -44,6 +44,14 @@ module.exports = {
    */
   showFooter: true,
   /**
+   * app key
+   */
+  appKey: 1234567,
+  /**
+   * secret key
+   */
+  secretKey: 'abcdefg',
+  /**
    * 底部文字，支持html语法
    */
   footerTxt: '@ Ant',

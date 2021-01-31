@@ -6,7 +6,7 @@ import {getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
 import {decryptByCBC} from '@/utils/aesEncrypt'
-import {encryption} from "@/utils/apiSign"
+import {secretSignature} from "@/utils/apiSign"
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
@@ -21,15 +21,7 @@ service.interceptors.request.use(
       // 让每个请求携带自定义token 请根据实际情况自行修改
       config.headers.Authorization = getToken()
     }
-    let params = {
-      app_key: 1234567,
-      secret_key: '',
-      timestamp: new Date().getTime(),
-      nonce_str: Math.random()
-    }
-    let paramAndSignature = encryption(params);
-    console.log(paramAndSignature)
-    config.headers['Content'] = paramAndSignature
+    config.headers['Content'] = secretSignature()
     config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
