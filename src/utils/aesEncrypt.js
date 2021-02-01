@@ -1,4 +1,5 @@
 import CryptoJs from 'crypto-js'
+import 'js-base64'
 //首先声明两个变量，加密的时候要用到，要和后台沟通，保持一致
 const key = CryptoJs.enc.Utf8.parse("1234567890ABCDEF"); //16位
 const iv = CryptoJs.enc.Utf8.parse("TRYTOCN394402133");
@@ -63,7 +64,8 @@ export function encryptByCBC(word) {
 
 // aes解密
 export function decryptByCBC(data) {
-  const encryptedHexStr = CryptoJs.enc.Hex.parse(data);
+  const encryptData = Base64.decode(data)
+  const encryptedHexStr = CryptoJs.enc.Hex.parse(encryptData);
   const srcs = CryptoJs.enc.Base64.stringify(encryptedHexStr);
   const content = CryptoJs.AES.decrypt(srcs, key, {
     iv: iv,
