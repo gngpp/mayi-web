@@ -46,7 +46,7 @@ module.exports = {
   /**
    * 签名模式
    */
-  signatureModel: 'SECRET',
+  signaturePattern: 'SECRET',
   /**
    * app id
    */

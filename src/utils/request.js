@@ -5,8 +5,9 @@ import store from '../store'
 import {getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
-import {decryptByCBC} from '@/utils/aesEncrypt'
+import {decryptByCBC, encryptByCBC} from '@/utils/aesEncrypt'
 import {openSignature, secretSignature} from "@/utils/apiSign"
+import da from "element-ui/src/locale/lang/da";
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
@@ -21,17 +22,19 @@ service.interceptors.request.use(
       // 让每个请求携带自定义token 请根据实际情况自行修改
       config.headers.Authorization = getToken()
     }
-    if (Config.signatureModel === 'OPEN') {
+    let data = config.data
+    if (data) {
+      data = encryptByCBC(data)
+      console.log(data)
+    }
+    if (Config.signaturePattern === 'OPEN') {
       config.params = {
-        model: Config.signatureModel,
         ...openSignature()
       }
-    } else if (Config.signatureModel === 'SECRET') {
-      config.params = {
-        model: Config.signatureModel
-      }
+    } else if (Config.signaturePattern === 'SECRET') {
       config.headers['Content'] = secretSignature()
     }
+    config.headers['pattern'] = Config.signaturePattern
     config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
