@@ -48,13 +48,13 @@ module.exports = {
    */
   signatureModel: 'SECRET',
   /**
+   * app id
+   */
+  appId: 1234567,
+  /**
    * app key
    */
-  appKey: 1234567,
-  /**
-   * secret key
-   */
-  secretKey: 'abcdefg',
+  appKey: 'abcdefg',
   /**
    * 底部文字，支持html语法
    */

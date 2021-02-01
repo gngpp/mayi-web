@@ -49,7 +49,6 @@ service.interceptors.response.use(
     try {
       decode = decryptByCBC(response.data);
     } catch (e) {
-
     }
     if (decode) {
       response.data = JSON.parse(decode)

@@ -1,14 +1,13 @@
 import CryptoJS from 'crypto-js'
-import CryptoJs from 'crypto-js'
 import Config from '@/settings'
 import 'js-base64'
 
-const key = CryptoJs.enc.Utf8.parse("1234567890ABCDEF"); //16位
-const iv = CryptoJs.enc.Utf8.parse("TRYTOCN394402133");
+const key = CryptoJS.enc.Utf8.parse("1234567890ABCDEF"); //16位
+const iv = CryptoJS.enc.Utf8.parse("TRYTOCN394402133");
 
 export function secretSignature() {
   let params = {
-    key: Config.appKey,
+    app_id: Config.appId,
     timestamp: new Date().getTime(),
     nonce_str: Math.random()
 
@@ -18,7 +17,7 @@ export function secretSignature() {
     array.push(paramsKey + '=' + params[paramsKey]);
   }
   let paramArray = [...array]
-  array.push('secret_key=' + Config.secretKey)
+  array.push('app_key=' + Config.appKey)
   // 参数排序
   paramArray.sort()
   // 数组排序
@@ -27,8 +26,7 @@ export function secretSignature() {
   array = array.join('&')
   paramArray = paramArray.join("&")
   // 将排序好当参数进行MD5加密作为接口当签名
-  let signature = CryptoJS.MD5(array)
-  console.log(signature)
+  let signature = CryptoJS.HmacSHA1(array, Config.appKey)
   // 将排序好当参数和接口签名拼接上进行加密
   let encodeData = paramArray + '&sign=' + signature;
   //  AES加密
@@ -43,7 +41,7 @@ export function secretSignature() {
 
 export function openSignature() {
   let rawParams = {
-    key: Config.appKey,
+    app_id: Config.appId,
     timestamp: new Date().getTime(),
     nonce_str: Math.random()
   }
@@ -51,12 +49,12 @@ export function openSignature() {
   for (let rawParamsKey in rawParams) {
     rawArray.push(rawParamsKey + '=' + rawParams[rawParamsKey])
   }
-  rawArray.push('secret_key=' + Config.secretKey)
+  rawArray.push('app_key=' + Config.appKey)
   // 参数排序
   rawArray.sort()
   rawArray = rawArray.join('&')
   // 签名
-  rawParams['sign'] = CryptoJS.MD5(rawArray).toString()
+  rawParams['sign'] = CryptoJS.HmacSHA1(array, Config.appKey).toString()
   return rawParams
 }
 
