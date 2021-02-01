@@ -50,8 +50,8 @@ export function encryptByCBC(data) {
     });
   } else if (typeof data == "object") {
     //对象格式的转成json字符串
-    const data = JSON.stringify(data);
-    const srcs = CryptoJS.enc.Utf8.parse(data);
+    const result = JSON.stringify(data);
+    const srcs = CryptoJS.enc.Utf8.parse(result);
     encrypted = CryptoJS.AES.encrypt(srcs, key, {
       iv: iv,
       mode: CryptoJS.mode.CBC,

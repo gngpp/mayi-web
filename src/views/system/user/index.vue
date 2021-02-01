@@ -180,11 +180,13 @@
             <el-table-column label="头像" prop="avatarName">
               <template slot-scope="scope">
                 <div>
-                  <el-image
+                  <el-avatar
                     :src="scope.row.avatarName ? baseApi + '/avatar/' + scope.row.avatarName : require('@/assets/images/avatar.png')"
                     style="width: 50px;height: 50px;cursor: pointer;width: 50px;height: 50px;border-radius: 10px;"
+                    @error="true"
                   >
-                  </el-image>
+                    <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+                  </el-avatar>
                 </div>
               </template>
             </el-table-column>
