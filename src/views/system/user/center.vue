@@ -116,6 +116,8 @@ import {parseTime} from '@/utils'
 import crud from '@/mixins/crud'
 import {editUser} from '@/api/system/user'
 import Avatar from '@/assets/images/avatar.png'
+import Config from "@/settings";
+import {secretSignature} from "@/utils/apiSign";
 
 export default {
   name: 'Center',
@@ -138,7 +140,9 @@ export default {
       activeName: 'first',
       saveLoading: false,
       headers: {
-        'Authorization': getToken()
+        'Authorization': getToken(),
+        'pattern' : Config.signaturePattern,
+        'Content': secretSignature()
       },
       form: {},
       rules: {
