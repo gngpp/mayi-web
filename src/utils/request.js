@@ -24,7 +24,6 @@ service.interceptors.request.use(
     }
     let data = config.data
     if (data) {
-      console.log(data)
       config.data = encryptByCBC(config.data)
     }
     if (Config.signaturePattern === 'OPEN') {

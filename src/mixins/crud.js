@@ -16,7 +16,7 @@ export default {
       // 排序规则，默认 id 降序， 支持多字段排序 ['id,desc', 'createTime,asc']
       sort: ['id,desc'],
       // 页码
-      page: 0,
+      page: 1,
       // 每页数据条数
       size: 10,
       // 总数据条数
@@ -59,9 +59,9 @@ export default {
       return new Promise((resolve, reject) => {
         this.loading = true
         // 请求数据
-        initData(this.url, this.getQueryParame()).then(data => {
-          this.total = data.totalElements
-          this.data = data.content
+        initData(this.url, this.getQueryParams()).then(data => {
+          this.total = data.data.total
+          this.data = data.data.records
           // time 毫秒后显示表格
           setTimeout(() => {
             this.loading = false
@@ -76,18 +76,20 @@ export default {
     beforeInit() {
       return true
     },
-    getQueryParame: function() {
+    getQueryParams: function() {
       return {
         page: this.page,
         size: this.size,
         sort: this.sort,
-        ...this.query,
-        ...this.params
+        query: {
+          ...this.query
+        },
+        //...this.params
       }
     },
     // 改变页码
     pageChange(e) {
-      this.page = e - 1
+      this.page = e
       this.init()
     },
     // 改变每页显示数

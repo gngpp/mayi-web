@@ -64,14 +64,14 @@
             <el-tab-pane label="操作日志" name="second">
               <el-table v-loading="loading" :data="data" style="width: 100%;">
                 <el-table-column prop="description" label="行为" />
-                <el-table-column prop="requestIp" label="IP" />
-                <el-table-column :show-overflow-tooltip="true" prop="address" label="IP来源" />
-                <el-table-column prop="browser" label="浏览器" />
-                <el-table-column prop="time" label="请求耗时" align="center">
+                <el-table-column prop="ip" label="IP" />
+                <el-table-column :show-overflow-tooltip="true" prop="ipRegion" label="IP来源" />
+                <el-table-column prop="userAgent" label="User-Agent" />
+                <el-table-column prop="spendTime" label="请求耗时" align="center">
                   <template slot-scope="scope">
-                    <el-tag v-if="scope.row.time <= 300">{{ scope.row.time }}ms</el-tag>
-                    <el-tag v-else-if="scope.row.time <= 1000" type="warning">{{ scope.row.time }}ms</el-tag>
-                    <el-tag v-else type="danger">{{ scope.row.time }}ms</el-tag>
+                    <el-tag v-if="scope.row.spendTime <= 300">{{ scope.row.spendTime }}ms</el-tag>
+                    <el-tag v-else-if="scope.row.spendTime <= 1000" type="warning">{{ scope.row.spendTime }}ms</el-tag>
+                    <el-tag v-else type="danger">{{ scope.row.spendTime }}ms</el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -88,7 +88,7 @@
               <!--分页组件-->
               <el-pagination
                 :total="total"
-                :current-page="page + 1"
+                :current-page="page"
                 style="margin-top: 8px;"
                 layout="total, prev, pager, next, sizes"
                 @size-change="sizeChange"
@@ -112,7 +112,7 @@ import updateEmail from './center/updateEmail'
 import {getToken} from '@/utils/auth'
 import store from '@/store'
 import {isvalidPhone} from '@/utils/validate'
-import {parseTime} from '@/utils/index'
+import {parseTime} from '@/utils'
 import crud from '@/mixins/crud'
 import {editUser} from '@/api/system/user'
 import Avatar from '@/assets/images/avatar.png'
@@ -174,7 +174,8 @@ export default {
       }
     },
     beforeInit() {
-      this.url = 'api/logs/users'
+      this.url = 'api/logs/users/page'
+      this.query = {}
       return true
     },
     cropUploadSuccess(jsonData, field) {
