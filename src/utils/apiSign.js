@@ -60,9 +60,12 @@ export function openSignature() {
 
 
 export function decryption(data) {
-  let baseResult = CryptoJS.enc.Base64.parse(data);   // Base64解密
-  let ciphertext = CryptoJS.enc.Base64.stringify(baseResult);     // Base64解密
-  let decryptResult = CryptoJS.AES.decrypt(ciphertext, key, {    //  AES解密
+  // Base64解密
+  let baseResult = CryptoJS.enc.Base64.parse(data);
+  // Base64解密
+  let ciphertext = CryptoJS.enc.Base64.stringify(baseResult);
+  //  AES解密
+  let decryptResult = CryptoJS.AES.decrypt(ciphertext, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7
