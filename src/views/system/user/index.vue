@@ -170,14 +170,13 @@
             ref="table"
             v-loading="crud.loading"
             :data="crud.data"
-            border
             highlight-current-row
             style="width: 100%;"
             @selection-change="crud.selectionChangeHandler"
             :row-class-name="tableRowClassName">
             >
-            <el-table-column :selectable="checkboxT" type="selection" width="55"/>
-            <el-table-column label="头像" prop="avatarName">
+            <el-table-column :selectable="checkboxT" align="center" type="selection" width="55"/>
+            <el-table-column label="头像" prop="avatarName"   align="center">
               <template slot-scope="scope">
                 <div>
                   <el-avatar
@@ -190,12 +189,12 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"/>
-            <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"/>
-            <el-table-column prop="gender" label="性别"/>
-            <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"/>
-            <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱"/>
-            <el-table-column :show-overflow-tooltip="true" label="部门" prop="department">
+            <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"   align="center"/>
+            <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"   align="center"/>
+            <el-table-column prop="gender" label="性别" align="center"/>
+            <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"  align="center"/>
+            <el-table-column :show-overflow-tooltip="true" width="135" align="center" prop="email" label="邮箱"/>
+            <el-table-column :show-overflow-tooltip="true" label="部门" prop="department" align="center">
               <template slot-scope="scope">
                 <div>{{ scope.row.department.name }}</div>
               </template>
@@ -211,7 +210,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="createTime" sortable width="168px">
+            <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="createTime" sortable width="168px"  align="center">
               <template slot-scope="scope">
                 <el-tag
                   disable-transitions

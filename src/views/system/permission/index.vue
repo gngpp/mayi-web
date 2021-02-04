@@ -8,7 +8,6 @@
         ref="multipleTable"
         :data="tableData.filter(data => !search || data.date.toLowerCase().includes(search.toLowerCase()))"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-        border
         default-expand-all
         row-key="id"
         style="width: 100%;margin-bottom: 20px;"

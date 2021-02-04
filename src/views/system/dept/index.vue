@@ -69,7 +69,6 @@
         v-loading="crud.loading"
         lazy
         highlight-current-row
-        border
         :load="getDeptData"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :data="crud.data"

@@ -71,7 +71,6 @@
             ref="table"
             v-loading="crud.loading"
             :data="crud.data"
-            border
             highlight-current-row
             style="width: 100%;"
             @selection-change="crud.selectionChangeHandler"

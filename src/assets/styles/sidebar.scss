@@ -5,18 +5,15 @@
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
-    font-size: 16px;
-    color: #ffffff;
   }
 
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    // background-color: $menuBg;
-    background-color: #000000;
+    background-color: $menuBg;
     height: 100%;
     position: fixed;
-    font-size: 16px;
+    font-size: 0;
     top: 0;
     bottom: 0;
     left: 0;
@@ -81,8 +78,7 @@
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-      //background-color: $subMenuBg !important;
-      background-color: #545c64;
+      background-color: $subMenuBg !important;
 
       &:hover {
         background-color: $subMenuHover !important;
@@ -206,7 +202,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #a21f1f;
+      background: #99a9bf;
       border-radius: 20px;
     }
   }

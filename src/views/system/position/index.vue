@@ -16,8 +16,6 @@
         :data="crud.data"
         style="width: 100%;"
         highlight-current-row
-        border
-        stripe
         @selection-change="crud.selectionChangeHandler"
       >
         <el-table-column type="selection" width="55" fixed="left" />

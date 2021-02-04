@@ -36,8 +36,6 @@
         v-loading="crud.loading"
         :data="crud.data"
         highlight-current-row
-        border
-        stripe
         style="width: 100%;"
         @selection-change="crud.selectionChangeHandler"
       >

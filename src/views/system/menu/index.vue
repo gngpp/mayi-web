@@ -102,8 +102,6 @@
         v-loading="crud.loading"
         lazy
         highlight-current-row
-        border
-        stripe
         :load="getMenus"
         :data="crud.data"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
