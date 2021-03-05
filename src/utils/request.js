@@ -74,6 +74,14 @@ service.interceptors.response.use(
   error => {
     let data
     try {
+      let decode
+      try {
+        decode = decryptByCBC(error.response.data);
+      } catch (e) {
+      }
+      if (decode) {
+        error.response.data = JSON.parse(decode)
+      }
       data = error.response.data
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {

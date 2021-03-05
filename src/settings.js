@@ -50,11 +50,11 @@ module.exports = {
   /**
    * app id
    */
-  appId: 1234567,
+  applyId: 1234567,
   /**
    * app key
    */
-  appKey: 'abcdefg',
+  applySecret: 'abcdefg',
   /**
    * 底部文字，支持html语法
    */

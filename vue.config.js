@@ -40,6 +40,13 @@ module.exports = {
         pathRewrite: {
           '^/auth': 'auth'
         }
+      },
+      'oauth': {
+        target: process.env.VUE_APP_BASE_API,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/oauth': 'oauth'
+        }
       }
     }
   },

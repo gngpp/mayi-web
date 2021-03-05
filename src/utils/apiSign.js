@@ -7,17 +7,16 @@ const iv = CryptoJS.enc.Utf8.parse("TRYTOCN394402133");
 
 export function secretSignature() {
   let params = {
-    app_id: Config.appId,
+    apply_id: Config.applyId,
     timestamp: new Date().getTime(),
     nonce_str: Math.random()
-
   }
   let array = []
   for (let paramsKey in params) {
     array.push(paramsKey + '=' + params[paramsKey]);
   }
   let paramArray = [...array]
-  array.push('app_key=' + Config.appKey)
+  array.push('apply_secret=' + Config.applySecret)
   // 参数排序
   paramArray.sort()
   // 数组排序
@@ -26,7 +25,7 @@ export function secretSignature() {
   array = array.join('&')
   paramArray = paramArray.join("&")
   // 将排序好当参数进行MD5加密作为接口当签名
-  let signature = CryptoJS.HmacSHA1(array, Config.appKey)
+  let signature = CryptoJS.HmacSHA1(array, Config.applySecret)
   // 将排序好当参数和接口签名拼接上进行加密
   let encodeData = paramArray + '&sign=' + signature;
   //  AES加密
@@ -41,7 +40,7 @@ export function secretSignature() {
 
 export function openSignature() {
   let rawParams = {
-    app_id: Config.appId,
+    apply_id: Config.applyId,
     timestamp: new Date().getTime(),
     nonce_str: Math.random()
   }
@@ -49,12 +48,12 @@ export function openSignature() {
   for (let rawParamsKey in rawParams) {
     rawArray.push(rawParamsKey + '=' + rawParams[rawParamsKey])
   }
-  rawArray.push('app_key=' + Config.appKey)
+  rawArray.push('apply_secret=' + Config.applySecret)
   // 参数排序
   rawArray.sort()
   rawArray = rawArray.join('&')
   // 签名
-  rawParams['sign'] = CryptoJS.HmacSHA1(array, Config.appKey).toString()
+  rawParams['sign'] = CryptoJS.HmacSHA1(array, Config.applySecret).toString()
   return rawParams
 }
 
