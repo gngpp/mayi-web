@@ -1,21 +1,26 @@
 import request from '@/utils/request'
+import {encrypt} from '@/utils/rsaEncrypt'
 
-export function login(username, password, code, uuid) {
+export function login(username, password,grant_type, code, uuid, client_id, client_secret) {
+  let params = {
+      username: username,
+      password: password,
+      grant_type: grant_type,
+      code: code,
+      uuid: uuid,
+      client_id: client_id,
+      client_secret: encrypt(client_secret)
+  }
   return request({
-    url: 'auth/login',
+    url: 'oauth/token',
     method: 'post',
-    data: {
-      username,
-      password,
-      code,
-      uuid
-    }
+    params: params
   })
 }
 
 export function getInfo() {
   return request({
-    url: 'auth/info',
+    url: 'oauth/info',
     method: 'get'
   })
 }
@@ -29,7 +34,7 @@ export function getCodeImg() {
 
 export function logout() {
   return request({
-    url: 'auth/logout',
-    method: 'delete'
+    url: 'oauth/logout',
+    method: 'post'
   })
 }

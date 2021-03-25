@@ -23,18 +23,18 @@ service.interceptors.request.use(
       config.headers.Authorization = getToken()
     }
     let data = config.data
-    if (data) {
-      config.data = encryptByCBC(config.data)
-    }
-    if (Config.signaturePattern === 'OPEN') {
-      config.params = {
-        ...openSignature()
-      }
-    } else if (Config.signaturePattern === 'SECRET') {
-      config.headers['Content'] = secretSignature()
-    }
-    config.headers['pattern'] = Config.signaturePattern
-    config.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    // if (data) {
+    //   config.data = encryptByCBC(config.data)
+    // }
+    // if (Config.signaturePattern === 'OPEN') {
+    //   config.params = {
+    //     ...openSignature()
+    //   }
+    // } else if (Config.signaturePattern === 'SECRET') {
+    //   config.headers['Content'] = secretSignature()
+    // }
+    // config.headers['pattern'] = Config.signaturePattern
+    // config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
   error => {
@@ -51,6 +51,7 @@ service.interceptors.response.use(
     try {
       decode = decryptByCBC(response.data);
     } catch (e) {
+      console.log(e)
     }
     if (decode) {
       response.data = JSON.parse(decode)

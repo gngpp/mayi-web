@@ -1,6 +1,6 @@
 import {getInfo, login, logout} from '@/api/login'
 import {getToken, removeToken, setRememberMe, setToken} from '@/utils/auth'
-
+import Config from '@/settings'
 const user = {
   state: {
     token: getToken(),
@@ -30,7 +30,7 @@ const user = {
     Login({ commit }, userInfo) {
       const rememberMe = userInfo.rememberMe
       return new Promise((resolve, reject) => {
-        login(userInfo.username, userInfo.password, userInfo.code, userInfo.uuid)
+        login(userInfo.username, userInfo.password,userInfo.grant_type, userInfo.code, userInfo.uuid, Config.applyId, Config.applySecret)
           .then(res => {
             const token = 'Bearer ' + res.data.access_token
             setToken(token, rememberMe)

@@ -52,9 +52,9 @@ module.exports = {
    */
   applyId: 'system',
   /**
-   * app key
+   * app key 经过url编码
    */
-  applySecret: 'vRgQgp0YdHPof0NwfwNLxSTeROgrq%2bFoSHfLTo32VU%2biHrJsolNRazxtaHuco4oSzmYB9JMxS9IzeHSVAOrigg%3d%3d',
+  applySecret: '123456',
   /**
    * 底部文字，支持html语法
    */
