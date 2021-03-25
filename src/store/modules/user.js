@@ -32,7 +32,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username, userInfo.password, userInfo.code, userInfo.uuid)
           .then(res => {
-            const token = 'Bearer ' + res.data.token
+            const token = 'Bearer ' + res.data.access_token
             setToken(token, rememberMe)
             // 保存->是否记住
             setRememberMe(rememberMe)

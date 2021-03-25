@@ -24,7 +24,7 @@ export function secretSignature() {
   // 数组变字符串
   array = array.join('&')
   paramArray = paramArray.join("&")
-  // 将排序好当参数进行MD5加密作为接口当签名
+  // 将排序好当参数进行HmacSHA1加密作为接口当签名
   let signature = CryptoJS.HmacSHA1(array, Config.applySecret)
   // 将排序好当参数和接口签名拼接上进行加密
   let encodeData = paramArray + '&sign=' + signature;
