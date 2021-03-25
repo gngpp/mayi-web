@@ -37,7 +37,7 @@ const user = {
             // 保存->是否记住
             setRememberMe(rememberMe)
             commit('SET_TOKEN', token)
-            setUserInfo(res.data.user, commit)
+            setUserInfo(res.data.user_details, commit)
             // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
             commit('SET_LOAD_MENUS', true)
             resolve()
