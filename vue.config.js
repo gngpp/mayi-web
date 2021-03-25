@@ -41,7 +41,7 @@ module.exports = {
           '^/auth': 'auth'
         }
       },
-      'oauth': {
+      '/oauth': {
         target: process.env.VUE_APP_BASE_API,
         changeOrigin: true,
         pathRewrite: {

@@ -240,19 +240,18 @@ export default {
       }
     },
     init() {
-      // let url = 'ws://localhost:8888/' + this.url
-      // this.socket = new WebSocket(url)
-      // // 获得消息事件
-      // let that = this;
-      //
-      // this.socket.onmessage = function (res) {
-      //   that.data = JSON.parse(res.data)
-      //   that.show = true
-      //   that.cpuInfo.xAxis.data.push(that.data.datetime)
-      //   that.memoryInfo.xAxis.data.push(that.data.datetime)
-      //   that.cpuInfo.series[0].data.push(parseFloat(that.data.cpu.used))
-      //   that.memoryInfo.series[0].data.push(parseFloat(that.data.memory.usageRate))
-      // }
+      let url = 'ws://localhost:8888/' + this.url
+      this.socket = new WebSocket(url)
+      // 获得消息事件
+      let that = this;
+      this.socket.onmessage = function (res) {
+        that.data = JSON.parse(res.data)
+        that.show = true
+        that.cpuInfo.xAxis.data.push(that.data.datetime)
+        that.memoryInfo.xAxis.data.push(that.data.datetime)
+        that.cpuInfo.series[0].data.push(parseFloat(that.data.cpu.used))
+        that.memoryInfo.series[0].data.push(parseFloat(that.data.memory.usageRate))
+      }
     }
   }
 }
