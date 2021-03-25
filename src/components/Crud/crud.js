@@ -1,6 +1,7 @@
 import {download, initData} from '@/api/data'
 import {downloadFile, parseTime} from '@/utils/index'
 import Vue from 'vue'
+import da from "element-ui/src/locale/lang/da";
 
 /**
  * CRUD配置
@@ -424,6 +425,9 @@ function CRUD(options) {
       const dataStatus = {}
 
       function resetStatus(data) {
+        if (data === undefined) {
+          return
+        }
         data.forEach(e => {
           dataStatus[crud.getDataId(e)] = {
             delete: 0,

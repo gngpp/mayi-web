@@ -97,17 +97,14 @@ export default {
     getCookie() {
       const username = Cookies.get('username')
       let password = Cookies.get('password')
-      let grant_type = Cookies.get('grant_type')
       const rememberMe = Cookies.get('rememberMe')
       // 保存cookie里面的加密后的密码
       this.cookiePass = password === undefined ? '' : password
       password = password === undefined ? this.loginForm.password : password
-      // 自定义认证类型
-      grant_type = (grant_type === undefined)? this.loginForm.grant_type : grant_type
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
         password: password,
-        grant_type: grant_type,
+        grant_type: this.loginForm.grant_type,
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
         code: ''
       }
@@ -130,12 +127,10 @@ export default {
           if (user.rememberMe) {
             Cookies.set('username', user.username, { expires: Config.passCookieExpires })
             Cookies.set('password', user.password, { expires: Config.passCookieExpires })
-            Cookies.set('grant_type,', user.grant_type, { expires: Config.passCookieExpires })
             Cookies.set('rememberMe', user.rememberMe, { expires: Config.passCookieExpires })
           } else {
             Cookies.remove('username')
             Cookies.remove('password')
-            Cookies.remove('grant_type')
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
