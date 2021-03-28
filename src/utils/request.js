@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from '@/router/routers'
-import {Notification} from 'element-ui'
+import {MessageBox, Notification} from 'element-ui'
 import store from '../store'
-import {getToken, setToken} from '@/utils/auth'
+import {setPoint,getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
 import Cookies from 'js-cookie'
 import {decryptByCBC, encryptByCBC} from '@/utils/aesEncrypt'
@@ -93,52 +93,88 @@ service.interceptors.response.use(
         return Promise.reject(error)
       }
     }
+    let errMsg = "error"
+    let errCode = 500
+    // data
     if (data) {
-      if (data.errCode === 401) {
-        if (getToken()) {
+      errMsg = data.errMsg
+      errCode = data.errCode
+    }
+    // 401 status 未认证
+    if (error.response.status === 401 || errCode === 401) {
+      // if (getToken()) {
+      //   // 用户登录界面提示
+      //   setPoint('point', 401)
+      //   store.dispatch('LogOut').then(() => {
+      //     location.reload()
+      //   })
+      // }
+      // Notification.error({
+      //   title: "认证失败，请重新登录",
+      //   duration: 5000
+      // })
+      MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
           store.dispatch('LogOut').then(() => {
-            // 用户登录界面提示
-            Cookies.set('point', 401)
             location.reload()
           })
-        }
+      })
+    }
+
+    // 403 status 无权访问
+    if (error.response.status === 403 || errCode === 403) {
+      Notification.error({
+        title: '无权访问',
+        duration: 5000
+      })
+      router.push({ path: '/403' })
+    }
+
+    // 400 status 坏的请求
+    if (error.response.status === 400 || errCode === 400) {
+      const errorMsg = error.response.data.error_description
+      if (errorMsg !== undefined) {
         Notification.error({
-          title: data.errMsg,
+          title: errorMsg,
           duration: 5000
         })
-        this.router.go(0)
-        this.router.push({ path: this.redirect || '/' })
-      } else if (data.errCode === 403) {
-        router.push({ path: '/401' })
-      } else if (data.errCode === 400) {
-        const errorMsg = error.response.data.errMsg
-        if (errorMsg !== undefined) {
-          Notification.error({
-            title: errorMsg,
-            duration: 5000
-          })
-        } else {
-          Notification.error({
-            title: error.response,
-            duration: 5000
-          })
-        }
-      } else if (error.response.status === 500 || error.response.status === 400) {
-        const errorMsg = error.response.data.errMsg
-        if (errorMsg !== undefined) {
-          Notification.error({
-            title: errorMsg,
-            duration: 5000
-          })
-        } else {
-          Notification.error({
-            title: 'API request failed！',
-            duration: 5000
-          })
-        }
-      } else if (error.response.status === 403) {
+      } else {
         Notification.error({
-          title: '无权操作',
+          title: "请求无效",
+          duration: 5000
+        })
+      }
+    }
+
+    // 500 status 服务器错误
+    if (error.response.status === 500 || errCode === 500) {
+      const errorMsg = errMsg
+      if (errorMsg !== undefined) {
+        Notification.error({
+          title: errorMsg,
+          duration: 5000
+        })
+      } else {
+        Notification.error({
+          title: 'API request failed！',
+          duration: 5000
+        })
+      }
+    }
+    // 503 status 服务不可用
+    if (error.response.status === 503 || errCode === 500) {
+      const errorMsg = error.response.data.error
+      if (errorMsg !== undefined) {
+        Notification.error({
+          title: errorMsg,
+          duration: 5000
+        })
+      } else {
+        Notification.error({
+          title: '服务不可用',
           duration: 5000
         })
       }

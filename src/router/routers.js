@@ -16,9 +16,14 @@ export const constantRouterMap = [
     hidden: true
   },
   {
-    path: '/401',
-    component: (resolve) => require(['@/views/features/401'], resolve),
+    path: '/403',
+    component: (resolve) => require(['@/views/features/403'], resolve),
     hidden: true
+  },
+  {
+    path: '/401',
+    meta: { title: '登录', noCache: true },
+    redirect: '/',
   },
   {
     path: '/redirect',

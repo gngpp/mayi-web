@@ -1,6 +1,7 @@
 import {getInfo, login, logout} from '@/api/login'
-import {getToken, removeToken, setRememberMe, setToken} from '@/utils/auth'
+import {getPoint, setPoint, getToken, removeToken, setRememberMe, setToken} from '@/utils/auth'
 import Config from '@/settings'
+
 const user = {
   state: {
     token: getToken(),

@@ -8,6 +8,14 @@ export function getToken() {
   return Cookies.get(TokenKey)
 }
 
+export function getPoint(point) {
+   return Cookies.get(point)
+}
+
+export function setPoint(point, value) {
+  return Cookies.set(point, value)
+}
+
 export function setToken(token, rememberMe) {
   if (rememberMe) {
     return Cookies.set(TokenKey, token, { expires: Config.tokenCookieExpires })
