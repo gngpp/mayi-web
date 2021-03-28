@@ -15,8 +15,10 @@ export function secretSignature() {
   for (let paramsKey in params) {
     array.push(paramsKey + '=' + params[paramsKey]);
   }
+  // 应用密钥进行md5加密
+  let encodeApplySecret = CryptoJS.MD5(Config.applySecret).toString()
   let paramArray = [...array]
-  array.push('apply_secret=' + Config.applySecret)
+  array.push('apply_secret=' + encodeApplySecret)
   // 参数排序
   paramArray.sort()
   // 数组排序
@@ -25,7 +27,7 @@ export function secretSignature() {
   array = array.join('&')
   paramArray = paramArray.join("&")
   // 将排序好当参数进行HmacSHA1加密作为接口当签名
-  let signature = CryptoJS.HmacSHA1(array, Config.applySecret)
+  let signature = CryptoJS.HmacSHA1(array, encodeApplySecret)
   // 将排序好当参数和接口签名拼接上进行加密
   let encodeData = paramArray + '&sign=' + signature;
   //  AES加密

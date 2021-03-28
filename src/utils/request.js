@@ -26,15 +26,15 @@ service.interceptors.request.use(
     // if (data) {
     //   config.data = encryptByCBC(config.data)
     // }
-    // if (Config.signaturePattern === 'OPEN') {
-    //   config.params = {
-    //     ...openSignature()
-    //   }
-    // } else if (Config.signaturePattern === 'SECRET') {
-    //   config.headers['Content'] = secretSignature()
-    // }
-    // config.headers['pattern'] = Config.signaturePattern
-    // config.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    if (Config.signaturePattern === 'OPEN') {
+      config.params = {
+        ...openSignature()
+      }
+    } else if (Config.signaturePattern === 'SECRET') {
+      config.headers['Content'] = secretSignature()
+    }
+    config.headers['pattern'] = Config.signaturePattern
+    config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
   error => {
@@ -48,14 +48,17 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     let decode
+    // 尝试解码
     try {
       decode = decryptByCBC(response.data);
     } catch (e) {
       console.log(e)
     }
+    // 解码成功
     if (decode) {
       response.data = JSON.parse(decode)
     }
+    // 引用
     const code = response.status
     // // 待测试
     if (response.headers.Authorization) {
@@ -76,13 +79,17 @@ service.interceptors.response.use(
     let data
     try {
       let decode
+      // 支持解码
       try {
+        // 尝试解码
         decode = decryptByCBC(error.response.data);
       } catch (e) {
       }
+      // 解码成功
       if (decode) {
         error.response.data = JSON.parse(decode)
       }
+      // 引用
       data = error.response.data
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
@@ -107,6 +114,11 @@ service.interceptors.response.use(
         setPoint('point', 401)
         store.dispatch('LogOut').then(() => {
           location.reload()
+        })
+      } else {
+        Notification.error({
+          title: "您的账号或密码错误",
+          duration: 5000
         })
       }
       // Notification.error({
