@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '@/router/routers'
-import {MessageBox, Notification} from 'element-ui'
+import {Notification} from 'element-ui'
 import store from '../store'
 import {setPoint,getToken, setToken} from '@/utils/auth'
 import Config from '@/settings'
@@ -102,26 +102,19 @@ service.interceptors.response.use(
     }
     // 401 status 未认证
     if (error.response.status === 401 || errCode === 401) {
-      // if (getToken()) {
-      //   // 用户登录界面提示
-      //   setPoint('point', 401)
-      //   store.dispatch('LogOut').then(() => {
-      //     location.reload()
-      //   })
-      // }
+      if (getToken()) {
+        // 用户登录界面提示
+        setPoint('point', 401)
+        store.dispatch('LogOut').then(() => {
+          location.reload()
+        })
+      }
       // Notification.error({
       //   title: "认证失败，请重新登录",
       //   duration: 5000
       // })
-      MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-        confirmButtonText: '重新登录',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-          store.dispatch('LogOut').then(() => {
-            location.reload()
-          })
-      })
+      // router.go()
+      // router.push({ path:'/login'})
     }
 
     // 403 status 无权访问

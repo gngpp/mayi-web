@@ -62,13 +62,18 @@ const user = {
     // 登出
     LogOut({ commit }) {
       return new Promise((resolve, reject) => {
-        logout().then(res => {
+        if (getPoint('point') === '401') {
           logOut(commit)
           resolve()
-        }).catch(error => {
-          logOut(commit)
-          reject(error)
-        })
+        } else {
+          logout().then(res => {
+            logOut(commit)
+            resolve()
+          }).catch(error => {
+            logOut(commit)
+            reject()
+          })
+        }
       })
     },
 
