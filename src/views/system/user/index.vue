@@ -179,13 +179,18 @@
             <el-table-column label="头像" prop="avatarName"   align="center">
               <template slot-scope="scope">
                 <div>
-                  <el-avatar
+<!--                  <el-avatar-->
+<!--                    :src="scope.row.avatarName ? baseApi + '/avatar/' + scope.row.avatarName : require('@/assets/images/avatar.png')"-->
+<!--                    style="width: 50px;height: 50px;cursor: pointer;width: 50px;height: 50px;border-radius: 10px;"-->
+<!--                    @error="true"-->
+<!--                  >-->
+<!--                    <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>-->
+<!--                  </el-avatar>-->
+                  <el-image
+                    class="table-td-thumb"
                     :src="scope.row.avatarName ? baseApi + '/avatar/' + scope.row.avatarName : require('@/assets/images/avatar.png')"
-                    style="width: 50px;height: 50px;cursor: pointer;width: 50px;height: 50px;border-radius: 10px;"
-                    @error="true"
-                  >
-                    <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
-                  </el-avatar>
+                    :preview-src-list="[scope.row.avatarName ? baseApi + '/avatar/' + scope.row.avatarName : require('@/assets/images/avatar.png')]"
+                  ></el-image>
                 </div>
               </template>
             </el-table-column>
@@ -251,6 +256,12 @@
 
 .el-table .success-row {
   background: #ffffff;
+}
+.table-td-thumb {
+  display: block;
+  margin: auto;
+  width: 40px;
+  height: 40px;
 }
 </style>
 <script>
