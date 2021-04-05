@@ -13,8 +13,21 @@
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.title }}
-        <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span v-if="!tag.meta.affix" class="el-icon-error" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
+      <div class="tags-close-box">
+        <el-dropdown @command="handleCommand">
+          <el-button size="mini" type="primary">
+            标签选项
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu size="small">
+              <el-dropdown-item command="closeAll">关闭所有</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">刷新</li>
@@ -66,6 +79,16 @@ export default {
     this.addTags()
   },
   methods: {
+    handleCommand(command) {
+      if (command === 'closeAll') {
+        this.closeAllTags(this.selectedTag)
+        this.$message({
+          showClose: true,
+          message: '已关闭所有页面',
+          type: 'success'
+        });
+      }
+    },
     isActive(route) {
       return route.path === this.$route.path
     },
@@ -192,6 +215,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tags-close-box {
+  position: absolute;
+  right: 0;
+  top: 0;
+  box-sizing: border-box;
+  padding-top: 1px;
+  text-align: center;
+  width: 110px;
+  height: 30px;
+  background: #fff;
+  box-shadow: -3px 0 15px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
 .tags-view-container {
   height: 34px;
   width: 100%;
@@ -200,6 +236,7 @@ export default {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   .tags-view-wrapper {
     .tags-view-item {
+      border-radius: 5px;
       display: inline-block;
       position: relative;
       cursor: pointer;
@@ -219,9 +256,10 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #212121;
+        border-radius: 5px;
+        background-color: #3f9af6;
         color: #fff;
-        border-color: #212121;
+        border-color: #3f9af6;
         &::before {
           content: '';
           background: #fff;
