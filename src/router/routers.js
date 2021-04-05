@@ -21,11 +21,6 @@ export const constantRouterMap = [
     hidden: true
   },
   {
-    path: '/401',
-    meta: { title: '登录', noCache: true },
-    redirect: '/',
-  },
-  {
     path: '/redirect',
     component: Layout,
     hidden: true,

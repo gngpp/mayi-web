@@ -2,10 +2,11 @@
   <el-breadcrumb class="app-breadcrumb" separator-class="el-icon-arrow-right">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="item.redirect==='noredirect'||index==levelList.length-1" class="no-redirect">{{
+        <span v-if="item.redirect==='noredirect'||index==levelList.length-1" class="no-redirect">
+          {{
             item.meta.title
           }}</span>
-        <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
+        <a v-else @click.prevent="handleLink(item)" class="el-breadcrumb__inner">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
@@ -76,8 +77,13 @@ export default {
   line-height: 50px;
   margin-left: 8px;
   .no-redirect {
-    color: #000000;
+    color: #3e95ee;
     cursor: text;
+  }
+  .el-breadcrumb__inner
+  {
+    cursor: text;
+    color: #e3e3e3 !important;				//你想要设置的字体颜色
   }
 }
 </style>
