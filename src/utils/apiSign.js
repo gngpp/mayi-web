@@ -47,15 +47,16 @@ export function openSignature() {
     nonce_str: Math.random()
   }
   let rawArray = []
-  for (let rawParamsKey in rawParams) {
-    rawArray.push(rawParamsKey + '=' + rawParams[rawParamsKey])
+  for (let key in rawParams) {
+    rawArray.push(key + '=' + rawParams[key])
   }
-  rawArray.push('apply_secret=' + Config.applySecret)
+  let encodeApplySecret = CryptoJS.MD5(Config.applySecret).toString()
+  rawArray.push('apply_secret=' + encodeApplySecret)
   // 参数排序
   rawArray.sort()
   rawArray = rawArray.join('&')
   // 签名
-  rawParams['sign'] = CryptoJS.HmacSHA1(array, Config.applySecret).toString()
+  rawParams['sign'] = CryptoJS.HmacSHA1(rawArray, encodeApplySecret).toString()
   return rawParams
 }
 

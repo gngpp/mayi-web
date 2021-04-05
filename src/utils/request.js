@@ -23,14 +23,17 @@ service.interceptors.request.use(
       config.headers.Authorization = getToken()
     }
     let data = config.data
-    // if (data) {
-    //   config.data = encryptByCBC(config.data)
-    // }
+    if (data) {
+      config.data = encryptByCBC(config.data)
+    }
+
     if (Config.signaturePattern === 'OPEN') {
       config.params = {
         ...openSignature()
       }
-    } else if (Config.signaturePattern === 'SECRET') {
+    }
+
+    if (Config.signaturePattern === 'SECRET') {
       config.headers['Content'] = secretSignature()
     }
     config.headers['pattern'] = Config.signaturePattern
@@ -115,12 +118,18 @@ service.interceptors.response.use(
         store.dispatch('LogOut').then(() => {
           location.reload()
         })
-      } else {
+      } if (errMsg === undefined) {
         Notification.error({
           title: "您的账号或密码错误",
           duration: 5000
         })
+      } else {
+        Notification.error({
+          title: errMsg,
+          duration: 5000
+        })
       }
+
       // Notification.error({
       //   title: "认证失败，请重新登录",
       //   duration: 5000
@@ -170,7 +179,7 @@ service.interceptors.response.use(
       }
     }
     // 503 status 服务不可用
-    if (error.response.status === 503 || errCode === 500) {
+    if (error.response.status === 503 || errCode === 503) {
       const errorMsg = error.response.data.error
       if (errorMsg !== undefined) {
         Notification.error({
