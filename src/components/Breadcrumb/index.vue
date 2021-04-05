@@ -78,14 +78,15 @@ export default {
   line-height: 50px;
   margin-left: 8px;
   .no-redirect {
-    color: #3e95ee;
+    color: #3c99fd;
     cursor: text;
   }
   .el-breadcrumb__inner
   {
     // 设置面包屑不可点击，仍可使用事件触发
     pointer-events: none;
-    color: #e3e3e3 !important;				//你想要设置的字体颜色
+    //你想要设置的字体颜色
+    color: #e3e3e3 !important;
   }
 }
 </style>
