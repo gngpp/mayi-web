@@ -41,14 +41,14 @@ export function secretSignature() {
 }
 
 export function openSignature() {
-  let rawParams = {
+  let signParams = {
     apply_id: Config.applyId,
     timestamp: new Date().getTime(),
     nonce_str: Math.random()
   }
   let rawArray = []
-  for (let key in rawParams) {
-    rawArray.push(key + '=' + rawParams[key])
+  for (let key in signParams) {
+    rawArray.push(key + '=' + signParams[key])
   }
   let encodeApplySecret = CryptoJS.MD5(Config.applySecret).toString()
   rawArray.push('apply_secret=' + encodeApplySecret)
@@ -56,8 +56,8 @@ export function openSignature() {
   rawArray.sort()
   rawArray = rawArray.join('&')
   // 签名
-  rawParams['sign'] = CryptoJS.HmacSHA1(rawArray, encodeApplySecret).toString()
-  return rawParams
+  signParams['sign'] = CryptoJS.HmacSHA1(rawArray, encodeApplySecret).toString()
+  return signParams
 }
 
 

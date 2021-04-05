@@ -29,10 +29,11 @@ service.interceptors.request.use(
 
     if (Config.signaturePattern === 'OPEN') {
       config.params = {
+        // 合并参数
+        ...config.params,
         ...openSignature()
       }
     }
-
     if (Config.signaturePattern === 'SECRET') {
       config.headers['Content'] = secretSignature()
     }
