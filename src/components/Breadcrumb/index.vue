@@ -60,6 +60,7 @@ export default {
     },
     handleLink(item) {
       const { redirect, path } = item
+      console.log(item)
       if (redirect) {
         this.$router.push(redirect)
         return
@@ -82,7 +83,8 @@ export default {
   }
   .el-breadcrumb__inner
   {
-    cursor: text;
+    // 设置面包屑不可点击，仍可使用事件触发
+    pointer-events: none;
     color: #e3e3e3 !important;				//你想要设置的字体颜色
   }
 }

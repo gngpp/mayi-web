@@ -220,12 +220,12 @@ export default {
   right: 0;
   top: 0;
   box-sizing: border-box;
-  padding-top: 1px;
+  padding-top: 3px;
   text-align: center;
   width: 110px;
   height: 30px;
-  background: #fff;
-  box-shadow: -3px 0 15px 3px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  box-shadow: -3px 0 15px 3px rgba(255, 255, 255, 0.1);
   z-index: 10;
 }
 .tags-view-container {
