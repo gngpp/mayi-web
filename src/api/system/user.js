@@ -47,6 +47,12 @@ export function editUser(data) {
   })
 }
 
+export function setUserStatus(id,status) {
+  return request({
+    url: '/api/users/status?id=' + id + "&enabled=" + status
+  })
+}
+
 export function updatePass(user) {
   const data = {
     oldPass: encrypt(user.oldPass),

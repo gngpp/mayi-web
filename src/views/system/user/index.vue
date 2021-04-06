@@ -562,7 +562,7 @@ export default {
           data.enabled = !data.enabled
           this.$notify.error({
             title: '错误',
-            message: '无权操作'
+            message: '操作失败'
           })
         })
       }).catch(() => {
