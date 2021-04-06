@@ -220,7 +220,7 @@ export default {
   right: 0;
   top: 0;
   box-sizing: border-box;
-  padding-top: 3px;
+  padding-top: 2px;
   text-align: center;
   width: 110px;
   height: 30px;

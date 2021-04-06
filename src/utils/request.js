@@ -150,7 +150,7 @@ service.interceptors.response.use(
 
     // 400 status 坏的请求
     if (error.response.status === 400 || errCode === 400) {
-      const errorMsg = error.response.data.error_description
+      const errorMsg = error.response.data.errMsg
       if (errorMsg !== undefined) {
         Notification.error({
           title: errorMsg,
