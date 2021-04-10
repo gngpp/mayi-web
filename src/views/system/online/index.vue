@@ -1,65 +1,76 @@
 <template>
   <div class="app-container">
-    <div class="head-container">
-      <div v-if="crud.props.searchToggle">
-        <el-input v-model="query.filter" class="filter-item" clearable placeholder="模糊搜索" size="small"
-                  style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
-        <rrOperation />
+    <el-card>
+      <div class="head-container">
+        <div v-if="crud.props.searchToggle">
+          <el-input v-model="query.filter" class="filter-item" clearable placeholder="模糊搜索" size="small"
+                    style="width: 200px;" @keyup.enter.native="crud.toQuery"/>
+          <rrOperation />
+        </div>
+        <crudOperation>
+          <el-button
+            slot="left"
+            class="filter-item"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :loading="delLoading"
+            :disabled="crud.selections.length === 0"
+            @click="doDelete(crud.selections)"
+          >
+            强退
+          </el-button>
+        </crudOperation>
       </div>
-      <crudOperation>
-        <el-button
-          slot="left"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :loading="delLoading"
-          :disabled="crud.selections.length === 0"
-          @click="doDelete(crud.selections)"
-        >
-          强退
-        </el-button>
-      </crudOperation>
-    </div>
-    <!--表格渲染-->
-    <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;"
-              @selection-change="crud.selectionChangeHandler">
-      <el-table-column :selectable="checkboxT" type="selection" width="55"/>
-      <el-table-column label="用户名" prop="username"/>
-      <el-table-column prop="nickName" label="用户昵称"/>
-      <el-table-column prop="ip" label="登录IP"/>
-      <el-table-column :show-overflow-tooltip="true" label="登录地点" prop="ipRegion"/>
-      <el-table-column prop="browser" label="浏览器"/>
-      <el-table-column prop="loginTime" label="登录时间">
-        <template slot-scope="scope">
-          <el-tag
-            disable-transitions
-          >
-            <i class="el-icon-time"></i>
-            {{ parseTime(scope.row.loginTime) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="70px">
-        <template slot-scope="scope">
-          <el-popover
-            v-if="user.id !== scope.row.id"
-            :ref="scope.$index"
-            v-permission="['admin']"
-            placement="top"
-            width="180"
-          >
-            <p>确定强制退出该用户吗？</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.$index].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="danger" @click="delMethod(scope.row.id, scope.$index)">确定
-              </el-button>
-            </div>
-            <el-button slot="reference" plain size="mini" type="danger">强退</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-    </el-table>
+      <!--表格渲染-->
+      <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;"
+                @selection-change="crud.selectionChangeHandler">
+        <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+        <el-table-column label="用户名" width="100" prop="username"/>
+        <el-table-column prop="ip" width="100" label="登录IP"/>
+        <el-table-column :show-overflow-tooltip="true" label="登录地点" prop="ipRegion" width="150px"/>
+        <el-table-column prop="browser" label="浏览器" width="100px"/>
+        <el-table-column prop="loginTime" label="登录时间" sortable>
+          <template slot-scope="scope">
+            <el-tag
+              disable-transitions
+            >
+              <i class="el-icon-time"></i>
+              {{ parseTime(scope.row.loginTime) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="expiredTime" label="过期时间" sortable>
+          <template slot-scope="scope">
+            <el-tag
+              disable-transitions
+            >
+              <i class="el-icon-time"></i>
+              {{ parseTime(scope.row.expiredTime) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column     fixed="right" label="操作" width="70px">
+          <template slot-scope="scope">
+            <el-popover
+              v-if="user.id !== scope.row.id"
+              :ref="scope.$index"
+              v-permission="['admin']"
+              placement="top"
+              width="180"
+            >
+              <p>确定强制退出该用户吗？</p>
+              <div style="text-align: right; margin: 0">
+                <el-button size="mini" type="text" @click="$refs[scope.$index].doClose()">取消</el-button>
+                <el-button :loading="delLoading" type="danger" @click="delMethod(scope.row.id, scope.$index)">确定
+                </el-button>
+              </div>
+              <el-button slot="reference" plain size="mini" type="danger">强退</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
     <!--分页组件-->
     <pagination />
   </div>

@@ -31,14 +31,15 @@ const user = {
     Login({ commit }, userInfo) {
       const rememberMe = userInfo.rememberMe
       return new Promise((resolve, reject) => {
-        login(userInfo.username, userInfo.password,userInfo.grant_type, userInfo.code, userInfo.uuid, Config.applyId, Config.applySecret)
+        login(userInfo.username, userInfo.password, userInfo.grant_type, userInfo.code, userInfo.uuid, Config.applyId, Config.applySecret)
           .then(res => {
-            const token = 'Bearer ' + res.data.access_token
+            const token = 'Bearer ' + res.data.oauth2AccessToken.access_token
+            console.log(token)
             setToken(token, rememberMe)
             // 保存->是否记住
             setRememberMe(rememberMe)
             commit('SET_TOKEN', token)
-            setUserInfo(res.data.user_details, commit)
+            setUserInfo(res.data.details, commit)
             // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
             commit('SET_LOAD_MENUS', true)
             resolve()
@@ -91,16 +92,16 @@ export const logOut = (commit) => {
   removeToken()
 }
 
-export const setUserInfo = (user, commit) => {
+export const setUserInfo = (details, commit) => {
   // 如果没有任何权限，则赋予一个默认的权限，避免请求死循环
-  if (user.permission.length === 0) {
+  if (details.permission.length === 0) {
     commit('SET_ROLES', ['ROLE_SYSTEM_DEFAULT'])
   } else {
     // console.log(res.permission)
-    commit('SET_ROLES', user.permission)
+    commit('SET_ROLES', details.permission)
   }
   // console.log(res.userInfo)
-  commit('SET_USER', user.userInfo)
+  commit('SET_USER', details.userInfo)
 }
 
 export default user

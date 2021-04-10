@@ -113,6 +113,8 @@ service.interceptors.response.use(
     }
     // 401 status 未认证
     if (error.response.status === 401 || errCode === 401) {
+      const oauthError = error.response.error
+      const oauthDescription = error.response.error_description
       if (getToken()) {
         // 用户登录界面提示
         setPoint('point', 401)
@@ -120,17 +122,25 @@ service.interceptors.response.use(
           location.reload()
         })
       } if (errMsg === undefined) {
-        Notification.error({
-          title: "您的账号或密码错误",
-          duration: 5000
-        })
+        if (oauthError !== undefined && oauthDescription !== undefined) {
+          Notification.error({
+            title: oauthError,
+            message: oauthDescription,
+            duration: 5000
+          })
+        } else {
+          Notification.error({
+            title: "Authentication failed",
+            message: "Incorrect user name or password",
+            duration: 5000
+          })
+        }
       } else {
         Notification.error({
-          title: errMsg,
+          message: errMsg,
           duration: 5000
         })
       }
-
       // Notification.error({
       //   title: "认证失败，请重新登录",
       //   duration: 5000
@@ -142,7 +152,7 @@ service.interceptors.response.use(
     // 403 status 无权访问
     if (error.response.status === 403 || errCode === 403) {
       Notification.error({
-        title: '无权访问',
+        message: 'Have no right to access',
         duration: 5000
       })
       router.push({ path: '/403' })
@@ -151,14 +161,18 @@ service.interceptors.response.use(
     // 400 status 坏的请求
     if (error.response.status === 400 || errCode === 400) {
       const errorMsg = error.response.data.errMsg
-      if (errorMsg !== undefined) {
+      const oauthError = error.response.data.error
+      const oauthDescription = error.response.data.error_description
+      if (oauthError !== undefined && oauthDescription !== undefined) {
         Notification.error({
-          title: errorMsg,
+          title: oauthError,
+          message: oauthDescription,
           duration: 5000
         })
-      } else {
+      }
+      if (errorMsg !== undefined) {
         Notification.error({
-          title: "请求无效",
+          message: errorMsg,
           duration: 5000
         })
       }
@@ -169,12 +183,12 @@ service.interceptors.response.use(
       const errorMsg = errMsg
       if (errorMsg !== undefined) {
         Notification.error({
-          title: errorMsg,
+          message: errorMsg,
           duration: 5000
         })
       } else {
         Notification.error({
-          title: 'API request failed！',
+          message: 'API request failed！',
           duration: 5000
         })
       }
@@ -184,12 +198,12 @@ service.interceptors.response.use(
       const errorMsg = error.response.data.error
       if (errorMsg !== undefined) {
         Notification.error({
-          title: errorMsg,
+          message: errorMsg,
           duration: 5000
         })
       } else {
         Notification.error({
-          title: '服务不可用',
+          message: 'Service Unavailable',
           duration: 5000
         })
       }

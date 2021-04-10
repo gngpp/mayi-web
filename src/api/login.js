@@ -21,7 +21,7 @@ export function login(username, password,grant_type, code, uuid, client_id, clie
 export function getInfo() {
   return request({
     url: 'oauth/info',
-    method: 'get'
+    method: 'post'
   })
 }
 
