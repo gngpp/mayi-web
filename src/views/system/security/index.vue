@@ -11,45 +11,30 @@
           <!--      表格-->
           <div>
             <el-table
-              ref="multipleTable"
-              :data="tableData.filter(data => !search || data.date.toLowerCase().includes(search.toLowerCase()))"
+              ref="multipleSelection"
+              :data="tableData.filter(data => !search || data.clientId.toLowerCase().includes(search.toLowerCase()))"
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-              default-expand-all
               stripe
-              row-key="id"
-              style="width: 100%;margin-bottom: 20px;"
+              row-key="clientId"
+              style="width: 100%"
               tooltip-effect="dark"
               size="mini"
               @selection-change="handleSelectionChange"
             >
-              <el-table-column
-                type="selection"
-                width="55"
-                fixed>
-              </el-table-column>
+              <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column
                 label="客户端ID"
-                prop="clientId"
-                sortable
-                fixed
-                width="100">
+                sortable>
+                <template slot-scope="scope">
+                  <el-tag type="success">
+                    {{ scope.row.clientId }}
+                  </el-tag>
+                </template>
               </el-table-column>
               <el-table-column
                 label="客户端Secret"
                 prop="clientSecret"
-                sortable
-                width="150">
-              </el-table-column>
-              <el-table-column
-                label="可访问资源"
-                prop="resourceIds"
-                sortable
-                width="150">
-                <template slot-scope="scope">
-                  <el-tag
-                    disable-transitions>{{ scope.row.resourceIds }}
-                  </el-tag>
-                </template>
+                sortable>
               </el-table-column>
               <el-table-column
                 label="权限范围"
@@ -58,49 +43,55 @@
                 width="150">
               </el-table-column>
               <el-table-column
-                label="认证方式"
-                prop="authorizedGrantTypes"
-                width="150">
-              </el-table-column>
-              <el-table-column
-                label="重定向"
-                prop="webServerRedirectUri"
-                width="150">
-              </el-table-column>
-              <el-table-column
-                label="权限值"
-                prop="authorities"
-                width="150">
-              </el-table-column>
-              <el-table-column
-                label="Token有效期/秒"
-                prop="accessTokenValidity"
+                label="资源ID"
+                prop="resourceIds"
                 sortable
-                width="150">
-              </el-table-column>
-              <el-table-column
-                label="RefreshToken有效期/秒"
-                prop="refreshTokenValidity"
-                sortable
-                width="200">
-              </el-table-column>
-              <el-table-column
-                label="预选属性/必须为JSON"
-                prop="additionalInformation"
-                width="170"
               >
+                <template slot-scope="props">
+                  <el-tag>
+                    {{ props.row.resourceIds? props.row.resourceIds:'未知' }}
+                  </el-tag>
+                </template>
               </el-table-column>
               <el-table-column
-                label="自动批准"
-                prop="autoApprove"
-                width="100"
+                label="细节"
+                type="expand"
               >
+                <template slot-scope="props">
+                  <el-form  >
+                    <el-form-item label="认证方式:">
+                      <el-tag>
+                        {{ props.row.authorizedGrantTypes?props.row.authorizedGrantTypes:'未知' }}
+                      </el-tag>
+                    </el-form-item>
+                    <el-form-item label="重定向:">
+                      <el-tag>
+                        {{ props.row.webServerRedirectUri? props.row.webServerRedirectUri: '未知' }}
+                      </el-tag>
+                    </el-form-item>
+                    <el-form-item label="权限值:">
+                      <el-tag>{{ props.row.authorities? props.row.authorities : '未知' }}</el-tag>
+                    </el-form-item>
+                    <el-form-item label="Token有效期/秒:">
+                      <el-tag>{{ props.row.accessTokenValidity? props.row.accessTokenValidity : '未知' }}</el-tag>
+                    </el-form-item>
+                    <el-form-item label="RefreshToken有效期/秒:">
+                      <el-tag>{{ props.row.refreshTokenValidity? props.row.refreshTokenValidity : '未知' }}</el-tag>
+                    </el-form-item>
+                    <el-form-item label="预选属性/必须为JSON:">
+                      <el-tag>{{ props.row.additionalInformation? props.row.additionalInformation : '未知' }}</el-tag>
+                    </el-form-item>
+                    <el-form-item label="自动批准:">
+                      <el-tag>{{ props.row.autoApprove? props.row.autoApprove : '未知' }}</el-tag>
+                    </el-form-item>
+                  </el-form>
+                </template>
               </el-table-column>
               <el-table-column align="center" fixed="right" label="操作" width="150">
                 <template slot="header" slot-scope="scope">
                   <el-input
                     v-model="search"
-                    placeholder="输入关键字搜索"
+                    placeholder="键入客户端ID"
                     size="mini"/>
                 </template>
                 <template slot-scope="scope">
@@ -121,11 +112,11 @@
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="currentPage4"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :current-page="page"
+              :page-sizes="[10, 100, 200, 300]"
+              :page-size="size"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="400">
+              :total="total">
             </el-pagination>
           </div>
         </div>
@@ -143,28 +134,58 @@
   border-radius: 7px;
   margin-bottom: 5px;
 }
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
 </style>
 <script>
+import Config from '@/settings'
+import {clientPage, deleteClient} from '@/api/system/security'
 export default {
   name: "Security",
 
   data() {
     return {
       multipleSelection: [],
+      page: 1,
+      total: 0,
+      size:10,
       search: '',
+      pages: null,
       tableData: []
     }
 
   },
   created() {
-
+    this.changePage(this.page, this.size)
   },
   methods: {
+    changePage(page, size) {
+      clientPage(page, size)
+        .then(res => {
+          this.tableData = res.data.records
+          this.total = res.data.total
+          this.pages = res.data.pages
+        })
+    },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.size = val;
+      this.changePage(this.page, this.size)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.page = val;
+      this.changePage(this.page, this.size)
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -173,7 +194,25 @@ export default {
       console.log(index, row);
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      if (Config.applyId == row.clientId) {
+        this.$notify.error({
+          message: "禁止删除当前登录客户端"
+        })
+        return;
+      }
+      deleteClient(row.clientId).then(res => {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success'
+        });
+        if (index == 0) {
+          this.changePage(this.page -1 , this.size)
+        }
+        this.changePage(this.page, this.size)
+      }).catch(reason => {
+        this.changePage(this.page, this.size)
+      })
     },
     load(tree, treeNode, resolve) {
       setTimeout(() => {

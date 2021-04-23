@@ -187,7 +187,7 @@ export default {
   components: {Treeselect, IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker},
   cruds() {
 
-    return CRUD({title: '菜单', pageSize: 9999, url: 'api/menus/page', crudMethod: {...crudMenu}})
+    return CRUD({title: '菜单', pageSize: 1000, url: 'api/menus/page', crudMethod: {...crudMenu}})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   created() {

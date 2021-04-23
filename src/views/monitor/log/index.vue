@@ -52,7 +52,6 @@
                              line-height="20"
                   ></json-view>
                 </div>
-
               </el-card>
             </el-form>
           </template>
