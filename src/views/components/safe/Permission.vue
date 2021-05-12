@@ -22,6 +22,7 @@
     <el-divider></el-divider>
 <!--    权限列表-->
     <el-table
+      v-loading="loading"
       ref="multipleTable"
       highlight-current-row
       :data="tableData.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()))"
@@ -34,12 +35,14 @@
       </el-table-column>
       <el-table-column
         label="权限名"
+        sortable
         width="150"
         prop="name">
       </el-table-column>
       <el-table-column
         label="权限值"
         width="150"
+        sortable
       >
         <template slot-scope="scope">
           <svg-icon icon-class="source" />
@@ -71,7 +74,7 @@
             plain
             size="mini"
             type="primary"
-            @click="handleEdit(scope.$index, scope.row)">更新</el-button>
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
             plain
             size="mini"
@@ -117,7 +120,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-  </span>
+      </span>
     </el-dialog>
   </el-card>
 </template>
@@ -128,6 +131,7 @@ export default {
   name: "Permission",
   data() {
     return {
+      loading: true,
       multipleSelection:[],
       dialogVisible: false,
       currentPage: 1,
@@ -346,6 +350,7 @@ export default {
           this.currentPage = res.data.current
           this.pageCount = res.data.pages
           this.tableData = res.data.records
+          this.loading = false;
         })
     },
     handleSizeChange(val) {

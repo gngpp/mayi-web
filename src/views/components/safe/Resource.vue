@@ -26,45 +26,46 @@
         label="资源URI"
         width="180">
       </el-table-column>
-      <el-table-column
-        prop="fullUri"
-        label="完整URI"
-        width="286">
-      </el-table-column>
-      <el-table-column
-        prop="method"
-        label="请求方法"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="leaf"
-        label="资源树LEAF"
-        width="100">
-        <template slot-scope="scope">
-          <el-tag>
-            {{ formatBoolean(scope.row.leaf) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="enabled"
-        label="启用"
-        width="70">
-        <template slot-scope="scope">
-          <el-tag>
-            {{ formatBoolean(scope.row.enabled) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="allow"
-        label="放行"
-        width="60">
-        <template slot-scope="scope">
-          <el-tag>
-            {{ formatBoolean(scope.row.allow) }}
-          </el-tag>
-        </template>
+      <el-table-column  label="细节" width="100">
+        <el-popover
+          slot-scope="scope"
+          placement="right"
+          width="300"
+          trigger="click">
+          <el-card class="box-card" shadow="never">
+            <div slot="header" class="clearfix">
+              <span>详情列表</span>
+            </div>
+            <el-form label-position="left">
+              <el-form-item label="完整URL" prop="fullUri">
+                <el-tag>
+                  {{ String(scope.row.fullUri) }}
+                </el-tag>
+              </el-form-item>
+              <el-form-item label="请求方法" prop="method">
+                <el-tag>
+                  {{ String(scope.row.method) }}
+                </el-tag>
+              </el-form-item>
+              <el-form-item label="资源树LEAF" prop="leaf">
+                <el-tag>
+                  {{ formatBoolean(scope.row.leaf) }}
+                </el-tag>
+              </el-form-item>
+              <el-form-item label="可用">
+                <el-tag>
+                  {{ formatBoolean(scope.row.enabled) }}
+                </el-tag>
+              </el-form-item>
+              <el-form-item label="放行" prop="allow">
+                <el-tag>
+                  {{ formatBoolean(scope.row.allow) }}
+                </el-tag>
+              </el-form-item>
+            </el-form>
+          </el-card>
+          <el-button slot="reference" size="mini" type="primary" plain>查看详情</el-button>
+        </el-popover>
       </el-table-column>
       <el-table-column
         prop="description"
@@ -95,7 +96,14 @@ export default {
       total: 0,
       pages: null,
       tableData: [],
-      search: ''
+      search: '',
+      details: {
+        enabled: null,
+        fullUri: null,
+        allow: null,
+        method: null,
+        leaf: null
+      }
     }
   },
   created() {
