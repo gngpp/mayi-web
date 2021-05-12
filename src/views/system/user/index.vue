@@ -9,7 +9,7 @@
           shadow="hover"
         >
           <div slot="header" class="clearfix">
-            <span class="role-span">部门列表</span>
+            <span class="el-icon-position">部门列表</span>
           </div>
           <div class="head-container">
             <el-input
@@ -130,7 +130,7 @@
         <!--表格渲染-->
         <el-card class="box-card" shadow="never">
           <div slot="header" align="center" class="clearfix">
-            <span class="role-span">用户管理</span>
+            <span class="el-icon-user">用户管理</span>
           </div>
           <!--工具栏-->
           <div class="head-container">

@@ -52,7 +52,7 @@
           label="细节"
           type="expand"
         >
-          <template slot-scope="props">
+        <template slot-scope="props">
             <el-form  >
               <el-form-item label="认证方式:">
                 <el-tag>
@@ -92,6 +92,7 @@
           <template slot-scope="scope">
             <el-button
               plain
+              type="primary"
               size="mini"
               @click="handleEdit(scope.$index, scope.row)">编辑
             </el-button>
@@ -105,6 +106,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
@@ -119,7 +121,7 @@
 
 <script>
 import Config from '@/settings'
-import {clientPage, deleteClient} from '@/api/system/security'
+import {selectClientPage, deleteClient} from '@/api/system/security'
 export default {
   name: "OAuth2Client",
   data() {
@@ -135,11 +137,11 @@ export default {
 
   },
   created() {
-    this.changePage(this.page, this.size)
+    this.defaultChangePage()
   },
   methods: {
-    changePage(page, size) {
-      clientPage(page, size)
+    changePage(data) {
+      selectClientPage(data)
         .then(res => {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -148,17 +150,17 @@ export default {
     },
     handleSizeChange(val) {
       this.size = val;
-      this.changePage(this.page, this.size)
+      this.defaultChangePage()
     },
     handleCurrentChange(val) {
       this.page = val;
-      this.changePage(this.page, this.size)
+      this.defaultChangePage()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
     handleEdit(index, row) {
-      console.log(index, row);
+
     },
     handleDelete(index, row) {
       if (Config.applyId == row.clientId) {
@@ -167,36 +169,31 @@ export default {
         })
         return;
       }
-      deleteClient(row.clientId).then(res => {
+      deleteClient(row.clientId)
+        .then(res => {
         this.$notify({
           title: '成功',
           message: '删除成功',
           type: 'success'
         });
         if (index == 0) {
-          this.changePage(this.page -1 , this.size)
+          let page = {
+            current: this.page -1,
+            size: this.size
+          }
+          this.changePage(page)
         }
-        this.changePage(this.page, this.size)
+          this.defaultChangePage()
       }).catch(reason => {
-        this.changePage(this.page, this.size)
+        this.defaultChangePage()
       })
     },
-    load(tree, treeNode, resolve) {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 31,
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            id: 32,
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }
-        ])
-      }, 1000)
+    defaultChangePage() {
+      let page = {
+        current: this.page,
+        size: this.size
+      }
+      this.changePage(page)
     }
   },
 }
