@@ -13,8 +13,9 @@
     <div>
       <el-button-group>
         <el-button type="primary" plain @click="handleOpen">新增权限</el-button>
-        <el-button @click="toggleSelection(tableData)">删除当页</el-button>
-        <el-button @click="toggleSelection()">取消选择</el-button>
+        <el-button type="danger" plain @click="deleteSelect">删除所选</el-button>
+        <el-button type="danger" plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
+        <el-button type="success" plain @click="deleteCurrentPage()">取消选择</el-button>
       </el-button-group>
     </div>
 <!--    分割线-->
@@ -28,6 +29,7 @@
       style="width: 100%">
       <el-table-column
         type="selection"
+        fixed="left"
         width="55">
       </el-table-column>
       <el-table-column
@@ -82,13 +84,13 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      layout="prev, pager, next"
-      :page-sizes="[10, 100, 200, 300]"
-      :current-page="page"
-      :page-size="size"
-      :total="total">
+      layout="prev, pager, next, jumper,total"
+      hide-on-single-page
+      :page.sync="currentPage"
+      :page-size.sync="pageSize"
+      :page-count="pageCount"
+      :total.sync="total">
     </el-pagination>
-
     <!--    弹窗-->
     <el-dialog
       title="提示"
@@ -129,10 +131,10 @@ export default {
     return {
       multipleSelection:[],
       dialogVisible: false,
-      page: 1,
-      size:10,
+      currentPage: 1,
+      pageSize:10,
       total: 0,
-      pages: null,
+      pageCount: null,
       tableData: [],
       search: '',
       isEdit: false,
@@ -225,59 +227,86 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    toggleSelection(rows) {
+    deleteCurrentPage(rows) {
+      console.log(rows)
       if (rows) {
+        const ids = []
         rows.forEach(row => {
+          ids.push(row.id)
           this.$refs.multipleTable.toggleRowSelection(row);
+        });
+        this.$confirm('此操作将永久删除当页权限, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          deletePermissionByIds(ids)
+            .then(res => {
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success'
+              });
+              let page = {
+                current: this.currentPage -1 ,
+                size: this.pageSize
+              }
+              this.changePage(page)
+            })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+          this.$refs.multipleTable.clearSelection();
         });
       } else {
         this.$refs.multipleTable.clearSelection();
       }
     },
-    handleSelectionChange(val) {
-      let ids = []
-      // 选择列表
-      this.multipleSelection = val;
-      this.multipleSelection.forEach(value => {
-        // id数组
-        ids.push(value.id)
-      })
-      this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+    deleteSelect() {
+      this.$confirm('此操作将永久删除所选权限, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         center: true
       }).then(() => {
-        deletePermissionByIds(ids)
-          .then(res => {
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success'
-            });
-            if (index == 0) {
-              let page = {
-                current: this.page -1,
-                size: this.size
-              }
-              this.changePage(page)
-            }
-            this.defaultChangePage()
-          }).catch(reason => {
+        const ids = []
+          this.multipleSelection.forEach(value => {
+            ids.push(value.id)
+          })
+          deletePermissionByIds(ids)
+        .then(res => {
           this.$notify({
-            title: '失败',
-            message: '删除失败',
-            type: 'error'
+            title: '成功',
+            message: '删除成功',
+            type: 'success'
           });
-          this.defaultChangePage()
-        })
-      }).catch(() => {
+          // 选择全部，分页减一页
+          if (this.tableData.length === this.multipleSelection.length) {
+            let page = {
+              current: this.currentPage - 1,
+              size: this.pageSize
+            }
+            this.changePage(page)
+          } else {
+            this.defaultChangePage()
+          }
+        }).catch(reason => {
+            this.defaultChangePage()
+          })
+        }
+      ).catch(reason => {
         this.$message({
           type: 'info',
           message: '已取消删除'
         });
-      });
-
+        this.$refs.multipleTable.clearSelection();
+      })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
     checkDelete(index, row) {
       this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
@@ -314,17 +343,18 @@ export default {
     changePage(data) {
       selectPermissionPage(data)
         .then(res => {
-          this.tableData = res.data.records
           this.total = res.data.total
-          this.pages = res.data.pages
+          this.currentPage = res.data.current
+          this.pageCount = res.data.pages
+          this.tableData = res.data.records
         })
     },
     handleSizeChange(val) {
-      this.size = val;
+      this.pageSize = val;
       this.defaultChangePage()
     },
     handleCurrentChange(val) {
-      this.page = val;
+      this.currentPage = val;
       this.defaultChangePage()
     },
     handleEdit(index, row) {
@@ -345,12 +375,13 @@ export default {
           });
           if (index == 0) {
             let page = {
-              current: this.page -1,
-              size: this.size
+              current: this.currentPage -1,
+              size: this.pageSize
             }
             this.changePage(page)
+          } else {
+            this.defaultChangePage()
           }
-          this.defaultChangePage()
         }).catch(reason => {
         this.$notify({
           title: '失败',
@@ -362,8 +393,8 @@ export default {
     },
     defaultChangePage() {
       let page = {
-        current: this.page,
-        size: this.size
+        current: this.currentPage,
+        size: this.pageSize
       }
       this.changePage(page)
     }
