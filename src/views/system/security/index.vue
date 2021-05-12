@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--    面板-->
-    <el-tabs>
+    <el-tabs type="border-card" >
       <el-tab-pane label="用户管理">
         <span slot="label"><svg-icon icon-class="peoples" /> 客户端管理</span>
         <div class="head-container">
@@ -9,16 +9,6 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="权限资源管理">
-<!--        <div class="head-container">-->
-<!--          <el-row :gutter="20">-->
-<!--            <el-col :xs="10" :sm="18" :md="19" :lg="16" :xl="16">-->
-<!--              <resource></resource>-->
-<!--            </el-col>-->
-<!--            <el-col :xs="10" :sm="13" :md="13" :lg="13" :xl="10">-->
-<!--              <permission></permission>-->
-<!--            </el-col>-->
-<!--          </el-row>-->
-<!--        </div>-->
         <el-container>
           <el-main>
             <resource></resource>

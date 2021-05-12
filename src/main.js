@@ -35,7 +35,7 @@ Vue.use(mavonEditor)
 Vue.use(permission)
 Vue.use(dict)
 Vue.use(Element, {
-  pageSize: Cookies.get('size') || 'small' // set element-ui default size
+  size: Cookies.get('size') || 'small' // set element-ui default size
 })
 
 Vue.config.productionTip = false

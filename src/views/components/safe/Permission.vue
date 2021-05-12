@@ -58,7 +58,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
-        width="180"
+        width="150"
         align="right">
         <template slot="header" slot-scope="scope">
           <el-input
@@ -81,7 +81,6 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       layout="prev, pager, next, jumper,total"
@@ -211,7 +210,7 @@ export default {
                 this.isEdit = false
                 // 清空表单
                 this.resetForm('form')
-                this.defaultChangePage()
+                this.total = this.total + 1
               }).catch(reason => {
               this.$notify.error({
                 title: '错误',
