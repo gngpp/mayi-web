@@ -4,10 +4,12 @@
     class="box-card"
     shadow="hover"
   >
+<!--    分割线-->
     <el-divider content-position="left">
       <i class="el-icon-lock"></i>
       权限字典列表
     </el-divider>
+<!--    按钮组-->
     <div>
       <el-button-group>
         <el-button type="primary" plain @click="handleOpen">新增权限</el-button>
@@ -15,7 +17,9 @@
         <el-button @click="toggleSelection()">取消选择</el-button>
       </el-button-group>
     </div>
+<!--    分割线-->
     <el-divider></el-divider>
+<!--    权限列表-->
     <el-table
       ref="multipleTable"
       highlight-current-row
@@ -118,7 +122,7 @@
 </template>
 
 <script>
-import {selectPermissionPage, deletePermission, updatePermission, savePermission} from "../../../api/system/security";
+import {selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
 export default {
   name: "Permission",
   data() {
@@ -231,7 +235,49 @@ export default {
       }
     },
     handleSelectionChange(val) {
+      let ids = []
+      // 选择列表
       this.multipleSelection = val;
+      this.multipleSelection.forEach(value => {
+        // id数组
+        ids.push(value.id)
+      })
+      this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        deletePermissionByIds(ids)
+          .then(res => {
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success'
+            });
+            if (index == 0) {
+              let page = {
+                current: this.page -1,
+                size: this.size
+              }
+              this.changePage(page)
+            }
+            this.defaultChangePage()
+          }).catch(reason => {
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error'
+          });
+          this.defaultChangePage()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     },
     checkDelete(index, row) {
       this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {

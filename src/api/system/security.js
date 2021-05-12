@@ -47,10 +47,30 @@ export function updatePermission(data) {
   })
 }
 
+/**
+ * 根据id删除
+ *
+ * @param id permission id
+ * @returns {AxiosPromise}
+ */
 export function deletePermission(id) {
   return request({
-    url: 'oauth/security/permission?id=' + id,
+    url: '/oauth/security/permission?id=' + id,
     method: 'delete'
+  })
+}
+
+/**
+ * 根据id数组删除
+ *
+ * @param data ids
+ * @returns {AxiosPromise}
+ */
+export function deletePermissionByIds(data) {
+  return request({
+    url: '/oauth/security/permission',
+    method: 'delete',
+    data
   })
 }
 
