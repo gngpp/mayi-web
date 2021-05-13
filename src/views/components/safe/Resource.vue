@@ -13,6 +13,7 @@
       style="width: 100%"
       row-key="id"
       highlight-current-row
+      :row-class-name="tableRowClassName"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column
         prop="name"
@@ -83,9 +84,19 @@
     </el-pagination>
   </el-card>
 </template>
+<style>
+.el-table .warning-row {
+  background: #f1f1f1;
+}
+
+.el-table .success-row {
+  background: #ffffff;
+}
+</style>
 <script>
 
 import {selectResourcePage} from "../../../api/system/security";
+
 
 export default {
   data() {
@@ -117,6 +128,14 @@ export default {
     })
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+      if (row.leaf) {
+        return 'warning-row';
+      } else {
+        return 'success-row';
+      }
+      return '';
+    },
     load(tree, treeNode, resolve) {
       setTimeout(() => {
         resolve(treeNode.children)
