@@ -2,14 +2,20 @@
   <div class="app-container">
     <!--    面板-->
     <el-tabs type="border-card" >
-      <el-tab-pane label="用户管理">
+      <el-tab-pane label="客户端管理">
         <span slot="label"><svg-icon icon-class="peoples" /> 客户端管理</span>
-        <div class="head-container">
-          <OAuth2Client></OAuth2Client>
-        </div>
+        <el-container class="head-container">
+          <el-main>
+            <OAuth2Client></OAuth2Client>
+          </el-main>
+        </el-container>
       </el-tab-pane>
       <el-tab-pane label="权限资源管理">
-        <el-container>
+        <span slot="label">
+        <svg-icon icon-class="permission" />
+          权限资源管理
+        </span>
+        <el-container class="head-container">
           <el-main>
             <resource></resource>
           </el-main>

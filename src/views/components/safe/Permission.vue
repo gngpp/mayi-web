@@ -12,10 +12,10 @@
 <!--    按钮组-->
     <div>
       <el-button-group>
-        <el-button type="primary" plain @click="handleOpen">新增权限</el-button>
-        <el-button type="danger" plain @click="deleteSelect">删除所选</el-button>
-        <el-button type="danger" plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
-        <el-button type="success" plain @click="deleteCurrentPage()">取消选择</el-button>
+        <el-button type="primary" icon="el-icon-document-add" plain @click="handleOpen">新增权限</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="deleteSelect">删除所选</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
+        <el-button type="success" icon="el-icon-folder-remove" plain @click="deleteCurrentPage()">取消选择</el-button>
       </el-button-group>
     </div>
 <!--    分割线-->
@@ -61,7 +61,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
-        width="150"
+        width="170"
         align="right">
         <template slot="header" slot-scope="scope">
           <el-input
@@ -70,16 +70,22 @@
             placeholder="输入关键字搜索"/>
         </template>
         <template slot-scope="scope">
-          <el-button
-            plain
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            plain
-            size="mini"
-            type="danger"
-            @click="checkDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button-group>
+            <el-button
+              plain
+              round
+              size="mini"
+              type="primary"
+              icon="el-icon-edit-outline"
+              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              plain
+              round
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="checkDelete(scope.$index, scope.row)">删除</el-button>
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>

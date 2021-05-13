@@ -1,7 +1,15 @@
 <template>
-  <div>
-    <div class="head-container">
-      <el-button type="primary">添加</el-button>
+  <div class="head-container">
+    <div>
+      <!--    分割线-->
+      <el-divider content-position="left">
+        <i class="el-icon-s-tools"></i>
+        <el-button-group>
+          <el-button icon="el-icon-document-add" type="primary" plain>添加</el-button>
+          <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
+        </el-button-group>
+      </el-divider>
+
     </div>
     <!--      表格-->
     <div>
@@ -82,7 +90,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="150">
+        <el-table-column align="center" fixed="right" label="操作" width="170">
           <template slot="header" slot-scope="scope">
             <el-input
               v-model="search"
@@ -90,18 +98,24 @@
               size="mini"/>
           </template>
           <template slot-scope="scope">
-            <el-button
-              plain
-              type="primary"
-              size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑
-            </el-button>
-            <el-button
-              plain
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
-            </el-button>
+            <el-button-group>
+              <el-button
+                plain
+                round
+                type="primary"
+                size="mini"
+                icon="el-icon-edit-outline"
+                @click="handleEdit(scope.$index, scope.row)">编辑
+              </el-button>
+              <el-button
+                plain
+                round
+                size="mini"
+                type="danger"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)">删除
+              </el-button>
+            </el-button-group>
           </template>
         </el-table-column>
       </el-table>

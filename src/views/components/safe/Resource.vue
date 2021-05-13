@@ -65,7 +65,7 @@
               </el-form-item>
             </el-form>
           </el-card>
-          <el-button slot="reference" size="mini" type="primary" plain>查看详情</el-button>
+          <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
         </el-popover>
       </el-table-column>
       <el-table-column
