@@ -25,11 +25,11 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;"
                 @selection-change="crud.selectionChangeHandler">
-        <el-table-column :selectable="checkboxT" type="selection" width="55"/>
-        <el-table-column label="用户名" width="100" prop="username"/>
-        <el-table-column prop="ip" width="100" label="登录IP"/>
-        <el-table-column :show-overflow-tooltip="true" label="登录地点" prop="ipRegion" width="150px"/>
-        <el-table-column prop="browser" label="浏览器" width="100px"/>
+        <el-table-column :selectable="checkboxT" type="selection" width="50"/>
+        <el-table-column label="用户名"  prop="username"/>
+        <el-table-column prop="ip"  label="登录IP"/>
+        <el-table-column :show-overflow-tooltip="true" label="登录地点" prop="ipRegion" />
+        <el-table-column prop="browser" label="浏览器" />
         <el-table-column prop="loginTime" label="登录时间" sortable>
           <template slot-scope="scope">
             <el-tag
