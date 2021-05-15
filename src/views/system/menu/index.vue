@@ -154,7 +154,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-permission="['admin','menu:edit','menu:del']" label="操作" width="130px" align="center"
+        <el-table-column v-permission="['ROLE_admin','menu:edit','menu:del']" label="操作" width="130px" align="center"
                          fixed="right">
           <template slot-scope="scope">
             <udOperation
@@ -204,9 +204,9 @@ export default {
     return {
       menus: [],
       permission: {
-        add: ['admin', 'menu:add'],
-        edit: ['admin', 'menu:edit'],
-        del: ['admin', 'menu:del']
+        add: ['ROLE_admin', 'menu:add'],
+        edit: ['ROLE_admin', 'menu:edit'],
+        del: ['ROLE_admin', 'menu:del']
       },
       rules: {
         title: [

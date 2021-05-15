@@ -48,7 +48,7 @@
         </el-table-column>
         <!--   编辑与删除   -->
         <el-table-column
-          v-permission="['admin','position:edit','position:del']"
+          v-permission="['ROLE_admin','position:edit','position:del']"
           label="操作"
           width="130px"
           align="center"
@@ -96,9 +96,9 @@ export default {
   data() {
     return {
       permission: {
-        add: ['admin', 'position:add'],
-        edit: ['admin', 'position:edit'],
-        del: ['admin', 'position:del']
+        add: ['ROLE_admin', 'position:add'],
+        edit: ['ROLE_admin', 'position:edit'],
+        del: ['ROLE_admin', 'position:del']
       }
     }
   },

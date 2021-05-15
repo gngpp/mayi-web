@@ -208,7 +208,7 @@
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.enabled"
-                  :disabled="user.id === scope.row.id"
+                  :disabled="user.id === scope.row.id || !checkPermission(['ROLE_admin'])"
                   active-color="#409EFF"
                   inactive-color="#F56C6C"
                   @change="changeEnabled(scope.row, scope.row.enabled)"
@@ -226,7 +226,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              v-permission="['admin','user:edit','user:del']"
+              v-permission="['ROLE_admin','user:edit','user:del']"
               label="操作"
               width="115"
               align="center"
@@ -249,21 +249,6 @@
   </div>
 </template>
 
-<style>
-.el-table .warning-row {
-  background: oldlace;
-}
-
-.el-table .success-row {
-  background: #ffffff;
-}
-.table-td-thumb {
-  display: block;
-  margin: auto;
-  width: 40px;
-  height: 40px;
-}
-</style>
 <script>
 import crudUser from '@/api/system/user'
 import {isvalidPhone} from '@/utils/validate'
@@ -280,6 +265,7 @@ import Treeselect, {LOAD_CHILDREN_OPTIONS} from '@riophae/vue-treeselect'
 import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import Avatar from '@/assets/images/avatar.png'
+import checkPermission from "../../../utils/permission";
 
 let userRoles = []
 let userPositions = []
@@ -335,9 +321,9 @@ export default {
       positionData: [], roleData: [], // 多选时使用
       defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
       permission: {
-        add: ['admin', 'user:add'],
-        edit: ['admin', 'user:edit'],
-        del: ['admin', 'user:del']
+        add: ['ROLE_admin', 'user:add'],
+        edit: ['ROLE_admin', 'user:edit'],
+        del: ['ROLE_admin', 'user:del']
       },
       enabledTypeOptions: [
         {key: 'true', display_name: '激活'},
@@ -388,6 +374,7 @@ export default {
     }
   },
   methods: {
+    checkPermission,
     tableRowClassName({row, rowIndex}) {
       if (row.enabled) {
         return 'success-row';
@@ -613,5 +600,20 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   margin-bottom: 5px;
+}
+</style>
+<style>
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #ffffff;
+}
+.table-td-thumb {
+  display: block;
+  margin: auto;
+  width: 40px;
+  height: 40px;
 }
 </style>
