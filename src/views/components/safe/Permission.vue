@@ -12,10 +12,11 @@
 <!--    按钮组-->
     <div>
       <el-button-group>
-        <el-button type="primary" icon="el-icon-document-add" plain @click="handleOpen">新增权限</el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click="deleteSelect">删除所选</el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
-        <el-button type="success" icon="el-icon-folder-remove" plain @click="deleteCurrentPage()">取消选择</el-button>
+        <el-button type="primary" icon="el-icon-document-add"  @click="handleOpen">新增权限</el-button>
+        <el-button type="danger" icon="el-icon-delete"  @click="deleteSelect">删除所选</el-button>
+        <el-button type="danger" icon="el-icon-delete"  @click="deleteCurrentPage(tableData)">删除当页</el-button>
+        <el-button type="success" icon="el-icon-folder-remove"  @click="deleteCurrentPage()">取消选择</el-button>
+        <el-button @click="refreshTable()">刷新</el-button>
       </el-button-group>
     </div>
 <!--    分割线-->
@@ -99,7 +100,7 @@
       :page-count="pageCount"
       :total.sync="total">
     </el-pagination>
-    <!--    弹窗-->
+    <!--    对话框-->
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -120,12 +121,10 @@
         <el-form-item label="权限描述" prop="description">
           <el-input type="textarea" v-model="form.description"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">立即创建</el-button>
-          <el-button @click="resetForm('form')">重置</el-button>
-        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm('form')">立即创建</el-button>
+        <el-button @click="resetForm('form')">重置</el-button>
       </span>
     </el-dialog>
   </el-card>
@@ -171,6 +170,9 @@ export default {
     this.defaultChangePage()
   },
   methods: {
+    refreshTable() {
+      this.defaultChangePage()
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -350,14 +352,19 @@ export default {
         .catch(_ => {});
     },
     changePage(data) {
+      this.loading = true
       selectPermissionPage(data)
         .then(res => {
           this.total = res.data.total
           this.currentPage = res.data.current
           this.pageCount = res.data.pages
           this.tableData = res.data.records
-          this.loading = false;
-        })
+          setTimeout(() =>{
+            this.loading = false
+          },300)
+        }).catch(reason => {
+          this.loading = true
+      })
     },
     handleSizeChange(val) {
       this.pageSize = val;
