@@ -5,14 +5,12 @@
       <el-divider content-position="left">
         <i class="el-icon-s-tools"></i>
         <el-button-group>
-          <el-button icon="el-icon-document-add" type="primary" plain>添加</el-button>
+          <el-button icon="el-icon-document-add" @click="dialogVisible = true" type="primary" plain>添加</el-button>
           <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
         </el-button-group>
       </el-divider>
-
     </div>
     <!--      表格-->
-    <div>
       <el-table
         ref="multipleSelection"
         :data="tableData.filter(data => !search || data.clientId.toLowerCase().includes(search.toLowerCase()))"
@@ -129,7 +127,69 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-    </div>
+    <!--      对话框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      center>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="客户端ID" prop="clientId" required>
+          <el-input
+            clearable
+            prefix-icon="el-icon-user-solid"
+            v-model="ruleForm.clientId">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="客户端Secret" prop="clientSecret">
+          <el-input
+            disabled
+            prefix-icon="el-icon-success"
+            placeholder="密钥由服务端自动生成"
+            v-model="ruleForm.clientSecret">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="权限范围">
+          <el-input
+            disabled
+            prefix-icon="el-icon-success"
+            placeholder="服务端默认支持所有权限"
+            v-model="ruleForm.scope">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="资源ID">
+          <el-input clearable
+                    v-model="ruleForm.resourceIds">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="认证方式" prop="authorizedGrantTypes">
+          <el-input clearable v-model="ruleForm.authorizedGrantTypes"></el-input>
+        </el-form-item>
+        <el-form-item label="重定向" prop="webServerRedirectUri">
+         <el-input v-model="ruleForm.webServerRedirectUri"></el-input>
+        </el-form-item>
+        <el-form-item label="权限值" prop="authorities">
+          <el-input v-model="ruleForm.authorities"></el-input>
+        </el-form-item>
+        <el-form-item label="Token有效期/秒" prop="accessTokenValidity">
+          <el-input v-model="ruleForm.accessTokenValidity"></el-input>
+        </el-form-item>
+        <el-form-item label="RefreshToken有效期/秒" prop="refreshTokenValidity">
+          <el-input  v-model="ruleForm.refreshTokenValidity"></el-input>
+        </el-form-item>
+        <el-form-item label="预选属性/必须为JSON" prop="additionalInformation">
+          <el-input v-model="ruleForm.additionalInformation"></el-input>
+        </el-form-item>
+        <el-form-item label="自动批准" prop="autoApprove">
+          <el-input v-model="ruleForm.autoApprove"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button @click="resetForm('ruleForm')">重置</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,13 +200,51 @@ export default {
   name: "OAuth2Client",
   data() {
     return {
+      dialogVisible: false,
       multipleSelection: [],
       page: 1,
       total: 0,
       size:10,
       search: '',
       pages: null,
-      tableData: []
+      tableData: [],
+      ruleForm: {
+        clientId: '',
+        clientSecret: '',
+        resourceIds: '',
+        scope: '',
+        authorizedGrantTypes: '',
+        webServerRedirectUri: '',
+        authorities: '',
+        accessTokenValidity: '',
+        refreshTokenValidity: '',
+        additionalInformation: '',
+        autoApprove: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        region: [
+          { required: true, message: '请选择活动区域', trigger: 'change' }
+        ],
+        date1: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        date2: [
+          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        ],
+        type: [
+          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+        ],
+        resource: [
+          { required: true, message: '请选择活动资源', trigger: 'change' }
+        ],
+        desc: [
+          { required: true, message: '请填写活动形式', trigger: 'blur' }
+        ]
+      }
     }
 
   },
@@ -161,6 +259,19 @@ export default {
           this.total = res.data.total
           this.pages = res.data.pages
         })
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     handleSizeChange(val) {
       this.size = val;

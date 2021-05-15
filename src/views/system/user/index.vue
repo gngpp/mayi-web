@@ -446,13 +446,13 @@ export default {
           type: 'warning'
         })
         return false
-      } else if (this.positionData.length === 0) {
+      } else if (!this.positionData || this.positionData.length === 0) {
         this.$message({
           message: '岗位不能为空',
           type: 'warning'
         })
         return false
-      } else if (this.roleData.length === 0) {
+      } else if (!this.roleData ||this.roleData.length === 0) {
         this.$message({
           message: '角色不能为空',
           type: 'warning'
