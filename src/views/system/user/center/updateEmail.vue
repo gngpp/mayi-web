@@ -64,6 +64,7 @@ export default {
   },
   methods: {
     cancel() {
+      this.dialog = false;
       this.resetForm()
     },
     sendCode() {
@@ -108,10 +109,15 @@ export default {
               type: 'success',
               duration: 1500
             })
+            this.dialog = false
             store.dispatch('GetInfo').then(() => {})
           }).catch(err => {
             this.loading = false
-            console.log(err.response.data.message)
+            this.$notify({
+              title: '邮箱修改失败',
+              type: 'error',
+              duration: 1500
+            })
           })
         } else {
           return false
