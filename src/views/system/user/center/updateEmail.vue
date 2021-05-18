@@ -78,7 +78,6 @@ export default {
             type: 'success'
           })
           this.codeLoading = false
-          this.isDisabled = true
           this.buttonName = this.time-- + '秒后重新发送'
           this.timer = window.setInterval(function() {
             _this.buttonName = _this.time + '秒后重新发送'
@@ -120,7 +119,6 @@ export default {
       })
     },
     resetForm() {
-      this.dialog = false
       this.$refs['form'].resetFields()
       window.clearInterval(this.timer)
       this.time = 60
