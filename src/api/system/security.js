@@ -68,7 +68,7 @@ export function deletePermission(id) {
  */
 export function deletePermissionByIds(data) {
   return request({
-    url: '/oauth/security/permission/del/patch',
+    url: '/oauth/security/permission/del/batch',
     method: 'delete',
     data
   })
