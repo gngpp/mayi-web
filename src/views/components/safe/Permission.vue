@@ -15,7 +15,7 @@
           </el-divider>
           <!--    按钮组-->
           <el-button-group>
-            <el-button type="primary" @click="refreshTable()" plain >刷新</el-button>
+            <el-button type="primary" @click="refreshTable()" plain >重置</el-button>
             <el-button type="success" icon="el-icon-folder-remove" plain @click="deleteCurrentPage()">取消选择</el-button>
             <el-button type="danger" icon="el-icon-delete"  plain @click="deleteSelect">删除所选</el-button>
             <el-button type="danger" icon="el-icon-delete"  plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
@@ -80,14 +80,12 @@
                 <el-button-group>
                   <el-button
                     plain
-                    round
                     size="mini"
                     type="primary"
                     icon="el-icon-edit-outline"
                     @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                   <el-button
                     plain
-                    round
                     size="mini"
                     type="danger"
                     icon="el-icon-delete"

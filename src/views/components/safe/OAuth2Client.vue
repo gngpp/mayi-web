@@ -10,7 +10,7 @@
           <el-divider direction="vertical">
           </el-divider>
           <el-button-group>
-            <el-button icon="el-icon-document-add" @click="dialogVisible = true" type="primary" plain>添加</el-button>
+            <el-button icon="el-icon-refresh" @click="dialogVisible = true" type="primary" plain>重置</el-button>
             <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
           </el-button-group>
           <!--    分割线-->
@@ -108,7 +108,6 @@
                 <el-button-group>
                   <el-button
                     plain
-                    round
                     type="primary"
                     size="mini"
                     icon="el-icon-edit-outline"
@@ -116,7 +115,6 @@
                   </el-button>
                   <el-button
                     plain
-                    round
                     size="mini"
                     type="danger"
                     icon="el-icon-delete"
