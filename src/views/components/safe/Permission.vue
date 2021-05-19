@@ -7,12 +7,10 @@
           class="box-card"
           shadow="hover"
         >
-          <el-divider content-position="left">
-            <el-tag effect="plain">
-              <i class="el-icon-s-tools"></i>
-              操作栏
-            </el-tag>
-          </el-divider>
+          <el-tag effect="plain">
+            <i class="el-icon-s-tools"></i>
+            操作栏
+          </el-tag>
           <el-divider direction="vertical">
           </el-divider>
           <!--    按钮组-->
