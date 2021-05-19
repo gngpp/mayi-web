@@ -52,15 +52,9 @@
               prop="scope"
               sortable
               width="150">
-            </el-table-column>
-            <el-table-column
-              label="资源ID"
-              prop="resourceIds"
-              sortable
-            >
               <template slot-scope="props">
                 <el-tag>
-                  {{ props.row.resourceIds? props.row.resourceIds:'未知' }}
+                  {{ props.row.scope? props.row.scope:'未知' }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -70,6 +64,11 @@
             >
               <template slot-scope="props">
                 <el-form  >
+                  <el-form-item label="资源ID">
+                    <el-tag>
+                      {{ props.row.resourceIds? props.row.resourceIds:'未知' }}
+                    </el-tag>
+                  </el-form-item>
                   <el-form-item label="认证方式:">
                     <el-tag>
                       {{ props.row.authorizedGrantTypes?props.row.authorizedGrantTypes:'未知' }}
@@ -151,6 +150,12 @@
             </el-button-group>
           </el-divider>
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
+            <el-form-item label="编辑状态">
+              <el-switch
+                v-model="isEdit"
+                disabled>
+              </el-switch>
+            </el-form-item>
             <el-form-item label="客户端ID" prop="clientId" required>
               <el-input
                 clearable
@@ -236,6 +241,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      isEdit: false,
       multipleSelection: [],
       page: 1,
       total: 0,
