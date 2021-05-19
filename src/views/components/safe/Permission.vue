@@ -63,6 +63,7 @@
             </el-table-column>
             <el-table-column
               label="描述"
+              width="250"
               prop="description">
             </el-table-column>
             <el-table-column
@@ -140,11 +141,14 @@
             <el-form-item label="权限描述" prop="description">
               <el-input type="textarea" v-model="form.description"></el-input>
             </el-form-item>
-            <el-form-item>
+          </el-form>
+          <el-divider></el-divider>
+          <el-header>
+            <div align="center">
               <el-button type="primary" icon="el-icon-paperclip" plain @click="submitForm('form')">新增/更新</el-button>
               <el-button type="primary" icon="el-icon-refresh" plain @click="resetForm('form')">重置</el-button>
-            </el-form-item>
-          </el-form>
+            </div>
+          </el-header>
         </el-card>
       </el-main>
     </el-container>

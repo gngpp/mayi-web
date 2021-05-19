@@ -203,16 +203,14 @@
             <el-form-item label="自动批准" prop="autoApprove">
               <el-input v-model="ruleForm.autoApprove"></el-input>
             </el-form-item>
-            <el-form-item>
+          </el-form>
+          <el-divider></el-divider>
+          <el-header>
+            <div align="center">
               <el-button type="primary" icon="el-icon-paperclip" plain >新增/更新</el-button>
               <el-button type="primary" icon="el-icon-refresh" plain >重置</el-button>
-            </el-form-item>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
-      </span>
+            </div>
+          </el-header>
         </el-card>
       </el-main>
     </el-container>
