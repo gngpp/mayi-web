@@ -157,15 +157,16 @@
                 prefix-icon="el-icon-user-solid"
                 placeholder="请输入ID"
                 v-model="ruleForm.clientId">
-                <el-button slot="append" @click="autoGeneratorId">自动生成</el-button>
+                <el-button slot="append" @click="autoGeneratorId">Auto</el-button>
               </el-input>
             </el-form-item>
             <el-form-item label="客户端Secret" prop="clientSecret">
               <el-input
-                disabled
-                prefix-icon="el-icon-success"
-                placeholder="密钥由服务端自动生成"
+                clearable
+                prefix-icon="password"
+                placeholder="请输入Secret"
                 v-model="ruleForm.clientSecret">
+                <el-button slot="append" @click="autoGeneratorSecret">Auto</el-button>
               </el-input>
             </el-form-item>
             <el-form-item label="权限范围">
@@ -190,10 +191,10 @@
             <el-form-item label="权限值" prop="authorities">
               <el-input v-model="ruleForm.authorities"></el-input>
             </el-form-item>
-            <el-form-item label="Token有效期/秒" prop="accessTokenValidity">
+            <el-form-item label="令牌有效期/秒" prop="accessTokenValidity">
               <el-input v-model="ruleForm.accessTokenValidity"></el-input>
             </el-form-item>
-            <el-form-item label="RefreshToken有效期/秒" prop="refreshTokenValidity">
+            <el-form-item label="刷新令牌有效期/秒" prop="refreshTokenValidity">
               <el-input  v-model="ruleForm.refreshTokenValidity"></el-input>
             </el-form-item>
             <el-form-item label="预选属性/必须为JSON" prop="additionalInformation">
@@ -345,6 +346,9 @@ export default {
    },
     autoGeneratorId(){
       this.ruleForm.clientId = this.randomWord(false,10)
+    },
+    autoGeneratorSecret() {
+     this.ruleForm.clientSecret = this.randomWord(true, 10, 32)
     },
     handleDelete(index, row) {
       if (Config.applyId == row.clientId) {
