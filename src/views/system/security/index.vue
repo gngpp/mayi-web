@@ -29,7 +29,9 @@
           </el-main>
         </el-container>
       </el-tab-pane>
-      <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="定时任务">定时任务</el-tab-pane>
+      <el-tab-pane label="系统备份">系统备份</el-tab-pane>
+      <el-tab-pane label="其他">其他</el-tab-pane>
     </el-tabs>
   </div>
 </template>

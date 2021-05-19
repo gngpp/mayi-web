@@ -243,7 +243,7 @@ export default {
                 this.isEdit = false
                 // 清空表单
                 this.resetForm('form')
-                this.total = this.total + 1
+                this.defaultChangePage()
               }).catch(reason => {
               this.$notify.error({
                 title: '错误',

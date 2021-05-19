@@ -2,7 +2,11 @@
   <div class="head-container">
     <el-container>
       <el-main>
-        <el-card>
+        <el-card
+          style="border-radius: 10px"
+          class="box-card"
+          shadow="hover"
+        >
           <el-tag effect="plain">
             <i class="el-icon-s-tools"></i>
             操作栏
@@ -137,7 +141,11 @@
         </el-card>
       </el-main>
       <el-main>
-        <el-card>
+        <el-card
+          style="border-radius: 10px"
+          class="box-card"
+          shadow="hover"
+        >
           <!--    分割线-->
           <el-divider content-position="left">
             <el-button-group>
@@ -163,7 +171,7 @@
                 <el-button slot="append" @click="autoGeneratorId">Auto</el-button>
               </el-input>
             </el-form-item>
-            <el-form-item label="客户端Secret" prop="clientSecret">
+            <el-form-item label="客户端Secret" prop="clientSecret" required>
               <el-input
                 clearable
                 prefix-icon="password"
@@ -206,14 +214,15 @@
             <el-form-item label="自动批准" prop="autoApprove">
               <el-input v-model="ruleForm.autoApprove"></el-input>
             </el-form-item>
+            <el-divider></el-divider>
+            <el-header>
+              <div align="center">
+                <el-button type="primary" icon="el-icon-paperclip" plain >新增/更新</el-button>
+                <el-button type="primary" icon="el-icon-refresh" plain >重置</el-button>
+              </div>
+            </el-header>
           </el-form>
-          <el-divider></el-divider>
-          <el-header>
-            <div align="center">
-              <el-button type="primary" icon="el-icon-paperclip" plain >新增/更新</el-button>
-              <el-button type="primary" icon="el-icon-refresh" plain >重置</el-button>
-            </div>
-          </el-header>
+
         </el-card>
       </el-main>
     </el-container>
