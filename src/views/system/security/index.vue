@@ -1,30 +1,34 @@
 <template>
   <div class="app-container">
     <!--    面板-->
-    <el-tabs type="border-card" >
-      <el-tab-pane label="客户端管理">
-        <span slot="label"><svg-icon icon-class="peoples" /> 客户端管理</span>
+    <el-tabs :tab-position="'left'" style="height: 100%;" >
+      <el-tab-pane label="OAuth客户端管理">
+        <span slot="label"><svg-icon icon-class="peoples" /> OAuth客户端管理</span>
         <el-container class="head-container">
           <el-main>
             <OAuth2Client></OAuth2Client>
           </el-main>
         </el-container>
       </el-tab-pane>
-      <el-tab-pane label="权限资源管理">
+
+      <el-tab-pane label="权限字典管理">
         <span slot="label">
         <svg-icon icon-class="permission" />
-          权限资源管理
+          权限字典管理
+        </span>
+        <permission></permission>
+      </el-tab-pane>
+      <el-tab-pane label="权限资源管理">
+        <span slot="label">
+       <svg-icon icon-class="tree" />
+          接口资源管理
         </span>
         <el-container class="head-container">
           <el-main>
             <resource></resource>
           </el-main>
-          <el-main>
-            <permission></permission>
-          </el-main>
         </el-container>
       </el-tab-pane>
-      <el-tab-pane label="权限字典">权限管理</el-tab-pane>
       <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
     </el-tabs>
   </div>

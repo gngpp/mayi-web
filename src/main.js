@@ -5,6 +5,17 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css'
 
 import Element from 'element-ui'
+// 国际化
+// 引入组件
+import { Button, Select } from 'element-ui'
+Vue.component(Button.name, Button)
+Vue.component(Select.name, Select)
+// i18国际化
+import i18n from './i18n/i18n';
+
+
+
+
 //
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -30,6 +41,7 @@ import './assets/icons' // icon
 import './router/index' // permission control
 import 'echarts-gl'
 
+
 Vue.use(VueHighlightJS)
 Vue.use(mavonEditor)
 Vue.use(permission)
@@ -42,6 +54,7 @@ Vue.config.productionTip = false
 
 new Vue({
   el: '#app',
+  i18n, // 注入国际化
   router,
   store,
   render: h => h(App)

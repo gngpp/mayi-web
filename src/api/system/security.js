@@ -33,7 +33,7 @@ export function selectPermissionPage(data) {
 
 export function savePermission(data) {
   return request({
-    url: '/oauth/security/permission',
+    url: '/oauth/security/permission/add',
     method: 'post',
     data
   })
@@ -41,7 +41,7 @@ export function savePermission(data) {
 
 export function updatePermission(data) {
   return request({
-    url: '/oauth/security/permission',
+    url: '/oauth/security/permission/edit',
     method: 'put',
     data
   })
@@ -55,7 +55,7 @@ export function updatePermission(data) {
  */
 export function deletePermission(id) {
   return request({
-    url: '/oauth/security/permission?id=' + id,
+    url: '/oauth/security/permission/del?id=' + id,
     method: 'delete'
   })
 }
@@ -68,7 +68,7 @@ export function deletePermission(id) {
  */
 export function deletePermissionByIds(data) {
   return request({
-    url: '/oauth/security/permission/patch',
+    url: '/oauth/security/permission/del/patch',
     method: 'delete',
     data
   })

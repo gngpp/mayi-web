@@ -1,137 +1,162 @@
 <template>
-  <el-card
-    style="border-radius: 10px"
-    class="box-card"
-    shadow="hover"
-  >
-<!--    分割线-->
-    <el-divider content-position="left">
-      <i class="el-icon-lock"></i>
-      权限字典列表
-    </el-divider>
-<!--    按钮组-->
-    <div>
-      <el-button-group>
-        <el-button type="primary" icon="el-icon-document-add"  @click="handleOpen">新增权限</el-button>
-        <el-button type="danger" icon="el-icon-delete"  @click="deleteSelect">删除所选</el-button>
-        <el-button type="danger" icon="el-icon-delete"  @click="deleteCurrentPage(tableData)">删除当页</el-button>
-        <el-button type="success" icon="el-icon-folder-remove"  @click="deleteCurrentPage()">取消选择</el-button>
-        <el-button @click="refreshTable()">刷新</el-button>
-      </el-button-group>
-    </div>
-<!--    分割线-->
-    <el-divider></el-divider>
-<!--    权限列表-->
-    <el-table
-      v-loading="loading"
-      ref="multipleTable"
-      highlight-current-row
-      :data="tableData.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()))"
-      @selection-change="handleSelectionChange"
-      style="width: 100%">
-      <el-table-column
-        type="selection"
-        fixed="left"
-        width="55">
-      </el-table-column>
-      <el-table-column
-        label="权限名"
-        sortable
-        width="150"
-        prop="name">
-      </el-table-column>
-      <el-table-column
-        label="权限值"
-        width="150"
-        sortable
-      >
-        <template slot-scope="scope">
-          <svg-icon icon-class="source" />
-          <span style="margin-left: 10px">{{ scope.row.value }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="描述"
-        width="250"
-        prop="description">
-      </el-table-column>
-      <el-table-column
-        label="创建者"
-        width="90"
-        prop="createBy">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        width="170"
-        align="right">
-        <template slot="header" slot-scope="scope">
-          <el-input
-            v-model="search"
-            size="mini"
-            placeholder="输入关键字搜索"/>
-        </template>
-        <template slot-scope="scope">
+  <div class="app-container">
+    <el-container>
+      <el-main>
+        <el-card
+          style="border-radius: 10px"
+          class="box-card"
+          shadow="hover"
+        >
+          <el-divider content-position="left">
+            <el-tag effect="plain">
+              <i class="el-icon-s-tools"></i>
+              操作栏
+            </el-tag>
+          </el-divider>
+          <el-divider direction="vertical">
+          </el-divider>
+          <!--    按钮组-->
           <el-button-group>
-            <el-button
-              plain
-              round
-              size="mini"
-              type="primary"
-              icon="el-icon-edit-outline"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              plain
-              round
-              size="mini"
-              type="danger"
-              icon="el-icon-delete"
-              @click="checkDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button type="primary" @click="refreshTable()" plain >刷新</el-button>
+            <el-button type="success" icon="el-icon-folder-remove" plain @click="deleteCurrentPage()">取消选择</el-button>
+            <el-button type="danger" icon="el-icon-delete"  plain @click="deleteSelect">删除所选</el-button>
+            <el-button type="danger" icon="el-icon-delete"  plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
           </el-button-group>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      layout="prev, pager, next, jumper,total"
-      hide-on-single-page
-      :page.sync="currentPage"
-      :page-size.sync="pageSize"
-      :page-count="pageCount"
-      :total.sync="total">
-    </el-pagination>
-    <!--    对话框-->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      center
-      :before-close="handleClose">
-      <el-form
-        ref="form"
-        :rules="rules"
-        :model="form"
-        label-width="80px">
-        <el-form-item label="权限名称" prop="name">
-          <el-input clearable v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="权限值" prop="value">
-          <el-input clearable v-model="form.value"></el-input>
-        </el-form-item>
-        <el-form-item label="权限描述" prop="description">
-          <el-input type="textarea" v-model="form.description"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('form')">立即创建</el-button>
-        <el-button @click="resetForm('form')">重置</el-button>
-      </span>
-    </el-dialog>
-  </el-card>
+          <!--    分割线-->
+          <el-divider content-position="center">
+            <el-tag effect="plain">
+              <svg-icon icon-class="permission" />
+              权限字典列表
+            </el-tag>
+          </el-divider>
+          <!--    权限列表-->
+          <el-table
+            v-loading="loading"
+            ref="multipleTable"
+            highlight-current-row
+            :data="tableData.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()))"
+            @selection-change="handleSelectionChange"
+            style="width: 100%">
+            <el-table-column
+              type="selection"
+              fixed="left"
+              width="55">
+            </el-table-column>
+            <el-table-column
+              label="权限名"
+              sortable
+              width="150"
+              prop="name">
+            </el-table-column>
+            <el-table-column
+              label="权限值"
+              width="150"
+              sortable
+            >
+              <template slot-scope="scope">
+                <svg-icon icon-class="source" />
+                <span style="margin-left: 10px">{{ scope.row.value }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="创建者"
+              width="90"
+              prop="createBy">
+            </el-table-column>
+            <el-table-column
+              label="描述"
+              prop="description">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              width="170"
+              align="right">
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="search"
+                  size="mini"
+                  placeholder="输入关键字搜索"/>
+              </template>
+              <template slot-scope="scope">
+                <el-button-group>
+                  <el-button
+                    plain
+                    round
+                    size="mini"
+                    type="primary"
+                    icon="el-icon-edit-outline"
+                    @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button
+                    plain
+                    round
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="checkDelete(scope.$index, scope.row)">删除</el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next, jumper,total"
+            hide-on-single-page
+            :page.sync="currentPage"
+            :page-size.sync="pageSize"
+            :page-count="pageCount"
+            :total.sync="total">
+          </el-pagination>
+        </el-card>
+      </el-main>
+      <el-main>
+        <el-card
+          style="border-radius: 10px"
+          class="box-card"
+          shadow="hover"
+        >
+          <!--    分割线-->
+          <el-divider content-position="left">
+            <el-tag effect="plain">
+              <i class="el-icon-edit-outline"></i>
+              表单
+            </el-tag>
+          </el-divider>
+          <el-form
+            ref="form"
+            :rules="rules"
+            :model="form"
+            label-width="80px">
+            <el-form-item label="编辑状态">
+              <el-switch
+                v-model="isEdit"
+                disabled>
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="权限名称" prop="name">
+              <el-input clearable v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="权限值" prop="value">
+              <el-input clearable v-model="form.value"></el-input>
+            </el-form-item>
+            <el-form-item label="权限描述" prop="description">
+              <el-input type="textarea" v-model="form.description"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-paperclip" plain @click="submitForm('form')">新增/更新</el-button>
+              <el-button type="primary" icon="el-icon-refresh" plain @click="resetForm('form')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
 import {selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
+
+
 export default {
   name: "Permission",
   data() {
@@ -190,8 +215,6 @@ export default {
                 message: '更新权限成功',
                 type: 'success'
               });
-              // 关闭窗口
-              this.dialogVisible = false
               // 设置非编辑状态
               this.isEdit = false
               // 清空表单
@@ -216,8 +239,6 @@ export default {
                   message: '新增权限成功',
                   type: 'success'
                 });
-                // 关闭窗口
-                this.dialogVisible = false
                 // 设置非编辑状态
                 this.isEdit = false
                 // 清空表单
@@ -236,6 +257,7 @@ export default {
       });
     },
     resetForm(formName) {
+      this.isEdit = false
       this.$refs[formName].resetFields();
     },
     deleteCurrentPage(rows) {
@@ -334,11 +356,8 @@ export default {
         });
       });
     },
-    handleOpen() {
-      // 关闭窗口
-      this.dialogVisible = true
-      // 设置非编辑状态
-      this.isEdit = false
+    handleOpen(id) {
+      console.log(id)
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -376,7 +395,6 @@ export default {
     },
     handleEdit(index, row) {
       this.isEdit = true
-      this.dialogVisible = true
       this.form.id = row.id
       this.form.name = row.name
       this.form.value = row.value

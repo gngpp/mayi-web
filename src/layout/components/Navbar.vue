@@ -15,7 +15,6 @@
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
         </el-tooltip>
-
         <el-tooltip content="布局设置" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
@@ -58,7 +57,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
-
+import i18Component from '@/components/i18n'
 export default {
   components: {
     Breadcrumb,
@@ -66,7 +65,8 @@ export default {
     Screenfull,
     SizeSelect,
     Search,
-    Doc
+    Doc,
+    i18Component
   },
   data() {
     return {
