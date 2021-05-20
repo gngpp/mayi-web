@@ -26,7 +26,7 @@ export function editClient(data) {
 
 export function deleteClient(clientId) {
   return request({
-    url: '/oauth/security/client?clientId=' + clientId,
+    url: '/oauth/security/client/del?clientId=' + clientId,
     method: 'delete'
   })
 }

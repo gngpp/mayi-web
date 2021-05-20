@@ -15,7 +15,7 @@
           </el-divider>
           <el-button-group>
             <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
-            <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
+            <el-button icon="el-icon-delete" type="danger" @click="handleDelete" plain>删除</el-button>
           </el-button-group>
           <!--    分割线-->
           <el-divider content-position="center">
@@ -168,6 +168,7 @@
                 clearable
                 prefix-icon="el-icon-user-solid"
                 placeholder="请输入ID"
+                :disabled="isEdit"
                 v-model="ruleForm.clientId">
                 <el-button slot="append" @click="autoGeneratorId">Auto</el-button>
               </el-input>
@@ -233,9 +234,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="权限值" prop="authorities">
-              <el-input v-model="ruleForm.authorities"
-                        placeholder="若有多个权限值,用逗号(,)分隔"
-              ></el-input>
+              <el-input v-model="ruleForm.authorities" placeholder="若有多个权限值,用逗号(,)分隔"></el-input>
             </el-form-item>
             <el-form-item label="令牌有效期" prop="accessTokenValidity">
               <el-input-number
@@ -288,24 +287,12 @@
         </el-card>
       </el-main>
     </el-container>
-
-
-    <!--      对话框-->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      center>
-
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import Config from '@/settings'
-import {selectClientPage, deleteClient} from '@/api/system/security'
-import CryptoJS from 'crypto-js'
-import {addClient} from "../../../api/system/security";
+import {addClient, editClient, deleteClient, selectClientPage} from "../../../api/system/security";
 
 export default {
   name: "OAuth2Client",
@@ -427,19 +414,23 @@ export default {
       });
     },
     resetForm(formName) {
+      this.isEdit = false
       this.$refs[formName].resetFields();
     },
     savaOrUpdate() {
       let  data = this.setForm();
-      console.log(data)
       // 编辑状态
       if (this.isEdit) {
+        editClient(data).then(res => {
+          this.notifyYes('更新客户端成功')
+          this.resetForm('ruleForm')
+          this.defaultChangePage()
+        })
       } else {
         addClient(data).then(res => {
           this.notifyYes('添加客户端成功')
           this.resetForm('ruleForm')
-        }).catch(reason => {
-          this.notifyNo('添加客户端失败')
+          this.defaultChangePage()
         })
       }
     },
@@ -459,12 +450,21 @@ export default {
         }
       return data
     },
-    notifyNo(message) {
-      this.$notify({
-        title: '失败',
-        message: message,
-        type: 'error'
-      });
+    copyForm(tableData) {
+      let data = {
+        clientId: tableData.clientId,
+        clientSecret: tableData.clientSecret,
+        resourceIds: tableData.resourceIds,
+        scope: 'all',
+        authorizedGrantTypes: tableData.authorizedGrantTypes.split(','),
+        webServerRedirectUri: tableData.webServerRedirectUri,
+        authorities: tableData.authorities,
+        accessTokenValidity: tableData.accessTokenValidity,
+        refreshTokenValidity: tableData.refreshTokenValidity,
+        additionalInformation: tableData.additionalInformation,
+        autoApprove: tableData.autoApprove
+      }
+      return data
     },
     notifyYes(message){
       this.$notify({
@@ -485,13 +485,24 @@ export default {
       this.multipleSelection = val;
     },
     handleEdit(index, row) {
-       this.isEdit = true
+      if (!this.isEdit) {
+        this.$notify({
+          title: '警告',
+          message: '编辑客户端信息需要重新设置密钥',
+          type: 'warning'
+        })
+        this.isEdit = true
+        this.ruleForm = this.copyForm(row)
+      } else {
+        this.isEdit = false
+        this.resetForm('ruleForm')
+      }
     },
     /**
      * 生成3-32位随机串：randomWord(true, 3, 32)
      * 生成43位随机串：randomWord(false, 43)
      */
-   randomWord(randomFlag, min, max) {
+    randomWord(randomFlag, min, max) {
       let str = "",
         range = min,
         arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -520,24 +531,35 @@ export default {
         })
         return;
       }
-      deleteClient(row.clientId)
-        .then(res => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success'
+        this.$confirm('此操作将永久删除客户端：' + row.clientId + ' 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          deleteClient(row.clientId).then(res => {
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success'
+            });
+            if (index == 0) {
+              let query = {
+                page: this.page -1,
+                size: this.size
+              }
+              this.changePage(query)
+            }
+            this.defaultChangePage()
+          }).catch(reason => {
+            this.defaultChangePage()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
         });
-        if (index == 0) {
-          let query = {
-            page: this.page -1,
-            size: this.size
-          }
-          this.changePage(query)
-        }
-          this.defaultChangePage()
-      }).catch(reason => {
-        this.defaultChangePage()
-      })
     },
     defaultChangePage() {
       let query = {
