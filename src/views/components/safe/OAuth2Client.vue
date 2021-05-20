@@ -11,8 +11,7 @@
             <i class="el-icon-s-tools"></i>
             操作栏
           </el-tag>
-          <el-divider direction="vertical">
-          </el-divider>
+          <el-divider direction="vertical"></el-divider>
           <el-button-group>
             <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
             <el-button icon="el-icon-delete" type="danger" @click="handleDelete" plain>删除</el-button>

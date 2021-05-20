@@ -1,153 +1,165 @@
 <template>
-  <el-card
-    style="border-radius: 10px"
-    class="box-card"
-    shadow="hover"
-  >
-    <el-divider content-position="left">
-      <i class="el-icon-platform-eleme"></i>
-      接口资源列表
-    </el-divider>
-    <el-button-group>
-      <el-button @click="dialogVisible = true">添加</el-button>
-      <el-button>查看资源所有节点</el-button>
-      <el-button @click="refreshTable()">刷新</el-button>
-    </el-button-group>
-    <el-divider></el-divider>
-<!--    对话框-->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="50%"
-      center>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="活动名称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="活动区域" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="活动时间" required>
-          <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="即时配送" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
-        </el-form-item>
-        <el-form-item label="活动性质" prop="type">
-          <el-checkbox-group v-model="ruleForm.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-            <el-checkbox label="地推活动" name="type"></el-checkbox>
-            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="特殊资源" prop="resource">
-          <el-radio-group v-model="ruleForm.resource">
-            <el-radio label="线上品牌商赞助"></el-radio>
-            <el-radio label="线下场地免费"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="活动形式" prop="desc">
-          <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+  <el-container>
+    <el-main>
+      <el-card
+        style="border-radius: 10px"
+        class="box-card"
+        shadow="hover"
+      >
+        <el-tag effect="plain">
+          <i class="el-icon-s-tools"></i>
+          操作栏
+        </el-tag>
+        <el-divider direction="vertical"></el-divider>
+        <el-button-group>
+          <el-button @click="dialogVisible = true">添加</el-button>
+          <el-button>查看资源所有节点</el-button>
+          <el-button @click="refreshTable()">刷新</el-button>
+        </el-button-group>
+        <el-divider content-position="center">
+          <el-tag effect="plain">
+            <svg-icon icon-class="tree" />
+            接口资源列表
+          </el-tag>
+        </el-divider>
+        <!--    对话框-->
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="50%"
+          center>
+
+        </el-dialog>
+        <!--    资源表格-->
+        <el-table
+          :data="tableData"
+          v-loading="loading"
+          style="width: 100%"
+          row-key="id"
+          highlight-current-row
+          :row-class-name="tableRowClassName"
+          :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+          <el-table-column
+            prop="name"
+            label="资源名称"
+            sortable>
+          </el-table-column>
+          <el-table-column
+            sortable
+            prop="uri"
+            label="资源URI">
+          </el-table-column>
+          <el-table-column  label="细节" width="100">
+            <el-popover
+              slot-scope="scope"
+              placement="right"
+              width="300"
+              trigger="click">
+              <el-card class="box-card" shadow="never">
+                <div slot="header" class="clearfix">
+                  <span>详情列表</span>
+                </div>
+                <el-form label-position="left">
+                  <el-form-item label="完整URL" prop="fullUri">
+                    <el-tag>
+                      {{ String(scope.row.fullUri) }}
+                    </el-tag>
+                  </el-form-item>
+                  <el-form-item label="请求方法" prop="method">
+                    <el-tag>
+                      {{ String(scope.row.method) }}
+                    </el-tag>
+                  </el-form-item>
+                  <el-form-item label="资源树LEAF" prop="leaf">
+                    <el-tag>
+                      {{ formatBoolean(scope.row.leaf) }}
+                    </el-tag>
+                  </el-form-item>
+                  <el-form-item label="可用">
+                    <el-tag>
+                      {{ formatBoolean(scope.row.enabled) }}
+                    </el-tag>
+                  </el-form-item>
+                  <el-form-item label="放行" prop="allow">
+                    <el-tag>
+                      {{ formatBoolean(scope.row.allow) }}
+                    </el-tag>
+                  </el-form-item>
+                </el-form>
+              </el-card>
+              <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
+            </el-popover>
+          </el-table-column>
+          <el-table-column
+            prop="description"
+            label="描述">
+          </el-table-column>
+        </el-table>
+        <!--    分页组件-->
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-sizes="[10, 100, 200, 300]"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="total">
+        </el-pagination>
+      </el-card>
+    </el-main>
+    <el-main>
+      <el-card>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="活动名称" prop="name">
+            <el-input v-model="ruleForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="活动区域" prop="region">
+            <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="活动时间" required>
+            <el-col :span="11">
+              <el-form-item prop="date1">
+                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="date2">
+                <el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="即时配送" prop="delivery">
+            <el-switch v-model="ruleForm.delivery"></el-switch>
+          </el-form-item>
+          <el-form-item label="活动性质" prop="type">
+            <el-checkbox-group v-model="ruleForm.type">
+              <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+              <el-checkbox label="地推活动" name="type"></el-checkbox>
+              <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+              <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="特殊资源" prop="resource">
+            <el-radio-group v-model="ruleForm.resource">
+              <el-radio label="线上品牌商赞助"></el-radio>
+              <el-radio label="线下场地免费"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="活动形式" prop="desc">
+            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
       </span>
-    </el-dialog>
-<!--    资源表格-->
-    <el-table
-      :data="tableData"
-      v-loading="loading"
-      style="width: 100%"
-      row-key="id"
-      highlight-current-row
-      :row-class-name="tableRowClassName"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-      <el-table-column
-        prop="name"
-        label="资源名称"
-        sortable
-        width="180">
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="uri"
-        label="资源URI"
-        width="180">
-      </el-table-column>
-      <el-table-column  label="细节" width="100">
-        <el-popover
-          slot-scope="scope"
-          placement="right"
-          width="300"
-          trigger="click">
-          <el-card class="box-card" shadow="never">
-            <div slot="header" class="clearfix">
-              <span>详情列表</span>
-            </div>
-            <el-form label-position="left">
-              <el-form-item label="完整URL" prop="fullUri">
-                <el-tag>
-                  {{ String(scope.row.fullUri) }}
-                </el-tag>
-              </el-form-item>
-              <el-form-item label="请求方法" prop="method">
-                <el-tag>
-                  {{ String(scope.row.method) }}
-                </el-tag>
-              </el-form-item>
-              <el-form-item label="资源树LEAF" prop="leaf">
-                <el-tag>
-                  {{ formatBoolean(scope.row.leaf) }}
-                </el-tag>
-              </el-form-item>
-              <el-form-item label="可用">
-                <el-tag>
-                  {{ formatBoolean(scope.row.enabled) }}
-                </el-tag>
-              </el-form-item>
-              <el-form-item label="放行" prop="allow">
-                <el-tag>
-                  {{ formatBoolean(scope.row.allow) }}
-                </el-tag>
-              </el-form-item>
-            </el-form>
-          </el-card>
-          <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
-        </el-popover>
-      </el-table-column>
-      <el-table-column
-        prop="description"
-        label="描述"
-        width="180">
-      </el-table-column>
-    </el-table>
-<!--    分页组件-->
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :page-sizes="[10, 100, 200, 300]"
-      :current-page="currentPage"
-      :page-size="pageSize"
-      :total="total">
-    </el-pagination>
-  </el-card>
+      </el-card>
+    </el-main>
+  </el-container>
 </template>
 <style>
 .el-table .warning-row {
