@@ -281,11 +281,11 @@ export default {
                 message: '删除成功',
                 type: 'success'
               });
-              let page = {
-                current: this.currentPage -1 ,
+              let query = {
+                page: this.currentPage -1 ,
                 size: this.pageSize
               }
-              this.changePage(page)
+              this.changePage(query)
             })
         }).catch(() => {
           this.$message({
@@ -318,11 +318,11 @@ export default {
           });
           // 选择全部，分页减一页
           if (this.tableData.length === this.multipleSelection.length) {
-            let page = {
-              current: this.currentPage - 1,
+            let query = {
+              page: this.currentPage - 1,
               size: this.pageSize
             }
-            this.changePage(page)
+            this.changePage(query)
           } else {
             this.defaultChangePage()
           }
@@ -374,11 +374,11 @@ export default {
       this.loading = true
       selectPermissionPage(data)
         .then(res => {
-          this.total = res.data.total
-          this.currentPage = res.data.current
-          this.pageCount = res.data.pages
-          this.tableData = res.data.records
           setTimeout(() =>{
+            this.total = res.data.total
+            this.currentPage = res.data.current
+            this.pageCount = res.data.pages
+            this.tableData = res.data.records
             this.loading = false
           },300)
         }).catch(reason => {
@@ -409,11 +409,11 @@ export default {
             type: 'success'
           });
           if (index == 0) {
-            let page = {
-              current: this.currentPage -1,
+            let query = {
+              page: this.currentPage -1,
               size: this.pageSize
             }
-            this.changePage(page)
+            this.changePage(query)
           } else {
             this.defaultChangePage()
           }
@@ -427,11 +427,11 @@ export default {
       })
     },
     defaultChangePage() {
-      let page = {
-        current: this.currentPage,
+      let query = {
+        page: this.currentPage,
         size: this.pageSize
       }
-      this.changePage(page)
+      this.changePage(query)
     }
   },
 }

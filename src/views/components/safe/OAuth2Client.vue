@@ -14,7 +14,7 @@
           <el-divider direction="vertical">
           </el-divider>
           <el-button-group>
-            <el-button icon="el-icon-refresh" @click="dialogVisible = true" type="primary" plain>重置</el-button>
+            <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
             <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
           </el-button-group>
           <!--    分割线-->
@@ -27,6 +27,7 @@
           <!--      表格-->
           <el-table
             ref="multipleSelection"
+            v-loading="loading"
             :data="tableData.filter(data => !search || data.clientId.toLowerCase().includes(search.toLowerCase()))"
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
             stripe
@@ -102,7 +103,7 @@
               </template>
             </el-table-column>
             <el-table-column align="center" fixed="right" label="操作" width="170">
-              <template slot="header" slot-scope="scope">
+              <template slot="header">
                 <el-input
                   v-model="search"
                   placeholder="键入客户端ID"
@@ -174,10 +175,18 @@
             <el-form-item label="客户端Secret" prop="clientSecret" required>
               <el-input
                 clearable
-                prefix-icon="password"
+                prefix-icon="el-icon-view"
                 placeholder="请输入Secret"
                 v-model="ruleForm.clientSecret">
-                <el-button slot="append" @click="autoGeneratorSecret">Auto</el-button>
+                <el-button slot="append" @click="autoGeneratorSecret">
+                  Auto
+                </el-button>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="资源ID" >
+              <el-input clearable
+              placeholder="多个资源时用逗号(,)分隔"
+              v-model="ruleForm.resourceIds">
               </el-input>
             </el-form-item>
             <el-form-item label="权限范围">
@@ -185,40 +194,93 @@
                 disabled
                 prefix-icon="el-icon-success"
                 placeholder="服务端默认支持所有权限"
-                v-model="ruleForm.scope">
+                v-model="ruleForm.scope"
+                required
+              >
               </el-input>
             </el-form-item>
-            <el-form-item label="资源ID">
-              <el-input clearable
-                        v-model="ruleForm.resourceIds">
-              </el-input>
-            </el-form-item>
-            <el-form-item label="认证方式" prop="authorizedGrantTypes">
-              <el-input clearable v-model="ruleForm.authorizedGrantTypes"></el-input>
+            <el-form-item label="认证方式" prop="authorizedGrantTypes" required>
+              <el-select
+
+                 v-model="ruleForm.authorizedGrantTypes"
+                 placeholder="请选择"
+                 multiple
+                 filterable
+                 clearable
+                 allow-create
+                 default-first-option>
+                <el-option
+                  v-for="item in optionsAuth"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value">
+                  <span style="float: left">{{ item.value }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="重定向" prop="webServerRedirectUri">
-              <el-input v-model="ruleForm.webServerRedirectUri"></el-input>
+              <el-input v-model="ruleForm.webServerRedirectUri"
+                        placeholder="协议://域名:端口"
+                        class="input-with-select"
+                        clearable
+              >
+                <el-select v-model="ruleForm.webServerRedirectUri" slot="prepend" placeholder="请选择">
+                  <el-option label="http" value="http://"></el-option>
+                  <el-option label="https" value="https://"></el-option>
+                </el-select>
+                <template slot="append">.com</template>
+              </el-input>
             </el-form-item>
             <el-form-item label="权限值" prop="authorities">
-              <el-input v-model="ruleForm.authorities"></el-input>
+              <el-input v-model="ruleForm.authorities"
+                        placeholder="若有多个权限值,用逗号(,)分隔"
+              ></el-input>
             </el-form-item>
-            <el-form-item label="令牌有效期/秒" prop="accessTokenValidity">
-              <el-input v-model="ruleForm.accessTokenValidity"></el-input>
+            <el-form-item label="令牌有效期" prop="accessTokenValidity">
+              <el-input-number
+                v-model="ruleForm.accessTokenValidity"
+                controls-position="right"
+                placeholder="秒"
+                :min="tokenMinTime"
+                :max="tokenMaxTime"
+              >
+              </el-input-number>
             </el-form-item>
-            <el-form-item label="刷新令牌有效期/秒" prop="refreshTokenValidity">
-              <el-input  v-model="ruleForm.refreshTokenValidity"></el-input>
+            <el-form-item label="刷新令牌有效期" prop="refreshTokenValidity" >
+              <el-input-number
+                v-model="ruleForm.refreshTokenValidity"
+                controls-position="right"
+                placeholder="秒"
+                :min="tokenRefreshMinTime"
+                :max="tokenRefreshMaxTime"
+              >
+              </el-input-number>
             </el-form-item>
-            <el-form-item label="预选属性/必须为JSON" prop="additionalInformation">
-              <el-input v-model="ruleForm.additionalInformation"></el-input>
+            <el-form-item label="预选属性" prop="additionalInformation">
+              <el-input v-model="ruleForm.additionalInformation" placeholder="必须为JSON"></el-input>
             </el-form-item>
             <el-form-item label="自动批准" prop="autoApprove">
-              <el-input v-model="ruleForm.autoApprove"></el-input>
+              <el-select
+                v-model="ruleForm.autoApprove"
+                placeholder="请选择"
+                filterable
+                clearable
+                allow-create
+                default-first-option>
+                <el-option
+                  v-for="item in optionsApprove"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.label">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-divider></el-divider>
             <el-header>
               <div align="center">
-                <el-button type="primary" icon="el-icon-paperclip" plain >新增/更新</el-button>
-                <el-button type="primary" icon="el-icon-refresh" plain >重置</el-button>
+                <el-button type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')" plain >新增/更新</el-button>
+                <el-button type="primary" icon="el-icon-refresh" plain @click="resetForm('ruleForm')">重置</el-button>
               </div>
             </el-header>
           </el-form>
@@ -243,25 +305,67 @@
 import Config from '@/settings'
 import {selectClientPage, deleteClient} from '@/api/system/security'
 import CryptoJS from 'crypto-js'
+import {addClient} from "../../../api/system/security";
+
 export default {
   name: "OAuth2Client",
   data() {
     return {
+      tokenMinTime: 3600,
+      tokenRefreshMinTime: 7200,
+      tokenMaxTime: 2678400,
+      tokenRefreshMaxTime: 5356800,
       dialogVisible: false,
       isEdit: false,
+      loading: true,
       multipleSelection: [],
       page: 1,
       total: 0,
       size:10,
       search: '',
       pages: null,
+      select: '',
       tableData: [],
+      optionsApprove:[{
+        value: 1,
+        label: 'true',
+      },{
+        value: 2,
+        label: 'false',
+      },{
+        value: 3,
+        label: 'read',
+      },{
+        value: 4,
+        label: 'write',
+      }
+      ],
+      optionsAuth:[{
+          value: 'password',
+          label: '账号密码&认证',
+      },{
+       value: 'password_code',
+          label: '账号密码，验证码&认证',
+      },{
+       value: 'implicit',
+          label: '隐式认证',
+      },{
+       value: 'client_credentials',
+          label: '客户端凭证&认证',
+      },{
+       value: 'authorization_code',
+          label: '授权码认证',
+      },{
+       value: 'refresh_token',
+          label: 'refresh令牌认证',
+      }
+      ],
       ruleForm: {
         clientId: '',
         clientSecret: '',
         resourceIds: '',
-        scope: '',
-        authorizedGrantTypes: '',
+        scope: 'all',
+        authorizedGrantTypes: [],
         webServerRedirectUri: '',
         authorities: '',
         accessTokenValidity: '',
@@ -270,27 +374,25 @@ export default {
         autoApprove: ''
       },
       rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        clientId: [
+          { required: true, message: '请输入客户端ID', trigger: 'blur' },
+          { min: 10, max: 20, message: '长度在 10 到 20 个数字和大小写字母组合字符', trigger: 'blur' }
         ],
-        region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+        clientSecret: [
+          { required: true, message: '请输入客户端密钥', trigger: 'blur' },
+          { min: 10, max: 20, message: '长度在 10 到 20 个数字和大小写字母组合字符', trigger: 'blur' }
         ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        resourceIds: [
+          { required: true, message: '多个资源时用逗号(,)分隔', trigger: 'change' }
         ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        scope: [
+          {  required: true, message: '请选择授权范围', trigger: 'change' }
         ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+        authorizedGrantTypes: [
+          { required: true, message: '请至少选择一种认证方式', trigger: 'change' }
         ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
-        ],
-        desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
+        autoApprove: [
+          { required: true, message: '请选择批准授予权限操作', trigger: 'change' }
         ]
       }
     }
@@ -301,17 +403,23 @@ export default {
   },
   methods: {
     changePage(data) {
+      this.loading = true
       selectClientPage(data)
         .then(res => {
-          this.tableData = res.data.records
-          this.total = res.data.total
-          this.pages = res.data.pages
-        })
+          setTimeout(() => {
+            this.tableData = res.data.records
+            this.total = res.data.total
+            this.pages = res.data.pages
+            this.loading = false
+          },300)
+        }).catch(reason => {
+        this.loading = true
+      })
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.savaOrUpdate()
         } else {
           console.log('error submit!!');
           return false;
@@ -320,6 +428,50 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    savaOrUpdate() {
+      let  data = this.setForm();
+      console.log(data)
+      // 编辑状态
+      if (this.isEdit) {
+      } else {
+        addClient(data).then(res => {
+          this.notifyYes('添加客户端成功')
+          this.resetForm('ruleForm')
+        }).catch(reason => {
+          this.notifyNo('添加客户端失败')
+        })
+      }
+    },
+    setForm() {
+      let data = {
+          clientId: this.ruleForm.clientId,
+          clientSecret: this.ruleForm.clientSecret,
+          resourceIds: this.ruleForm.resourceIds,
+          scope: 'all',
+          authorizedGrantTypes: this.ruleForm.authorizedGrantTypes.toString(),
+          webServerRedirectUri: this.ruleForm.webServerRedirectUri,
+          authorities: this.ruleForm.authorities,
+          accessTokenValidity: this.ruleForm.accessTokenValidity,
+          refreshTokenValidity: this.ruleForm.refreshTokenValidity,
+          additionalInformation: this.ruleForm.additionalInformation,
+          autoApprove: this.ruleForm.autoApprove
+        }
+      return data
+    },
+    notifyNo(message) {
+      this.$notify({
+        title: '失败',
+        message: message,
+        type: 'error'
+      });
+    },
+    notifyYes(message){
+      this.$notify({
+        title: '成功',
+        message: message,
+        type: 'success'
+      });
     },
     handleSizeChange(val) {
       this.size = val;
@@ -333,7 +485,7 @@ export default {
       this.multipleSelection = val;
     },
     handleEdit(index, row) {
-
+       this.isEdit = true
     },
     /**
      * 生成3-32位随机串：randomWord(true, 3, 32)
@@ -356,10 +508,10 @@ export default {
      return str;
    },
     autoGeneratorId(){
-      this.ruleForm.clientId = this.randomWord(false,10)
+      this.ruleForm.clientId = this.randomWord(true,10, 20)
     },
     autoGeneratorSecret() {
-     this.ruleForm.clientSecret = this.randomWord(true, 10, 32)
+     this.ruleForm.clientSecret = this.randomWord(true, 10, 20)
     },
     handleDelete(index, row) {
       if (Config.applyId == row.clientId) {
@@ -376,11 +528,11 @@ export default {
           type: 'success'
         });
         if (index == 0) {
-          let page = {
-            current: this.page -1,
+          let query = {
+            page: this.page -1,
             size: this.size
           }
-          this.changePage(page)
+          this.changePage(query)
         }
           this.defaultChangePage()
       }).catch(reason => {
@@ -388,11 +540,11 @@ export default {
       })
     },
     defaultChangePage() {
-      let page = {
-        current: this.page,
+      let query = {
+        page: this.page,
         size: this.size
       }
-      this.changePage(page)
+      this.changePage(query)
     }
   },
 }
@@ -416,5 +568,10 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+}  .el-select .el-input {
+     width: 130px;
+   }
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
 }
 </style>

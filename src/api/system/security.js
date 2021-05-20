@@ -8,6 +8,22 @@ export function selectClientPage(data) {
   })
 }
 
+export function addClient(data) {
+  return request({
+    url: 'oauth/security/client/add',
+    method: 'post',
+    data
+  })
+}
+
+export function editClient(data) {
+  return request({
+    url: 'oauth/security/client/edit',
+    method: 'put',
+    data
+  })
+}
+
 export function deleteClient(clientId) {
   return request({
     url: '/oauth/security/client?clientId=' + clientId,
