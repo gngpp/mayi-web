@@ -49,7 +49,8 @@ export function editUser(data) {
 
 export function setUserStatus(id,status) {
   return request({
-    url: '/api/users/status?id=' + id + "&enabled=" + status
+    url: '/api/users/update/status?id=' + id + "&enabled=" + status,
+    method: 'patch'
   })
 }
 

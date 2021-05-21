@@ -266,6 +266,7 @@ import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import Avatar from '@/assets/images/avatar.png'
 import checkPermission from "../../../utils/permission";
+import {setUserStatus} from "../../../api/system/user";
 
 let userRoles = []
 let userPositions = []
@@ -543,14 +544,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        crudUser.edit(data).then(res => {
+        setUserStatus(data.id, val)
+          .then(res => {
           this.crud.notify(this.dict.user_status[value].label + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
-        }).catch(() => {
-          data.enabled = !data.enabled
-          this.$notify.error({
-            title: '错误',
-            message: '操作失败'
-          })
         })
       }).catch(() => {
         data.enabled = !data.enabled

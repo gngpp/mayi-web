@@ -62,5 +62,9 @@ module.exports = {
   /**
    * 备案号
    */
-  caseNumber: '2020'
+  caseNumber: '2020',
+  /**
+   * nacos注册中心
+   */
+  testApi: 'https://getman.cn/'
 }

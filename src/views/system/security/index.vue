@@ -20,8 +20,7 @@
       </el-tab-pane>
       <el-tab-pane label="权限资源管理">
         <span slot="label">
-       <svg-icon icon-class="tree" />
-          接口资源管理
+          <svg-icon icon-class="tree" />接口资源管理
         </span>
         <el-container class="head-container">
           <el-main>
@@ -29,7 +28,29 @@
           </el-main>
         </el-container>
       </el-tab-pane>
-      <el-tab-pane label="定时任务">定时任务</el-tab-pane>
+      <el-tab-pane label="接口测试平台">
+        <span slot="label">
+          <svg-icon icon-class="search" />接口测试平台
+        </span>
+        <el-container>
+          <el-header>
+            <el-form :label-position="'left'">
+              <el-form-item label="链接地址">
+                <el-input
+                  clearable
+                  v-model="apiInput"
+                  prefix-icon="el-icon-search" ></el-input>
+              </el-form-item>
+            </el-form>
+          </el-header>
+          <el-divider></el-divider>
+          <el-main>
+            <div>
+              <elFrame :src="apiInput" />
+            </div>
+          </el-main>
+        </el-container>
+      </el-tab-pane>
       <el-tab-pane label="系统备份">系统备份</el-tab-pane>
       <el-tab-pane label="其他">其他</el-tab-pane>
     </el-tabs>
@@ -40,12 +61,15 @@
 import OAuth2Client from "../../components/safe/OAuth2Client";
 import Resource from "../../components/safe/Resource";
 import Permission from "../../components/safe/Permission";
+import elFrame from '@/components/Iframe/index'
+import Config from '@/settings'
 
 export default {
   name: "Security",
-  components: {Permission, Resource, OAuth2Client},
+  components: {Permission, Resource, OAuth2Client, elFrame},
   data() {
     return {
+      apiInput: Config.testApi
     }
 
   },

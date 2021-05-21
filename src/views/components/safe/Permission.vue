@@ -32,6 +32,8 @@
             v-loading="loading"
             ref="multipleTable"
             highlight-current-row
+            stripe
+            border
             :data="tableData.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()))"
             @selection-change="handleSelectionChange"
             style="width: 100%">
