@@ -1,6 +1,6 @@
 
 <template>
-  <card>
+  <card style="width:570px">
     <p slot="title">
       <Icon type="ios-albums-outline" />
       详情

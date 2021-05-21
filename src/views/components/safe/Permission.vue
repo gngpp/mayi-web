@@ -110,6 +110,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <Divider />
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -180,7 +181,7 @@ export default {
       loading: true,
       dialogVisible: false,
       currentPage: 1,
-      pageSize:10,
+      pageSize:8,
       total: 0,
       pageCount: null,
       tableData: [],

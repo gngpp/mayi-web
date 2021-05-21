@@ -87,7 +87,9 @@
             </el-button-group>
           </template>
         </Table>
-        <!--      表格-->
+<!--        分割线-->
+        <Divider />
+        <!--      分页组件-->
         <Page
           @on-page-size-change	="handleSizeChange"
           @on-change="handleCurrentChange"
@@ -113,14 +115,14 @@
             </el-tag>
           </el-button-group>
         </el-divider>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
-          <el-form-item label="编辑状态">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px">
+          <el-form-item size="mini" label="编辑状态">
             <el-switch
               v-model="isEdit"
               disabled>
             </el-switch>
           </el-form-item>
-          <el-form-item label="客户端ID" prop="clientId" required>
+          <el-form-item size="mini" label="客户端ID" prop="clientId" required>
             <el-input
               clearable
               prefix-icon="el-icon-user-solid"
@@ -130,7 +132,7 @@
               <el-button slot="append" @click="autoGeneratorId">Auto</el-button>
             </el-input>
           </el-form-item>
-          <el-form-item label="客户端Secret" prop="clientSecret" required>
+          <el-form-item size="mini" label="客户端Secret" prop="clientSecret" required>
             <el-input
               clearable
               prefix-icon="el-icon-view"
@@ -141,13 +143,13 @@
               </el-button>
             </el-input>
           </el-form-item>
-          <el-form-item label="资源ID" >
+          <el-form-item size="mini" label="资源ID" >
             <el-input clearable
                       placeholder="多个资源时用逗号(,)分隔"
                       v-model="ruleForm.resourceIds">
             </el-input>
           </el-form-item>
-          <el-form-item label="权限范围">
+          <el-form-item size="mini" label="权限范围">
             <el-input
               disabled
               prefix-icon="el-icon-success"
@@ -157,9 +159,8 @@
             >
             </el-input>
           </el-form-item>
-          <el-form-item label="认证方式" prop="authorizedGrantTypes" required>
+          <el-form-item size="mini" label="认证方式" prop="authorizedGrantTypes" required>
             <el-select
-
               v-model="ruleForm.authorizedGrantTypes"
               placeholder="请选择"
               multiple
@@ -177,7 +178,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="重定向" prop="webServerRedirectUri">
+          <el-form-item size="mini" label="重定向" prop="webServerRedirectUri">
             <el-input v-model="ruleForm.webServerRedirectUri"
                       placeholder="协议://域名:端口"
                       class="input-with-select"
@@ -190,10 +191,10 @@
               <template slot="append">.com</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="权限值" prop="authorities">
+          <el-form-item size="mini" label="权限值" prop="authorities">
             <el-input v-model="ruleForm.authorities" placeholder="若有多个权限值,用逗号(,)分隔"></el-input>
           </el-form-item>
-          <el-form-item label="令牌有效期" prop="accessTokenValidity">
+          <el-form-item size="mini" label="令牌有效期/秒" prop="accessTokenValidity">
             <el-input-number
               v-model="ruleForm.accessTokenValidity"
               controls-position="right"
@@ -203,7 +204,7 @@
             >
             </el-input-number>
           </el-form-item>
-          <el-form-item label="刷新令牌有效期" prop="refreshTokenValidity" >
+          <el-form-item size="mini" label="刷新令牌有效期/秒" prop="refreshTokenValidity" >
             <el-input-number
               v-model="ruleForm.refreshTokenValidity"
               controls-position="right"
@@ -213,10 +214,10 @@
             >
             </el-input-number>
           </el-form-item>
-          <el-form-item label="预选属性" prop="additionalInformation">
+          <el-form-item size="mini" label="预选属性" prop="additionalInformation">
             <el-input v-model="ruleForm.additionalInformation" placeholder="必须为JSON"></el-input>
           </el-form-item>
-          <el-form-item label="自动批准" prop="autoApprove">
+          <el-form-item size="mini" label="自动批准" prop="autoApprove">
             <el-select
               v-model="ruleForm.autoApprove"
               placeholder="请选择"
@@ -232,13 +233,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-divider></el-divider>
-          <el-header>
-            <div align="center">
-              <el-button type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')" plain >新增/更新</el-button>
-              <el-button type="primary" icon="el-icon-refresh" plain @click="resetForm('ruleForm')">重置</el-button>
-            </div>
-          </el-header>
+          <div align="center">
+            <el-button size="mini" type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')" plain >新增/更新</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-refresh" plain @click="resetForm('ruleForm')">重置</el-button>
+          </div>
         </el-form>
 
       </Card>
@@ -266,7 +264,7 @@ export default {
       multipleTable: [],
       page: 1,
       total: 0,
-      size:10,
+      size:8,
       search: '',
       pages: null,
       select: 0,
@@ -305,7 +303,7 @@ export default {
         },
         {
           type: 'expand',
-          width: 50,
+
           align: 'center',
           render: (h, params) => {
             return h(OAuthTableExpend, {
@@ -320,7 +318,8 @@ export default {
           key: 'opt',
           slot: 'opt',
           width: '190px',
-          align: 'center'
+          align: 'center',
+          fixed: 'right'
         }
       ],
       optionsApprove:[{
