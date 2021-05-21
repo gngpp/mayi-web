@@ -1,20 +1,41 @@
+<style scoped>
+.select-count {
+  font-weight: 600;
+  color: #40a9ff;
+}
+
+.select-clear {
+  margin-left: 10px;
+  color: #40a9ff;
+}
+</style>
 <template>
   <el-container>
     <el-main>
-      <el-card
+      <Card
         style="border-radius: 10px"
-        class="box-card"
-        shadow="hover"
       >
         <el-tag effect="plain">
           <i class="el-icon-s-tools"></i>
           操作栏
         </el-tag>
         <el-divider direction="vertical"></el-divider>
-        <el-button-group>
-          <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
-          <el-button icon="el-icon-delete" type="danger" @click="handleDelete" plain>删除</el-button>
-        </el-button-group>
+        <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
+        <el-button icon="el-icon-delete" type="danger" @click="handleDelete" plain>删除</el-button>
+        <el-button  @click="openTip = !openTip">{{
+            openTip ? "关闭提示" : "开启提示"
+          }}</el-button>
+        <Poptip trigger="focus">
+          <Input
+            v-model="search"
+            style="padding-top: revert;margin-bottom: revert; width: 130px"
+            placeholder="键入客户端ID"
+            @on-change="searchClient()"
+          >
+            <Icon type="ios-search" slot="prefix" />
+          </Input>
+          <div slot="content">{{ search }}</div>
+        </Poptip>
         <!--    分割线-->
         <el-divider content-position="center">
           <el-tag effect="plain">
@@ -22,125 +43,50 @@
             OAuth客户端列表
           </el-tag>
         </el-divider>
-        <el-alert
-          style="background: #e7f1f6; color: #707989"
-          :closable="false"
-          effect="dark"
-          show-icon>
-          <template >
-            <span slot="description">{{ '已选择 ' + (this.multipleSelection? 0 : 'ss') + ' 项'  }}
-              <el-button  autofocus type="text" size="mini" style="font-size: 13px"> 清空</el-button>
-            </span>
-
-          </template>
-        </el-alert>
+        <Alert show-icon v-show="openTip">
+          已选择
+          <span class="select-count">{{ this.selectList.length }}</span> 项
+          <a class="select-clear" @click="clearSelectAll()">清空</a>
+        </Alert>
         <!--      表格-->
-        <el-table
-          ref="multipleSelection"
-          v-loading="loading"
-          :data="tableData.filter(data => !search || data.clientId.toLowerCase().includes(search.toLowerCase()))"
-          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-          stripe
-          highlight-current-row
-          border
-          row-key="clientId"
-          style="width: 100%"
-          tooltip-effect="dark"
-          size="mini"
-          @selection-change="handleSelectionChange"
+        <Table
+          :data="tableData"
+          ref="table"
+          :loading="loading"
+          :columns="columns"
+          sortable="custom"
+          @on-selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column
-            label="客户端ID"
-            sortable>
-            <template slot-scope="scope">
-              <el-tag type="success">
-                {{ scope.row.clientId }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="客户端Secret"
-            prop="clientSecret"
-            sortable>
-          </el-table-column>
-          <el-table-column
-            label="权限范围"
-            prop="scope"
-            sortable
-            width="150">
-            <template slot-scope="props">
-              <el-tag>
-                {{ props.row.scope? props.row.scope:'未知' }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="细节"
-            type="expand"
-          >
-            <template slot-scope="props">
-              <el-form  >
-                <el-form-item label="资源ID">
-                  <el-tag>
-                    {{ props.row.resourceIds? props.row.resourceIds:'未知' }}
-                  </el-tag>
-                </el-form-item>
-                <el-form-item label="认证方式:">
-                  <el-tag>
-                    {{ props.row.authorizedGrantTypes?props.row.authorizedGrantTypes:'未知' }}
-                  </el-tag>
-                </el-form-item>
-                <el-form-item label="重定向:">
-                  <el-tag>
-                    {{ props.row.webServerRedirectUri? props.row.webServerRedirectUri: '未知' }}
-                  </el-tag>
-                </el-form-item>
-                <el-form-item label="权限值:">
-                  <el-tag>{{ props.row.authorities? props.row.authorities : '未知' }}</el-tag>
-                </el-form-item>
-                <el-form-item label="Token有效期/秒:">
-                  <el-tag>{{ props.row.accessTokenValidity? props.row.accessTokenValidity : '未知' }}</el-tag>
-                </el-form-item>
-                <el-form-item label="RefreshToken有效期/秒:">
-                  <el-tag>{{ props.row.refreshTokenValidity? props.row.refreshTokenValidity : '未知' }}</el-tag>
-                </el-form-item>
-                <el-form-item label="预选属性/必须为JSON:">
-                  <el-tag>{{ props.row.additionalInformation? props.row.additionalInformation : '未知' }}</el-tag>
-                </el-form-item>
-                <el-form-item label="自动批准:">
-                  <el-tag>{{ props.row.autoApprove? props.row.autoApprove : '未知' }}</el-tag>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" fixed="right" label="操作" width="170">
-            <template slot="header">
-              <el-input
-                v-model="search"
-                placeholder="键入客户端ID"
-                size="mini"/>
-            </template>
-            <template slot-scope="scope">
-              <el-button-group>
-                <el-button
-                  plain
-                  type="primary"
-                  size="mini"
-                  icon="el-icon-edit-outline"
-                  @click="handleEdit(scope.$index, scope.row)">编辑
-                </el-button>
-                <el-button
-                  plain
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)">删除
-                </el-button>
-              </el-button-group>
-            </template>
-          </el-table-column>
-        </el-table>
+          <template slot-scope="{ row }" slot="clientId">
+            <Tag color="blue">{{ row.clientId }}</Tag>
+          </template>
+          <template slot-scope="{ row }" slot="clientSecret">
+            <Tag color="primary">{{ row.clientSecret }}</Tag>
+          </template>
+          <template slot-scope="{ row }" slot="scope">
+            <Tag >{{ row.scope? row.scope:'未知' }}</Tag>
+          </template>
+          <template slot="opt" slot-scope="{ row, index }" >
+            <el-button-group>
+              <el-button
+                plain
+                type="primary"
+                size="mini"
+                style="margin-right: 5px"
+                icon="el-icon-edit-outline"
+                @click="handleEdit(index, row)">编辑
+              </el-button>
+              <el-button
+                plain
+                size="mini"
+                type="danger"
+                icon="el-icon-delete"
+                @click="handleDelete(index, row)">删除
+              </el-button>
+            </el-button-group>
+          </template>
+        </Table>
+        <!--      表格-->
         <el-pagination
           background
           @size-change="handleSizeChange"
@@ -151,13 +97,11 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </el-card>
+      </Card>
     </el-main>
     <el-main>
-      <el-card
+      <Card
         style="border-radius: 10px"
-        class="box-card"
-        shadow="hover"
       >
         <!--    分割线-->
         <el-divider content-position="left">
@@ -296,17 +240,19 @@
           </el-header>
         </el-form>
 
-      </el-card>
+      </Card>
     </el-main>
   </el-container>
 </template>
 
 <script>
+
 import Config from '@/settings'
 import {addClient, editClient, deleteClient, selectClientPage} from "../../../api/system/security";
-
+import OAuthTableExpend from "./OAuthTableExpend";
 export default {
   name: "OAuth2Client",
+  components: {OAuthTableExpend},
   data() {
     return {
       tokenMinTime: 3600,
@@ -316,14 +262,60 @@ export default {
       dialogVisible: false,
       isEdit: false,
       loading: true,
-      multipleSelection: [],
+      multipleTable: [],
       page: 1,
       total: 0,
       size:10,
       search: '',
       pages: null,
       select: 0,
+      openTip: true,
       tableData: [],
+      selectList: [],
+      tempData: [],
+      columns: [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '客户端ID',
+          key: 'clientId',
+          slot: 'clientId',
+          align: 'center'
+        },
+        {
+          title: '客户端Secret',
+          key: 'clientSecret',
+          slot: 'clientSecret',
+          align: 'center'
+        },
+        {
+          title: '权限范围',
+          key: 'scope',
+          slot: 'scope',
+          align: 'center'
+        },
+        {
+          type: 'expand',
+          width: 50,
+          align: 'center',
+          render: (h, params) => {
+            return h(OAuthTableExpend, {
+              props: {
+                row: params.row
+              }
+            })
+          }
+        },
+        {
+          title: '操作',
+          key: 'opt',
+          slot: 'opt',
+          width: '190px'
+        }
+      ],
       optionsApprove:[{
         value: 1,
         label: 'true',
@@ -406,6 +398,7 @@ export default {
         .then(res => {
           setTimeout(() => {
             this.tableData = res.data.records
+            this.tempData = this.tableData
             this.total = res.data.total
             this.pages = res.data.pages
             this.loading = false
@@ -413,6 +406,9 @@ export default {
         }).catch(reason => {
         this.loading = true
       })
+    },
+    getSelect() {
+      return this.multipleTable.length
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -427,6 +423,9 @@ export default {
     resetForm(formName) {
       this.isEdit = false
       this.$refs[formName].resetFields();
+    },
+    clearSelectAll() {
+      this.$refs.table.selectAll(false);
     },
     savaOrUpdate() {
       let  data = this.setForm();
@@ -492,16 +491,14 @@ export default {
       this.page = val;
       this.defaultChangePage()
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
+    handleSelectionChange(e) {
+      this.selectList = e;
+      this.selectList.length = e.length;
+      console.log(this.selectList)
     },
     handleEdit(index, row) {
       if (!this.isEdit) {
-        this.$notify({
-          title: '警告',
-          message: '编辑客户端信息需要重新设置密钥',
-          type: 'warning'
-        })
+        this.$Message.warning('编辑客户端信息需要重新设置密钥');
         this.isEdit = true
         this.ruleForm = this.copyForm(row)
       } else {
@@ -534,6 +531,9 @@ export default {
     },
     autoGeneratorSecret() {
      this.ruleForm.clientSecret = this.randomWord(true, 10, 20)
+    },
+    searchClient() {
+      this.tableData = this.tempData.filter(data => !this.search || data.clientId.toLowerCase().includes(this.search.toLowerCase()))
     },
     handleDelete(index, row) {
       if (Config.applyId == row.clientId) {
@@ -579,7 +579,7 @@ export default {
       }
       this.changePage(query)
     }
-  },
+  }
 }
 </script>
 

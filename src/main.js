@@ -4,15 +4,10 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css'
 
-import Element from 'element-ui'
-// 国际化
-// 引入组件
-import { Button, Select } from 'element-ui'
-Vue.component(Button.name, Button)
-Vue.component(Select.name, Select)
-// i18国际化
-import i18n from './i18n/i18n';
-
+import Element, {i18n} from 'element-ui'
+// ViewUI CSS
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
 
 
 
@@ -46,6 +41,7 @@ Vue.use(VueHighlightJS)
 Vue.use(mavonEditor)
 Vue.use(permission)
 Vue.use(dict)
+Vue.use(ViewUI);
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size
 })
@@ -54,7 +50,6 @@ Vue.config.productionTip = false
 
 new Vue({
   el: '#app',
-  i18n, // 注入国际化
   router,
   store,
   render: h => h(App)
