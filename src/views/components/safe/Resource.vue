@@ -1,10 +1,8 @@
 <template>
   <el-container>
     <el-main>
-      <el-card
+      <Card
         style="border-radius: 10px"
-        class="box-card"
-        shadow="hover"
       >
         <el-tag effect="plain">
           <i class="el-icon-s-tools"></i>
@@ -22,14 +20,6 @@
             接口资源列表
           </el-tag>
         </el-divider>
-        <!--    对话框-->
-        <el-dialog
-          title="提示"
-          :visible.sync="dialogVisible"
-          width="50%"
-          center>
-
-        </el-dialog>
         <!--    资源表格-->
         <el-table
           :data="tableData"
@@ -55,22 +45,24 @@
               placement="right"
               width="300"
               trigger="click">
-              <el-card class="box-card" shadow="never">
-                <div slot="header" class="clearfix">
-                  <span>详情列表</span>
-                </div>
+              <List>
+                <tag color="blue">
+                  <Icon type="ios-albums-outline" />
+                  详情
+                </tag>
+                <divider></divider>
                 <el-form label-position="left">
                   <el-form-item label="完整URL" prop="fullUri">
                     <el-tag>
-                      {{ String(scope.row.fullUri) }}
+                      {{ String(scope.row.fullUri? scope.row.fullUri:'无') }}
                     </el-tag>
                   </el-form-item>
                   <el-form-item label="请求方法" prop="method">
                     <el-tag>
-                      {{ String(scope.row.method) }}
+                      {{ String(scope.row.method?scope.row.method: '无') }}
                     </el-tag>
                   </el-form-item>
-                  <el-form-item label="资源树LEAF" prop="leaf">
+                  <el-form-item label="子节点" prop="leaf">
                     <el-tag>
                       {{ formatBoolean(scope.row.leaf) }}
                     </el-tag>
@@ -86,7 +78,7 @@
                     </el-tag>
                   </el-form-item>
                 </el-form>
-              </el-card>
+              </List>
               <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
             </el-popover>
           </el-table-column>
@@ -104,7 +96,7 @@
           :page-size="pageSize"
           :total="total">
         </el-pagination>
-      </el-card>
+      </Card>
     </el-main>
     <el-main>
       <el-card>
@@ -161,15 +153,7 @@
     </el-main>
   </el-container>
 </template>
-<style>
-.el-table .warning-row {
-  background: #f1f1f1;
-}
 
-.el-table .success-row {
-  background: #ffffff;
-}
-</style>
 <script>
 
 import {selectResourcePage} from "../../../api/system/security";
@@ -294,18 +278,5 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   margin-bottom: 5px;
-}
-
-.demo-table-expand {
-  font-size: 0;
-}
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
 }
 </style>

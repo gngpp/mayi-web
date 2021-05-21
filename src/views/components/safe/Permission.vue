@@ -299,6 +299,10 @@ export default {
           type: 'warning',
           center: true
         }).then(() => {
+          if (ids.length <= 0) {
+            this.$Message.warning("当前没有选中权限条例")
+            return;
+          }
           deletePermissionByIds(ids)
             .then(res => {
               this.$Message.success("删除成功");
@@ -327,8 +331,11 @@ export default {
           this.table.forEach(value => {
             ids.push(value.id)
           })
-          deletePermissionByIds(ids)
-        .then(res => {
+        if (ids.length <= 0) {
+          this.$Message.warning("当前没有选中权限条例")
+          return;
+        }
+          deletePermissionByIds(ids).then(res => {
           this.$Message.success("删除成功");
           // 选择全部，分页减一页
           if (this.tableData.length === this.table.length) {

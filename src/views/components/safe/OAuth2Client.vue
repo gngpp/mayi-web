@@ -547,6 +547,10 @@ export default {
          }
          ids.push(client.clientId)
       }
+      if (ids.length <= 0) {
+        this.$Message.warning("当前没有选中客户端")
+        return;
+      }
       deleteBatchClient(ids).then(res=>{
         this.$Message.success("批量删除成功")
         this.defaultChangePage()
