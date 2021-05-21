@@ -21,7 +21,7 @@
         </el-tag>
         <el-divider direction="vertical"></el-divider>
         <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
-        <el-button icon="el-icon-delete" type="danger" @click="handleDelete" plain>删除</el-button>
+        <el-button icon="el-icon-delete" type="danger" @click="handleDeleteBatch" plain>删除</el-button>
         <el-button  @click="openTip = !openTip">{{
             openTip ? "关闭提示" : "开启提示"
           }}</el-button>
@@ -52,6 +52,7 @@
         <Table
           :data="tableData"
           ref="table"
+          width="100%"
           :loading="loading"
           :columns="columns"
           sortable="custom"
@@ -61,7 +62,7 @@
             <Tag color="blue">{{ row.clientId }}</Tag>
           </template>
           <template slot-scope="{ row }" slot="clientSecret">
-            <Tag color="primary">{{ row.clientSecret }}</Tag>
+            <Tag>{{ row.clientSecret }}</Tag>
           </template>
           <template slot-scope="{ row }" slot="scope">
             <Tag >{{ row.scope? row.scope:'未知' }}</Tag>
@@ -87,16 +88,16 @@
           </template>
         </Table>
         <!--      表格-->
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="page"
-          :page-sizes="[10, 100, 200, 300]"
+        <Page
+          @on-page-size-change	="handleSizeChange"
+          @on-change="handleCurrentChange"
+          show-total
+          show-sizer
+          show-elevator
+          :current="page"
           :page-size="size"
-          layout="total, sizes, prev, pager, next, jumper"
           :total="total">
-        </el-pagination>
+        </Page>
       </Card>
     </el-main>
     <el-main>
@@ -248,7 +249,7 @@
 <script>
 
 import Config from '@/settings'
-import {addClient, editClient, deleteClient, selectClientPage} from "../../../api/system/security";
+import {deleteBatchClient, addClient, editClient, deleteClient, selectClientPage} from "../../../api/system/security";
 import OAuthTableExpend from "./OAuthTableExpend";
 export default {
   name: "OAuth2Client",
@@ -280,19 +281,24 @@ export default {
           align: 'center'
         },
         {
+          sortable: true,
           title: '客户端ID',
+          width: 200,
           key: 'clientId',
           slot: 'clientId',
           align: 'center'
         },
         {
+          sortable: true,
           title: '客户端Secret',
+          width: 200,
           key: 'clientSecret',
           slot: 'clientSecret',
-          align: 'center'
+          align: 'center',
         },
         {
           title: '权限范围',
+          width: 100,
           key: 'scope',
           slot: 'scope',
           align: 'center'
@@ -313,7 +319,8 @@ export default {
           title: '操作',
           key: 'opt',
           slot: 'opt',
-          width: '190px'
+          width: '190px',
+          align: 'center'
         }
       ],
       optionsApprove:[{
@@ -477,11 +484,7 @@ export default {
       return data
     },
     notifyYes(message){
-      this.$notify({
-        title: '成功',
-        message: message,
-        type: 'success'
-      });
+      this.$Message.success(message);
     },
     handleSizeChange(val) {
       this.size = val;
@@ -535,11 +538,24 @@ export default {
     searchClient() {
       this.tableData = this.tempData.filter(data => !this.search || data.clientId.toLowerCase().includes(this.search.toLowerCase()))
     },
+    handleDeleteBatch() {
+      let ids = [];
+      for (let i = 0; i < this.selectList.length; i++) {
+         let client = this.selectList[i];
+         if (client.clientId == Config.applyId) {
+           this.$Message.warning("禁止删除当前登录客户端");
+           return
+         }
+         ids.push(client.clientId)
+      }
+      deleteBatchClient(ids).then(res=>{
+        this.$Message.success("批量删除成功")
+        this.defaultChangePage()
+      })
+    },
     handleDelete(index, row) {
       if (Config.applyId == row.clientId) {
-        this.$notify.error({
-          message: "禁止删除当前登录客户端"
-        })
+        this.$Message.warning("禁止删除当前登录客户端")
         return;
       }
         this.$confirm('此操作将永久删除客户端：' + row.clientId + ' 是否继续?', '提示', {
@@ -549,11 +565,7 @@ export default {
           center: true
         }).then(() => {
           deleteClient(row.clientId).then(res => {
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success'
-            });
+            this.$Message.success("删除成功")
             if (index == 0) {
               let query = {
                 page: this.page -1,
@@ -566,10 +578,7 @@ export default {
             this.defaultChangePage()
           })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
+          this.$Message.info("已取消删除")
         });
     },
     defaultChangePage() {

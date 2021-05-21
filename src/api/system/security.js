@@ -31,6 +31,14 @@ export function deleteClient(clientId) {
   })
 }
 
+export function deleteBatchClient(data) {
+  return request({
+    url: '/oauth/security/client/del/batch',
+    method: 'delete',
+    data
+  })
+}
+
 export function selectResourcePage(data) {
   return request({
     url: '/oauth/security/resource/page',

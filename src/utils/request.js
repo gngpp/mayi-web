@@ -72,7 +72,9 @@ service.interceptors.response.use(
     }
     if (code < 200 || code > 300) {
       Notification.error({
-        title: response.message
+        title: response.message,
+        message: '请求状态码异常',
+        duration: 5000
       })
       return Promise.reject('error')
     } else {
@@ -98,7 +100,8 @@ service.interceptors.response.use(
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({
-          title: '网络请求超时',
+          title: '错误',
+          message: '网络请求超时',
           duration: 5000
         })
         return Promise.reject(error)
@@ -137,6 +140,7 @@ service.interceptors.response.use(
         }
       } else {
         Notification.error({
+          title: '错误',
           message: errMsg,
           duration: 5000
         })
@@ -152,6 +156,7 @@ service.interceptors.response.use(
     // 403 status 无权访问
     if (error.response.status === 403 || errCode === 403) {
       Notification.error({
+        title: '错误',
         message: 'Have no right to access',
         duration: 5000
       })
@@ -172,6 +177,7 @@ service.interceptors.response.use(
       }
       if (errorMsg !== undefined) {
         Notification.error({
+          title: '错误',
           message: errorMsg,
           duration: 5000
         })
@@ -183,11 +189,13 @@ service.interceptors.response.use(
       const errorMsg = errMsg
       if (errorMsg !== undefined) {
         Notification.error({
+          title: '错误',
           message: errorMsg,
           duration: 5000
         })
       } else {
         Notification.error({
+          title: '错误',
           message: 'API request failed！',
           duration: 5000
         })
@@ -198,11 +206,13 @@ service.interceptors.response.use(
       const errorMsg = error.response.data.error
       if (errorMsg !== undefined) {
         Notification.error({
+          title: '错误',
           message: errorMsg,
           duration: 5000
         })
       } else {
         Notification.error({
+          title: '错误',
           message: 'Service Unavailable',
           duration: 5000
         })

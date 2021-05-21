@@ -1,3 +1,14 @@
+<style scoped>
+.select-count {
+  font-weight: 600;
+  color: #40a9ff;
+}
+
+.select-clear {
+  margin-left: 10px;
+  color: #40a9ff;
+}
+</style>
 <template>
   <div class="app-container">
     <el-container>
@@ -16,8 +27,7 @@
           <!--    按钮组-->
           <el-button-group>
             <el-button type="primary" @click="refreshTable()" plain >重置</el-button>
-            <el-button type="success" icon="el-icon-folder-remove" plain @click="deleteCurrentPage()">取消选择</el-button>
-            <el-button type="danger" icon="el-icon-delete"  plain @click="deleteSelect">删除所选</el-button>
+            <el-button type="danger" icon="el-icon-delete"  plain @click="deleteSelect">删除</el-button>
             <el-button type="danger" icon="el-icon-delete"  plain @click="deleteCurrentPage(tableData)">删除当页</el-button>
           </el-button-group>
           <!--    分割线-->
@@ -27,14 +37,17 @@
               权限字典列表
             </el-tag>
           </el-divider>
+          <Alert show-icon v-show="openTip">
+            已选择
+            <span class="select-count">{{ this.table.length }}</span> 项
+            <a class="select-clear" @click="clearSelectAll()">清空</a>
+          </Alert>
           <!--    权限列表-->
           <el-table
+            ref="table"
             v-loading="loading"
-            ref="multipleTable"
             highlight-current-row
-            stripe
-            border
-            :data="tableData.filter(data => !search || data.value.toLowerCase().includes(search.toLowerCase()))"
+            :data="tableData"
             @selection-change="handleSelectionChange"
             style="width: 100%">
             <el-table-column
@@ -75,6 +88,7 @@
               <template slot="header" slot-scope="scope">
                 <el-input
                   v-model="search"
+                  @input="searchPermission()"
                   size="mini"
                   placeholder="输入关键字搜索"/>
               </template>
@@ -164,15 +178,17 @@ export default {
   data() {
     return {
       loading: true,
-      multipleSelection:[],
       dialogVisible: false,
       currentPage: 1,
       pageSize:10,
       total: 0,
       pageCount: null,
       tableData: [],
+      openTip: true,
       search: '',
       isEdit: false,
+      table:[],
+      tempData:[],
       form: {
         id: null,
         name: '',
@@ -197,6 +213,12 @@ export default {
     this.defaultChangePage()
   },
   methods: {
+    searchPermission() {
+      this.tableData = this.tempData.filter(data => !this.search || data.value.toLowerCase().includes(this.search.toLowerCase()))
+    },
+    clearSelectAll() {
+      this.$refs.table.clearSelection()
+    },
     refreshTable() {
       this.defaultChangePage()
     },
@@ -268,7 +290,7 @@ export default {
         const ids = []
         rows.forEach(row => {
           ids.push(row.id)
-          this.$refs.multipleTable.toggleRowSelection(row);
+          this.$refs.table.toggleRowSelection(row);
         });
         this.$confirm('此操作将永久删除当页权限, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -278,11 +300,7 @@ export default {
         }).then(() => {
           deletePermissionByIds(ids)
             .then(res => {
-              this.$notify({
-                title: '成功',
-                message: '删除成功',
-                type: 'success'
-              });
+              this.$Message.success("删除成功");
               let query = {
                 page: this.currentPage -1 ,
                 size: this.pageSize
@@ -290,14 +308,11 @@ export default {
               this.changePage(query)
             })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-          this.$refs.multipleTable.clearSelection();
+          this.$Message.info("已取消删除")
+          this.$refs.table.clearSelection();
         });
       } else {
-        this.$refs.multipleTable.clearSelection();
+        this.$refs.table.clearSelection();
       }
     },
     deleteSelect() {
@@ -308,18 +323,14 @@ export default {
         center: true
       }).then(() => {
         const ids = []
-          this.multipleSelection.forEach(value => {
+          this.table.forEach(value => {
             ids.push(value.id)
           })
           deletePermissionByIds(ids)
         .then(res => {
-          this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success'
-          });
+          this.$Message.success("删除成功");
           // 选择全部，分页减一页
-          if (this.tableData.length === this.multipleSelection.length) {
+          if (this.tableData.length === this.table.length) {
             let query = {
               page: this.currentPage - 1,
               size: this.pageSize
@@ -333,15 +344,12 @@ export default {
           })
         }
       ).catch(reason => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-        this.$refs.multipleTable.clearSelection();
+        this.$Message.info("已取消删除")
+        this.$refs.table.clearSelection();
       })
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.table = val
     },
     checkDelete(index, row) {
       this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
@@ -352,10 +360,7 @@ export default {
       }).then(() => {
         this.handleDelete(index, row)
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+        this.$Message.success("已取消删除");
       });
     },
     handleOpen(id) {
@@ -381,6 +386,7 @@ export default {
             this.currentPage = res.data.current
             this.pageCount = res.data.pages
             this.tableData = res.data.records
+            this.tempData = this.tableData
             this.loading = false
           },300)
         }).catch(reason => {
@@ -405,11 +411,7 @@ export default {
     handleDelete(index, row) {
       deletePermission(row.id)
         .then(res => {
-          this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success'
-          });
+          this.$Message.success("删除成功");
           if (index == 0) {
             let query = {
               page: this.currentPage -1,
@@ -420,11 +422,7 @@ export default {
             this.defaultChangePage()
           }
         }).catch(reason => {
-        this.$notify({
-          title: '失败',
-          message: '删除失败',
-          type: 'error'
-        });
+        this.$Message.error("删除失败");
         this.defaultChangePage()
       })
     },
