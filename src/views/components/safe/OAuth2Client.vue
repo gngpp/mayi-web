@@ -59,13 +59,13 @@
           @on-selection-change="handleSelectionChange"
         >
           <template slot-scope="{ row }" slot="clientId">
-            <Tag color="blue">{{ row.clientId }}</Tag>
+            {{ row.clientId }}
           </template>
           <template slot-scope="{ row }" slot="clientSecret">
             <Tag>{{ row.clientSecret }}</Tag>
           </template>
           <template slot-scope="{ row }" slot="scope">
-            <Tag >{{ row.scope? row.scope:'未知' }}</Tag>
+            {{ row.scope? row.scope:'未知' }}
           </template>
           <template slot="opt" slot-scope="{ row, index }" >
             <el-button-group>
@@ -302,8 +302,9 @@ export default {
           align: 'center'
         },
         {
+          width: 90,
           type: 'expand',
-
+          title: '详情',
           align: 'center',
           render: (h, params) => {
             return h(OAuthTableExpend, {
