@@ -45,40 +45,7 @@
               placement="right"
               width="300"
               trigger="click">
-              <List>
-                <tag color="blue">
-                  <Icon type="ios-albums-outline" />
-                  详情
-                </tag>
-                <divider></divider>
-                <el-form label-position="left">
-                  <el-form-item label="完整URL" prop="fullUri">
-                    <el-tag>
-                      {{ String(scope.row.fullUri? scope.row.fullUri:'无') }}
-                    </el-tag>
-                  </el-form-item>
-                  <el-form-item label="请求方法" prop="method">
-                    <el-tag>
-                      {{ String(scope.row.method?scope.row.method: '无') }}
-                    </el-tag>
-                  </el-form-item>
-                  <el-form-item label="子节点" prop="leaf">
-                    <el-tag>
-                      {{ formatBoolean(scope.row.leaf) }}
-                    </el-tag>
-                  </el-form-item>
-                  <el-form-item label="可用">
-                    <el-tag>
-                      {{ formatBoolean(scope.row.enabled) }}
-                    </el-tag>
-                  </el-form-item>
-                  <el-form-item label="放行" prop="allow">
-                    <el-tag>
-                      {{ formatBoolean(scope.row.allow) }}
-                    </el-tag>
-                  </el-form-item>
-                </el-form>
-              </List>
+
               <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
             </el-popover>
           </el-table-column>
@@ -86,7 +53,17 @@
             prop="description"
             label="描述">
           </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+            <template slot-scope="scope">
+              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small">编辑</el-button>
+            </template>
+          </el-table-column>
         </el-table>
+
         <!--    分页组件-->
         <el-pagination
           background

@@ -61,7 +61,10 @@ export default {
 
   },
   created() {
-
+    this.$Spin.show();
+    setTimeout(() => {
+      this.$Spin.hide();
+    }, 500);
   },
   methods: {
 

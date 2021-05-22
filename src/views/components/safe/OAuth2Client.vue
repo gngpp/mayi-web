@@ -76,7 +76,6 @@
             <el-button-group>
               <el-button
                 type="primary"
-                style="margin-right: 5px"
                 icon="el-icon-edit-outline"
                 @click="handleEdit(index, row)">编辑
               </el-button>
@@ -319,7 +318,7 @@ export default {
           title: '操作',
           key: 'opt',
           slot: 'opt',
-          width: '190px',
+          width: '185px',
           align: 'center',
           fixed: 'right'
         }
