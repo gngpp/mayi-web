@@ -59,12 +59,17 @@
           @on-selection-change="handleSelectionChange"
         >
           <template slot-scope="{ row }" slot="clientId">
+            <Icon type="ios-person" />
             {{ row.clientId }}
           </template>
           <template slot-scope="{ row }" slot="clientSecret">
-            <Tag>{{ row.clientSecret }}</Tag>
+            <Tag>
+              <svg-icon icon-class="password" />
+              {{ row.clientSecret }}
+            </Tag>
           </template>
           <template slot-scope="{ row }" slot="scope">
+            <svg-icon icon-class="chain" />
             {{ row.scope? row.scope:'未知' }}
           </template>
           <template slot="opt" slot-scope="{ row, index }" >
@@ -84,14 +89,13 @@
           </template>
         </Table>
 <!--        分割线-->
-        <Divider />
+        <br/>
         <!--      分页组件-->
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[5, 10, 15]"
-          hide-on-single-page
           :page.sync="page"
           :page-size.sync="size"
           :page-count="pages"
@@ -299,7 +303,7 @@ export default {
           align: 'center'
         },
         {
-          width: 90,
+          width:"auto",
           type: 'expand',
           title: '详情',
           align: 'center',

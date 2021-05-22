@@ -54,14 +54,19 @@
             sortable
             width="150"
             prop="name">
+            <template slot-scope="scope">
+              <svg-icon icon-class="message" />
+              <span style="margin-left: 10px">{{ scope.row.name }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="权限值"
             width="150"
             sortable
+            prop="value"
           >
             <template slot-scope="scope">
-              <svg-icon icon-class="source" />
+              <svg-icon icon-class="permission" />
               <span style="margin-left: 10px">{{ scope.row.value }}</span>
             </template>
           </el-table-column>
@@ -69,11 +74,19 @@
             label="创建者"
             width="90"
             prop="createBy">
+            <template slot-scope="scope">
+              <svg-icon icon-class="role" />
+              <span style="margin-left: 10px">{{ scope.row.createBy }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="描述"
-            width="250"
+            width="auto"
             prop="description">
+            <template slot-scope="scope">
+              <svg-icon icon-class="message" />
+              <span style="margin-left: 10px">{{ scope.row.description }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -100,13 +113,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <Divider />
+        <!--        分割线-->
+        <br/>
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[5, 10, 15]"
-          hide-on-single-page
           :page.sync="currentPage"
           :page-size.sync="pageSize"
           :page-count="pageCount"
