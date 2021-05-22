@@ -20,9 +20,9 @@
           操作栏
         </el-tag>
         <el-divider direction="vertical"></el-divider>
-        <el-button icon="el-icon-refresh" @click="defaultChangePage" type="primary" plain>重置</el-button>
-        <el-button icon="el-icon-delete" type="danger" @click="handleDeleteBatch" plain>删除</el-button>
-        <el-button  @click="openTip = !openTip">{{
+        <el-button :loading="loading" type="primary" icon="el-icon-refresh" @click="defaultChangePage" >重置</el-button>
+        <el-button :loading="loading" type="danger" icon="el-icon-delete"  @click="handleDeleteBatch" >删除</el-button>
+        <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
             openTip ? "关闭提示" : "开启提示"
           }}</el-button>
         <Poptip trigger="focus">
@@ -70,16 +70,12 @@
           <template slot="opt" slot-scope="{ row, index }" >
             <el-button-group>
               <el-button
-                plain
                 type="primary"
-                size="mini"
                 style="margin-right: 5px"
                 icon="el-icon-edit-outline"
                 @click="handleEdit(index, row)">编辑
               </el-button>
               <el-button
-                plain
-                size="mini"
                 type="danger"
                 icon="el-icon-delete"
                 @click="handleDelete(index, row)">删除
@@ -90,16 +86,17 @@
 <!--        分割线-->
         <Divider />
         <!--      分页组件-->
-        <Page
-          @on-page-size-change	="handleSizeChange"
-          @on-change="handleCurrentChange"
-          show-total
-          show-sizer
-          show-elevator
-          :current="page"
-          :page-size="size"
-          :total="total">
-        </Page>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[5, 10, 15]"
+          hide-on-single-page
+          :page.sync="page"
+          :page-size.sync="size"
+          :page-count="pages"
+          :total.sync="total">
+        </el-pagination>
       </Card>
     </el-main>
     <el-main>
@@ -234,8 +231,8 @@
             </el-select>
           </el-form-item>
           <div align="center">
-            <el-button size="mini" type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')" plain >新增/更新</el-button>
-            <el-button size="mini" type="primary" icon="el-icon-refresh" plain @click="resetForm('ruleForm')">重置</el-button>
+            <el-button type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')">新增/更新</el-button>
+            <el-button type="primary" icon="el-icon-refresh" @click="resetForm('ruleForm')">重置</el-button>
           </div>
         </el-form>
 
@@ -403,11 +400,11 @@ export default {
       this.loading = true
       selectClientPage(data)
         .then(res => {
+          this.tableData = res.data.records
+          this.tempData = this.tableData
+          this.total = res.data.total
+          this.pages = res.data.pages
           setTimeout(() => {
-            this.tableData = res.data.records
-            this.tempData = this.tableData
-            this.total = res.data.total
-            this.pages = res.data.pages
             this.loading = false
           },300)
         }).catch(reason => {
@@ -597,11 +594,6 @@ export default {
 </script>
 
 <style lang="scss" rel="stylesheet/scss" scoped>
-::v-deep .box-card {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 7px;
-  margin-bottom: 5px;
-}
 
 .demo-table-expand {
   font-size: 0;

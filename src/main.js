@@ -41,7 +41,9 @@ Vue.use(VueHighlightJS)
 Vue.use(mavonEditor)
 Vue.use(permission)
 Vue.use(dict)
-Vue.use(ViewUI);
+Vue.use(ViewUI, {
+  size: 'default' // set element-ui default size
+});
 Vue.use(Element, {
   size: Cookies.get('size') || 'mini' // set element-ui default size
 })

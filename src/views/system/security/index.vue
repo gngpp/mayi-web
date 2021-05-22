@@ -4,13 +4,8 @@
     <el-tabs :tab-position="'left'" style="height: 100%;" >
       <el-tab-pane label="OAuth客户端管理">
         <span slot="label"><svg-icon icon-class="peoples" /> OAuth客户端管理</span>
-        <el-container class="head-container">
-          <el-main>
-            <OAuth2Client></OAuth2Client>
-          </el-main>
-        </el-container>
+        <OAuth2Client></OAuth2Client>
       </el-tab-pane>
-
       <el-tab-pane label="权限字典管理">
         <span slot="label">
         <svg-icon icon-class="permission" />
@@ -22,34 +17,26 @@
         <span slot="label">
           <svg-icon icon-class="tree" />接口资源管理
         </span>
-        <el-container class="head-container">
-          <el-main>
-            <resource></resource>
-          </el-main>
-        </el-container>
+        <resource></resource>
       </el-tab-pane>
       <el-tab-pane label="接口测试平台">
         <span slot="label">
           <svg-icon icon-class="search" />接口测试平台
         </span>
-        <el-container>
-          <el-header>
-            <el-form :label-position="'left'">
-              <el-form-item label="链接地址">
-                <el-input
-                  clearable
-                  v-model="apiInput"
-                  prefix-icon="el-icon-search" ></el-input>
-              </el-form-item>
-            </el-form>
-          </el-header>
+        <div class="app-container">
+          <el-form :label-position="'left'">
+            <el-form-item label="链接地址">
+              <el-input
+                clearable
+                v-model="apiInput"
+                prefix-icon="el-icon-search" ></el-input>
+            </el-form-item>
+          </el-form>
           <el-divider></el-divider>
-          <el-main>
-            <div>
-              <elFrame :src="apiInput" />
-            </div>
-          </el-main>
-        </el-container>
+          <div>
+            <elFrame :src="apiInput" />
+          </div>
+        </div>
       </el-tab-pane>
       <el-tab-pane label="系统备份">系统备份</el-tab-pane>
       <el-tab-pane label="其他">其他</el-tab-pane>
