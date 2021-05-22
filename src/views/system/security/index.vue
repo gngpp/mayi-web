@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <Spin size="large" fix v-if="show" ></Spin>
     <!--    面板-->
     <el-tabs :tab-position="'left'" style="height: 100%;" >
       <el-tab-pane label="OAuth客户端管理">
@@ -56,18 +57,23 @@ export default {
   components: {Permission, Resource, OAuth2Client, elFrame},
   data() {
     return {
+      show: true,
       apiInput: Config.testApi
     }
 
   },
+  mounted: function () {
+
+  },
   created() {
-    this.$Spin.show();
     setTimeout(() => {
-      this.$Spin.hide();
-    }, 500);
+      this.show = false
+    }, 1000);
   },
   methods: {
-
+    shipShow(value) {
+      this.show = value
+    },
   },
 }
 </script>
