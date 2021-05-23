@@ -386,7 +386,7 @@ export default {
     },
     // 获取部门数据
     getDeptList() {
-      getDept({ query: { }})
+      getDept({ page:1, size:9999, query: { }})
         .then(res => {
           const data = res.data.records
           this.buildDept(data)
