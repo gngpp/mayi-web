@@ -363,7 +363,7 @@ export default {
   created() {
     this.crud.msg.add = '新增成功，默认密码：123456'
     const params = {
-      page: 0,
+      page: 1,
       size: 999,
       query: {}
     }
@@ -418,7 +418,8 @@ export default {
       if (form.id == null) {
         this.getDept()
       } else {
-        this.getSupDept(form.department.id)
+        //this.getSupDept(form.department.id)
+        this.getDept()
       }
       this.getRoles()
       this.getRoleLevel()
@@ -482,7 +483,7 @@ export default {
     },
     getDept() {
       getDept({
-        page: 0,
+        page: 1,
         size: 999,
         query: {
           enabled: true
