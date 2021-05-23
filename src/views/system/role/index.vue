@@ -15,14 +15,11 @@
           <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 145px;"/>
         </el-form-item>
         <el-form-item label="数据范围" prop="dataScope">
-          <el-select v-model="form.dataScope" style="width: 140px" placeholder="请选择数据范围" @change="changeScope">
-            <el-option
-              v-for="item in dateScopes"
-              :key="item"
-              :label="item"
-              :value="getScopeValue(item)"
-            />
-          </el-select>
+          <el-radio-group v-model="form.dataScope">
+            <el-radio-button :label="0">本级</el-radio-button>
+            <el-radio-button :label="1">自定义</el-radio-button>
+            <el-radio-button :label="2">全部</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="角色状态" prop="enabled">
           <el-radio v-for="item in dict.role_status" :key="item.name" v-model="form.enabled" :label="item.value">
@@ -248,14 +245,14 @@ export default {
   },
   methods: {
     getScopeValue(val) {
-      if (val == '本级') {
-        return 0
+      if (val == '0') {
+        return '本级'
       }
-      if (val == '自定义') {
-        return 1
+      if (val == '1') {
+        return '自定义'
       }
-      if (val == '全部') {
-        return 2
+      if (val == '2') {
+        return '全部'
       }
     },
     checkPermission,
