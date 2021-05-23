@@ -89,9 +89,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="性别">
-              <el-radio-group v-model="form.gender" style="width: 178px">
-                <el-radio label="男">男</el-radio>
-                <el-radio label="女">女</el-radio>
+              <el-radio-group v-model="form.gender" style="width: 190px">
+                <el-radio  :label=0>男</el-radio>
+                <el-radio  :label=1>女</el-radio>
+                <el-radio  :label=2>未知</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="状态">
@@ -196,7 +197,11 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"   align="center"/>
             <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称"   align="center"/>
-            <el-table-column prop="gender" label="性别" align="center"/>
+            <el-table-column prop="gender" label="性别" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.gender == 0? '男': (scope.row.gender==1? '女' : '未知') }}
+              </template>
+            </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"  align="center"/>
             <el-table-column :show-overflow-tooltip="true" width="135" align="center" prop="email" label="邮箱"/>
             <el-table-column :show-overflow-tooltip="true" label="部门" prop="department" align="center">

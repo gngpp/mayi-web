@@ -126,15 +126,15 @@ service.interceptors.response.use(
         })
       } if (errMsg === undefined) {
         if (oauthError !== undefined && oauthDescription !== undefined) {
-          Notification.error({
+          Notification.warning({
             title: oauthError,
             message: oauthDescription,
             duration: 5000
           })
         } else {
-          Notification.error({
+          Notification.warning({
             title: "Authentication failed",
-            message: "Incorrect user name or password",
+            message: "You need to Authentication",
             duration: 5000
           })
         }

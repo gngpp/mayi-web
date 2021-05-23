@@ -20,7 +20,7 @@
               v-for="item in dateScopes"
               :key="item"
               :label="item"
-              :value="item"
+              :value="getScopeValue(item)"
             />
           </el-select>
         </el-form-item>
@@ -29,7 +29,7 @@
             {{ item.label }}
           </el-radio>
         </el-form-item>
-        <el-form-item v-if="form.dataScope === '自定义'" label="数据权限" prop="departmentIds">
+        <el-form-item v-if="form.dataScope == 1" label="数据权限" prop="departmentIds">
           <treeselect
             v-model="departmentData"
             :load-options="loadDeptList"
@@ -79,7 +79,11 @@
           >
             <el-table-column :selectable="checkboxT" type="selection" width="55"/>
             <el-table-column prop="name" label="名称"/>
-            <el-table-column prop="dataScope" label="数据权限"/>
+            <el-table-column prop="dataScope" label="数据权限">
+              <template slot-scope="scope">
+                {{ scope.row.dataScope == 0? '本级': (scope.row.dataScope==1? '自定义' : '全部') }}
+              </template>
+            </el-table-column>
             <el-table-column label="角色级别" prop="level" sortable/>
             <el-table-column :show-overflow-tooltip="true" prop="description" label="描述"/>
             <el-table-column align="center" label="状态" prop="enabled">
@@ -243,6 +247,17 @@ export default {
     })
   },
   methods: {
+    getScopeValue(val) {
+      if (val == '本级') {
+        return 0
+      }
+      if (val == '自定义') {
+        return 1
+      }
+      if (val == '全部') {
+        return 2
+      }
+    },
     checkPermission,
     tableRowClassName({row, rowIndex}) {
       if (row.enabled) {
@@ -294,7 +309,7 @@ export default {
     [CRUD.HOOK.beforeToEdit](crud, form) {
       this.departmentData = []
       form.enabled = `${form.enabled}`
-      if (form.dataScope === '自定义') {
+      if (form.dataScope == '1') {
         this.getDeptList()
       }
       this.departmentData = form.departmentIds
@@ -371,7 +386,7 @@ export default {
     },
     // 获取部门数据
     getDeptList() {
-      getDept({ query: { enabled: true }})
+      getDept({ query: { }})
         .then(res => {
           const data = res.data.records
           this.buildDept(data)

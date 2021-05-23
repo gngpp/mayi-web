@@ -50,9 +50,10 @@
                   <span style="color: #C0C0C0;margin-left: 10px;">手机号码不能重复</span>
                 </el-form-item>
                 <el-form-item label="性别">
-                  <el-radio-group v-model="form.gender" style="width: 178px">
-                    <el-radio label="男">男</el-radio>
-                    <el-radio label="女">女</el-radio>
+                  <el-radio-group v-model="form.gender" style="width: 190px">
+                    <el-radio  :label=0>男</el-radio>
+                    <el-radio  :label=1>女</el-radio>
+                    <el-radio  :label=2>未知</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="">
