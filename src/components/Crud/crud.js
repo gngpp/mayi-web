@@ -24,6 +24,10 @@ function CRUD(options) {
     pageSize: null,
     // 表格数据
     data: [],
+    // ref
+    table:[],
+    // 开关提示
+    openTip: true,
     // 选择项
     selections: [],
     // 待查询的对象
@@ -386,6 +390,9 @@ function CRUD(options) {
     // 选择改变
     selectionChangeHandler(val) {
       crud.selections = val
+    },
+    clearSelectAll() {
+      crud.selections.selectAll(false);
     },
     /**
      * 重置查询参数

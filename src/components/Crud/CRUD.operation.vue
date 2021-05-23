@@ -6,7 +6,6 @@
       <el-button
         v-if="crud.optShow.add"
         v-permission="permission.add"
-        plain
         class="filter-item"
         size="mini"
         type="primary"
@@ -19,7 +18,6 @@
         v-if="crud.optShow.edit"
         v-permission="permission.edit"
         class="filter-item"
-        plain
         size="mini"
         type="success"
         icon="el-icon-edit"
@@ -32,7 +30,6 @@
         v-if="crud.optShow.del"
         slot="reference"
         v-permission="permission.del"
-        plain
         class="filter-item"
         type="danger"
         icon="el-icon-delete"
@@ -48,26 +45,24 @@
         :loading="crud.downloadLoading"
         :disabled="!crud.data.length"
         class="filter-item"
-        plain
         size="mini"
         type="warning"
         icon="el-icon-download"
         @click="crud.doExport"
       >导出</el-button>
+            <el-button class="filter-item" type="primary" icon="el-icon-set-up" @click="crud.openTip = !crud.openTip">{{ crud.openTip ? "关闭提示" : "开启提示" }}</el-button>
       <!--右侧-->
       <slot name="right" />
     </span>
     <el-button-group plain class="crud-opts-right">
       <el-button
         circle
-        plain
         size="mini"
         type="primary"
         icon="el-icon-search"
         @click="toggleSearch()"
       />
       <el-button
-        plain
         size="mini"
         type="primary"
         icon="el-icon-refresh"
@@ -80,7 +75,6 @@
       >
         <el-button
           slot="reference"
-          plain
           type="primary"
           size="mini"
           icon="el-icon-s-grid"

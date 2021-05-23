@@ -34,6 +34,12 @@
             <div slot="header" align="center" class="clearfix">
               <span class="role-span">字典列表</span>
             </div>
+            <!--        提示-->
+            <Alert show-icon v-show="crud.openTip">
+              已选择
+              <span class="select-count">{{ crud.selections.length }}</span> 项
+              <a class="select-clear" @click="clearSelectAll()">清空</a>
+            </Alert>
             <el-table
               ref="table"
               v-loading="crud.loading"
@@ -139,7 +145,10 @@ export default {
         this.$refs.dictDetail.dictId = val.id
         this.$refs.dictDetail.crud.toQuery()
       }
-    }
+    },
+    clearSelectAll() {
+      this.$refs.table.clearSelection()
+    },
   }
 }
 </script>

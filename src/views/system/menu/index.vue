@@ -97,6 +97,12 @@
         </div>
         <crudOperation :permission="permission"/>
       </div>
+      <!--        提示-->
+      <Alert show-icon v-show="crud.openTip">
+        已选择
+        <span class="select-count">{{ crud.selections.length }}</span> 项
+        <a class="select-clear" @click="clearSelectAll()">清空</a>
+      </Alert>
       <el-table
         ref="table"
         v-loading="crud.loading"
@@ -219,6 +225,9 @@ export default {
     }
   },
   methods: {
+    clearSelectAll() {
+      this.$refs.table.clearSelection()
+    },
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
       this.menus = []

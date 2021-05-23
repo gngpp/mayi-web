@@ -43,6 +43,7 @@
             OAuth客户端列表
           </el-tag>
         </el-divider>
+<!--        提示-->
         <Alert show-icon v-show="openTip">
           已选择
           <span class="select-count">{{ this.selectList.length }}</span> 项
@@ -497,7 +498,6 @@ export default {
     handleSelectionChange(e) {
       this.selectList = e;
       this.selectList.length = e.length;
-      console.log(this.selectList)
     },
     handleEdit(index, row) {
       if (!this.isEdit) {

@@ -167,10 +167,16 @@
             </div>
             <crudOperation :permission="permission" show=""/>
           </div>
+          <!--        提示-->
+          <Alert show-icon v-show="crud.openTip">
+            已选择
+            <span class="select-count">{{ crud.selections.length }}</span> 项
+            <a class="select-clear" @click="clearSelectAll()">清空</a>
+          </Alert>
           <el-table
-            ref="table"
             v-loading="crud.loading"
             :data="crud.data"
+            ref="table"
             highlight-current-row
             style="width: 100%;"
             @selection-change="crud.selectionChangeHandler"
@@ -314,6 +320,7 @@ export default {
       }
     }
     return {
+      selectList:[],
       avatar: Avatar,
       height: document.documentElement.clientHeight - 180 + 'px;',
       filterText: '',
@@ -586,7 +593,10 @@ export default {
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id
-    }
+    },
+    clearSelectAll() {
+      this.$refs.table.clearSelection()
+    },
   }
 }
 </script>
