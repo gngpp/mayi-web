@@ -83,9 +83,6 @@
       class="box-card"
       shadow="hover"
     >
-      <div slot="header" align="center" class="clearfix">
-        <span class="role-span">菜单管理</span>
-      </div>
       <!--工具栏-->
       <div class="head-container">
         <div v-if="crud.props.searchToggle">
@@ -97,6 +94,13 @@
         </div>
         <crudOperation :permission="permission"/>
       </div>
+      <!--    分割线-->
+      <el-divider content-position="center">
+        <el-tag effect="plain">
+          <svg-icon icon-class="menu" />
+          菜单列表
+        </el-tag>
+      </el-divider>
       <!--        提示-->
       <Alert show-icon v-show="crud.openTip">
         已选择

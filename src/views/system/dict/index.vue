@@ -30,10 +30,13 @@
             <crudOperation :permission="permission"/>
           </div>
           <!--表格渲染-->
-          <el-card class="box-card" shadow="never">
-            <div slot="header" align="center" class="clearfix">
-              <span class="role-span">字典列表</span>
-            </div>
+            <!--    分割线-->
+            <el-divider content-position="center">
+              <el-tag effect="plain">
+                <svg-icon icon-class="education" />
+                字典列表
+              </el-tag>
+            </el-divider>
             <!--        提示-->
             <Alert show-icon v-show="crud.openTip">
               已选择
@@ -64,7 +67,6 @@
             <!--分页组件-->
             <pagination/>
           </el-card>
-        </el-card>
       </el-col>
       <!-- 字典详情列表 -->
       <el-col :xs="24" :sm="24" :md="14" :lg="13" :xl="13">

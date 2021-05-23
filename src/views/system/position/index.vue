@@ -2,14 +2,18 @@
   <div class="app-container">
     <!--表格渲染-->
     <el-card class="box-card" shadow="never">
-      <div slot="header" align="center" class="clearfix">
-        <span class="role-span">职位管理</span>
-      </div>
       <!--工具栏-->
       <div class="head-container">
         <eHeader :dict="dict" :permission="permission"/>
         <crudOperation :permission="permission"/>
       </div>
+      <!--    分割线-->
+      <el-divider content-position="center">
+        <el-tag effect="plain">
+          <svg-icon icon-class="qiniu" />
+          职位列表
+        </el-tag>
+      </el-divider>
       <!--        提示-->
       <Alert show-icon v-show="crud.openTip">
         已选择

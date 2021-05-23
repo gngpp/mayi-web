@@ -50,9 +50,6 @@
       <!--角色列表-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card class="box-card" shadow="never">
-          <div slot="header" align="center" class="clearfix">
-            <span class="role-span">角色管理</span>
-          </div>
           <!--工具栏-->
           <div class="head-container">
             <div v-if="crud.props.searchToggle">
@@ -64,6 +61,13 @@
             </div>
             <crudOperation :permission="permission"/>
           </div>
+          <!--    分割线-->
+          <el-divider content-position="center">
+            <el-tag effect="plain">
+              <svg-icon icon-class="role" />
+              角色列表
+            </el-tag>
+          </el-divider>
           <!--        提示-->
           <Alert show-icon v-show="crud.openTip">
             已选择
