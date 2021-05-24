@@ -41,7 +41,7 @@ function CRUD(options) {
     // 排序规则，默认 id 降序， 支持多字段排序 ['id,desc', 'createTime,asc']
     sort: ['id,asc'],
     // 等待时间
-    time: 50,
+    time: 300,
     // CRUD Method
     crudMethod: {
       add: (form) => {},

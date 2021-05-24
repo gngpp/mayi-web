@@ -38,17 +38,17 @@
       <!--用户数据-->
       <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">
         <!--表单渲染-->
-        <el-dialog
-          :before-close="crud.cancelCU"
-          :close-on-click-modal="false"
-          :title="crud.status.title"
-          :visible.sync="crud.status.cu > 0"
-          append-to-body
-          center
-          close-on-press-escape
-          modal
-          show-close
-          width="570px">
+        <Modal
+          v-model="crud.status.cu > 0"
+          @on-cancel="crud.cancelCU"
+          closable
+          scrollable
+          draggable
+        >
+          <p slot="header" style="color:#3e95ee;text-align:center">
+            <Icon type="md-add-circle" />
+            <span>{{ crud.status.title }}</span>
+          </p>
           <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="66px" size="mini">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username"/>
@@ -96,7 +96,10 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="状态">
-              <el-radio-group v-model="form.enabled" :disabled="form.id === user.id">
+              <el-radio-group
+                style="width: 250px"
+                v-model="form.enabled"
+                :disabled="form.id === user.id">
                 <el-radio
                   v-for="item in dict.user_status"
                   :key="item.id"
@@ -107,7 +110,7 @@
             <el-form-item style="margin-bottom: 0;" label="角色" prop="roleList">
               <el-select
                 v-model="roleData"
-                style="width: 437px"
+                style="width: 350px"
                 multiple
                 placeholder="请选择"
                 @remove-tag="deleteTag"
@@ -123,11 +126,101 @@
               </el-select>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button type="text" @click="crud.cancelCU">取消</el-button>
+          <div slot="footer" align="center" class="dialog-footer">
+            <el-button type="primary" @click="crud.cancelCU">取消</el-button>
             <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
           </div>
-        </el-dialog>
+        </Modal>
+<!--        <el-dialog-->
+<!--          :before-close="crud.cancelCU"-->
+<!--          :close-on-click-modal="false"-->
+<!--          :title="crud.status.title"-->
+<!--          :visible.sync="crud.status.cu > 0"-->
+<!--          append-to-body-->
+<!--          center-->
+<!--          close-on-press-escape-->
+<!--          modal-->
+<!--          show-close-->
+<!--          width="570px">-->
+<!--          <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="66px" size="mini">-->
+<!--            <el-form-item label="用户名" prop="username">-->
+<!--              <el-input v-model="form.username"/>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="电话" prop="phone">-->
+<!--              <el-input v-model.number="form.phone"/>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="昵称" prop="nickName">-->
+<!--              <el-input v-model="form.nickName"/>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="邮箱" prop="email">-->
+<!--              <el-input v-model="form.email" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="部门" prop="department.id">-->
+<!--              <treeselect-->
+<!--                v-model="form.department.id"-->
+<!--                :options="deptList"-->
+<!--                :load-options="loadDeptList"-->
+<!--                style="width: 178px"-->
+<!--                placeholder="选择部门"-->
+<!--              />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="职位" prop="positionList">-->
+<!--              <el-select-->
+<!--                v-model="positionData"-->
+<!--                style="width: 178px"-->
+<!--                multiple-->
+<!--                placeholder="请选择"-->
+<!--                @remove-tag="deleteTag"-->
+<!--                @change="changeJob"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in positionList"-->
+<!--                  :key="item.name"-->
+<!--                  :label="item.name"-->
+<!--                  :value="item.id"-->
+<!--                />-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="性别">-->
+<!--              <el-radio-group v-model="form.gender" style="width: 190px">-->
+<!--                <el-radio  :label=0>男</el-radio>-->
+<!--                <el-radio  :label=1>女</el-radio>-->
+<!--                <el-radio  :label=2>未知</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="状态">-->
+<!--              <el-radio-group v-model="form.enabled" :disabled="form.id === user.id">-->
+<!--                <el-radio-->
+<!--                  v-for="item in dict.user_status"-->
+<!--                  :key="item.id"-->
+<!--                  :label="item.value"-->
+<!--                >{{ item.label }}</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item style="margin-bottom: 0;" label="角色" prop="roleList">-->
+<!--              <el-select-->
+<!--                v-model="roleData"-->
+<!--                style="width: 437px"-->
+<!--                multiple-->
+<!--                placeholder="请选择"-->
+<!--                @remove-tag="deleteTag"-->
+<!--                @change="changeRole"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in roleList"-->
+<!--                  :key="item.name"-->
+<!--                  :disabled="level !== 1 && item.level <= level"-->
+<!--                  :label="item.name"-->
+<!--                  :value="item.id"-->
+<!--                />-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--          </el-form>-->
+<!--          <div slot="footer" class="dialog-footer">-->
+<!--            <el-button type="text" @click="crud.cancelCU">取消</el-button>-->
+<!--            <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>-->
+<!--          </div>-->
+<!--        </el-dialog>-->
         <!--表格渲染-->
         <el-card class="box-card" shadow="never">
           <!--工具栏-->
@@ -142,7 +235,9 @@
                 size="small"
                 style="width: 200px;"
                 @keyup.enter.native="crud.toQuery"
-              />
+              >
+
+              </el-input>
               <date-range-picker v-model="query.createTime" class="date-item"/>
               <el-select
                 v-model="query.enabled"
@@ -219,7 +314,7 @@
                 <div>{{ scope.row.department.name }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="状态" align="center" prop="enabled">
+            <el-table-column label="状态" prop="enabled" required>
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.enabled"
@@ -289,7 +384,7 @@ const defaultForm = {
   id: null,
   username: null,
   nickName: null,
-  gender: '男',
+  gender: 2,
   email: null,
   enabled: 'false',
   roleIds: [],
