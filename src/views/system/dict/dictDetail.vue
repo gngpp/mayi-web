@@ -6,14 +6,26 @@
     <div v-else>
       <!--工具栏-->
       <div class="head-container">
-        <div v-if="crud.props.searchToggle">
-          <!-- 搜索 -->
-          <el-input v-model="query.label" clearable size="small" placeholder="输入字典标签查询" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery" />
-          <rrOperation />
-        </div>
+<!--        <div v-if="crud.props.searchToggle">-->
+<!-- -->
+<!--        </div>-->
+        <!-- 搜索 -->
+        <el-input v-model="query.label" clearable size="small" placeholder="输入字典标签查询" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery()" />
+        <rrOperation />
       </div>
       <!--表单组件-->
-      <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible="crud.status.cu > 0" :title="crud.status.title" width="500px">
+      <Modal
+        width="500"
+        v-model="crud.status.cu > 0"
+        @on-cancel="crud.cancelCU"
+        closable
+        scrollable
+        draggable
+      >
+        <p slot="header" style="color:#3e95ee;text-align:center">
+          <Icon type="md-add-circle" />
+          <span>{{ crud.status.title }}</span>
+        </p>
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="字典标签" prop="label">
             <el-input v-model="form.label" style="width: 370px;" clearable />
@@ -29,7 +41,7 @@
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
           <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
-      </el-dialog>
+      </Modal>
       <!--表格渲染-->
       <el-table
         ref="table"

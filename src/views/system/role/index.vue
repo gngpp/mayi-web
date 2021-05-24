@@ -1,12 +1,16 @@
 <template>
   <div class="app-container">
     <!-- SAVA UPDATE -->
-    <el-dialog
-      :before-close="crud.cancelCU"
-      :close-on-click-modal="false"
-      :title="crud.status.title"
-      :visible.sync="crud.status.cu > 0"
-      append-to-body width="520px">
+    <Modal
+      v-model="crud.status.cu > 0"
+      @on-cancel="crud.cancelCU"
+      closable
+      scrollable
+      >
+      <p slot="header" style="color:#3e95ee;text-align:center">
+        <Icon type="md-add-circle" />
+        <span>{{ crud.status.title }}</span>
+      </p>
       <el-form ref="form" :model="form" :rules="rules" inline label-width="80px" size="small">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="form.name" style="width: 380px;"/>
@@ -15,9 +19,9 @@
           <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 145px;"/>
         </el-form-item>
         <el-form-item label="数据范围" prop="dataScope">
-          <el-radio-group v-model="form.dataScope">
-            <el-radio-button :label="0">本级</el-radio-button>
-            <el-radio-button :label="1">自定义</el-radio-button>
+          <el-radio-group v-model="form.dataScope" @change="loadDepartment">
+            <el-radio-button :label="0">用户级别</el-radio-button>
+            <el-radio-button :label="1" >自定义</el-radio-button>
             <el-radio-button :label="2">全部</el-radio-button>
           </el-radio-group>
         </el-form-item>
@@ -40,11 +44,11 @@
           <el-input v-model="form.description" style="width: 380px;" rows="5" type="textarea" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" align="center" class="dialog-footer">
         <el-button type="text" @click="crud.cancelCU">取消</el-button>
         <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
-    </el-dialog>
+    </Modal>
 
     <el-row :gutter="15">
       <!--角色列表-->
@@ -195,9 +199,9 @@ const defaultForm = {
   id: null,
   name: null,
   description: null,
-  dataScope: '全部',
+  dataScope: '0',
   enabled: 'true',
-  level: 3,
+  level: 999,
   menuIds: null,
   departmentIds: null
 }
@@ -446,6 +450,9 @@ export default {
           data.children = null
         }
       })
+    },
+    loadDepartment() {
+      this.getDeptList()
     },
     // 获取弹窗内部门数据
     loadDeptList({ action, parentNode, callback }) {

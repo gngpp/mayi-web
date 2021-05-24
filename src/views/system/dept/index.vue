@@ -1,15 +1,20 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-    <el-dialog
-      :before-close="crud.cancelCU"
-      :close-on-click-modal="false"
-      :title="crud.status.title"
-      :visible.sync="crud.status.cu > 0"
-      append-to-body width="500px">
+    <Modal
+      v-model="crud.status.cu > 0"
+      @on-cancel="crud.cancelCU"
+      closable
+      scrollable
+      draggable
+    >
+      <p slot="header" style="color:#3e95ee;text-align:center">
+        <Icon type="md-add-circle" />
+        <span>{{ crud.status.title }}</span>
+      </p>
       <el-form ref="form" inline :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="部门名称" prop="name">
-          <el-input v-model="form.name" style="width: 370px;"/>
+          <el-input v-model="form.name" style="width: 200px;"/>
         </el-form-item>
         <el-form-item label="部门排序" prop="deptSort">
           <el-input-number
@@ -17,33 +22,38 @@
             :min="0"
             :max="999"
             controls-position="right"
-            style="width: 370px;"
+            style="width: 200px;"
           />
         </el-form-item>
-        <el-form-item label="顶级部门">
-          <el-radio-group v-model="form.isTop" style="width: 140px">
+        <el-form-item label="顶级部门" style="width: 400px">
+          <el-radio-group v-model="form.isTop" >
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="状态" prop="enabled">
-          <el-radio v-for="item in dict.dept_status" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
-        </el-form-item>
-        <el-form-item v-if="form.isTop === '0'" style="margin-bottom: 0;" label="上级部门" prop="pid">
+        <el-form-item v-if="form.isTop === '0'"  label="上级部门" prop="pid">
           <treeselect
             v-model="form.pid"
             :load-options="loadDept"
             :options="depts"
-            style="width: 370px;"
+            style="width: 250px;"
             placeholder="选择上级类目"
           />
         </el-form-item>
+        <el-form-item label="状态" prop="enabled" style="width: 400px">
+          <el-radio v-for="item in dict.dept_status"
+                    :key="item.id"
+                    v-model="form.enabled"
+                    :label="item.value">
+            {{ item.label }}
+          </el-radio>
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button plain type="primary" @click="crud.cancelCU">取消</el-button>
-        <el-button plain :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
+      <div slot="footer" align="center" class="dialog-footer">
+        <el-button  type="primary" @click="crud.cancelCU">取消</el-button>
+        <el-button  :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
-    </el-dialog>
+    </Modal>
     <!--表格渲染-->
     <el-card class="box-card" shadow="never">
       <!--工具栏-->

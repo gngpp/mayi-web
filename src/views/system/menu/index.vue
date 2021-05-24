@@ -1,7 +1,18 @@
 <template>
   <div class="app-container">
     <!--表单渲染-->
-    <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="580px">
+    <Modal
+      v-model="crud.status.cu > 0"
+      @on-cancel="crud.cancelCU"
+      closable
+      scrollable
+      draggable
+    >
+      <p slot="header" style="color:#3e95ee;text-align:center">
+        <Icon type="md-add-circle" />
+        <span>{{ crud.status.title }}</span>
+      </p>
+
       <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="form.type" size="mini" style="width: 178px">
@@ -18,7 +29,7 @@
             @show="$refs['iconSelect'].reset()"
           >
             <IconSelect ref="iconSelect" @selected="selected" />
-            <el-input slot="reference" v-model="form.icon" style="width: 450px;" placeholder="点击选择图标" readonly>
+            <el-input slot="reference" v-model="form.icon" style="width: 350px;" placeholder="点击选择图标" readonly>
               <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
               <i v-else slot="prefix" class="el-icon-search el-input__icon" />
             </el-input>
@@ -43,7 +54,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="form.type.toString() !== '2'" label="菜单标题" prop="title">
-          <el-input v-model="form.title" :style=" form.type.toString() === '0' ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
+          <el-input v-model="form.title" :style=" form.type.toString() === '0' ? 'width: 350px' : 'width: 178px'" placeholder="菜单标题" />
         </el-form-item>
         <el-form-item v-if="form.type.toString() === '2'" label="按钮名称" prop="title">
           <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
@@ -68,7 +79,7 @@
             v-model="form.pid"
             :options="menus"
             :load-options="loadMenus"
-            style="width: 450px;"
+            style="width: 350px;"
             placeholder="选择上级类目"
           />
         </el-form-item>
@@ -77,7 +88,7 @@
         <el-button type="text" @click="crud.cancelCU">取消</el-button>
         <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
-    </el-dialog>
+    </Modal>
     <!--表格渲染-->
     <el-card
       class="box-card"

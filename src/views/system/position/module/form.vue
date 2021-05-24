@@ -1,12 +1,16 @@
 <template>
-  <el-dialog
-    append-to-body
-    :close-on-click-modal="false"
-    :before-close="crud.cancelCU"
-    :visible="crud.status.cu > 0"
-    :title="crud.status.title"
-    width="500px"
+  <Modal
+    width="360"
+    v-model="crud.status.cu > 0"
+    @on-cancel="crud.cancelCU"
+    closable
+    scrollable
+    draggable
   >
+    <p slot="header" style="color:#3e95ee;text-align:center">
+      <Icon type="md-add-circle" />
+      <span>{{ crud.status.title }}</span>
+    </p>
     <el-form
       ref="form"
       :model="form"
@@ -20,7 +24,7 @@
       >
         <el-input
           v-model="form.name"
-          style="width: 370px;"
+          style="width: 200px;"
         />
       </el-form-item>
       <el-form-item
@@ -32,7 +36,7 @@
           :min="0"
           :max="999"
           controls-position="right"
-          style="width: 370px;"
+          style="width: 200px;"
         />
       </el-form-item>
       <el-form-item
@@ -53,9 +57,10 @@
     <div
       slot="footer"
       class="dialog-footer"
+      align="center"
     >
       <el-button
-        type="text"
+        type="primary"
         @click="crud.cancelCU"
       >
         取消
@@ -68,7 +73,7 @@
         确认
       </el-button>
     </div>
-  </el-dialog>
+  </Modal>
 </template>
 
 <script>

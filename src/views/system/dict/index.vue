@@ -1,20 +1,31 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-    <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible="crud.status.cu > 0" :title="crud.status.title" width="500px">
+    <Modal
+      width="360"
+      v-model="crud.status.cu > 0"
+      @on-cancel="crud.cancelCU"
+      closable
+      scrollable
+      draggable
+    >
+      <p slot="header" style="color:#3e95ee;text-align:center">
+        <Icon type="md-add-circle" />
+        <span>{{ crud.status.title }}</span>
+      </p>
       <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-        <el-form-item label="字典名称" prop="=dictName">
-          <el-input v-model="form.dictName" style="width: 370px;" />
+        <el-form-item label="字典名称" prop="dictName" required>
+          <el-input clearable v-model="form.dictName" style="width: 200px;" />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description" style="width: 370px;" />
+        <el-form-item label="描述" prop="description" required>
+          <el-input clearable v-model="form.description" style="width: 200px;" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="text" @click="crud.cancelCU">取消</el-button>
+      <div slot="footer" align="center" class="dialog-footer">
+        <el-button type="primary" @click="crud.cancelCU">取消</el-button>
         <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
-    </el-dialog>
+    </Modal>
     <!-- 字典列表 -->
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :md="10" :lg="11" :xl="11" style="margin-bottom: 10px">
@@ -78,7 +89,6 @@
               class="filter-item"
               size="mini"
               style="float: right;padding: 4px 10px"
-              plain
               type="primary"
               icon="el-icon-plus"
               @click="$refs.dictDetail && $refs.dictDetail.crud.toAdd()"
@@ -120,9 +130,12 @@ export default {
         { key: 'description', display_name: '描述' }
       ],
       rules: {
-        name: [
-          { required: true, message: '请输入名称', trigger: 'blur' }
-        ]
+        description: [
+          { required: true, message: '请输入描述信息', trigger: 'blur' }
+        ],
+        dictName: [
+          { required: true, message: '字典名称不能为空', trigger: 'blur' }
+        ],
       },
       permission: {
         add: ['ROLE_admin', 'dict:add'],
