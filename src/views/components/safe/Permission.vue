@@ -42,18 +42,18 @@
             draggable
             v-model="openDrawer">
             <Tabs value="name1">
-              <TabPane label="分配角色权限" icon="md-contacts" name="name1">
+              <TabPane label="资源权限绑定" icon="md-contacts" name="name1">
                 <el-button :loading="openDrawerLoading" icon="el-icon-refresh" type="primary" @click="refreshResourceBidingList">刷新</el-button>
                 <div>
                   <br/>
                 </div>
                 <!--                警告提示-->
-                <Alert show-icon>当前选择绑定权限为：{{
+                <Alert show-icon>当前选择绑定权限值：{{
                     this.table.map(value => {
                       return value.value;
                     }).toString()
                   }}</Alert>
-                <Table height="700" highlight-row :loading="openDrawerLoading" :columns="resourceLinkColumns" :data="resourceLinkData">
+                <Table height="600" highlight-row :loading="openDrawerLoading" :columns="resourceLinkColumns" :data="resourceLinkData">
                   <template slot-scope="{ row }" slot="name">
                     <strong>{{ row.name }}</strong>
                   </template>
@@ -66,11 +66,11 @@
                     <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
                   </template>
                   <template slot-scope="{ row, index }" slot="action">
-                    <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">绑定</Button>
+                    <Button type="primary" size="small" style="margin-right: 5px" @click="bindingPermission(row)">绑定</Button>
                   </template>
                 </Table>
               </TabPane>
-              <TabPane label="分配资源权限" icon="md-pulse" name="name2">
+              <TabPane label="角色权限绑定" icon="md-pulse" name="name2">
 
               </TabPane>
             </Tabs>
@@ -224,7 +224,7 @@
 </template>
 
 <script>
-import {selectResourceLinkList, selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
+import {bindingPermission, selectResourceLinkList, selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
 export default {
   name: "Permission",
   data() {
@@ -314,7 +314,31 @@ export default {
     this.defaultChangePage()
   },
   methods: {
+    bindingPermission(row){
+      if (this.table.length === 0) {
+        this.$Message.warning("请选择权限进行绑定")
+        return
+      }
+
+      if (row.value == '') {
+        this.$Message.warning("绑定权限值不能为空")
+        return;
+      }
+      let permissionList = []
+      this.table.forEach(value => {
+        permissionList.push(value.id)
+      })
+      bindingPermission(row.id, permissionList)
+        .then(res => {
+          this.openPermissionDrawer()
+          this.$Message.success("绑定成功")
+      })
+    },
     openPermissionDrawer() {
+      if (this.table.length === 0) {
+        this.$Message.warning("请选择权限进行绑定")
+        return
+      }
       this.openDrawer = true
       this.refreshResourceBidingList()
     },

@@ -104,3 +104,11 @@ export function selectResourceLinkList() {
     method: 'post'
   })
 }
+
+export function bindingPermission(id, data) {
+  return request({
+    url: '/oauth/security/permission/binding/resource?' +'id=' + id,
+    method: 'post',
+    data
+  })
+}
