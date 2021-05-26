@@ -18,12 +18,64 @@
           操作栏
         </el-tag>
         <el-divider direction="vertical"></el-divider>
-        <el-button :loading="loading" icon="el-icon-refresh" type="primary" @click="refreshTable()"  >重置</el-button>
+        <el-button :loading="loading" icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
         <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteSelect">删除</el-button>
         <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteCurrentPage(tableData)">删除当页</el-button>
+        <el-button
+          :loading="loading"
+          @click="openPermissionDrawer"
+          type="warning"
+          icon="el-icon-share"
+        >
+          权限分配
+        </el-button>
         <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
             openTip ? "关闭提示" : "开启提示"
           }}</el-button>
+<!--        抽屉窗口-->
+        <div>
+          <Drawer
+            title="角色与资源权限分配"
+            :closable="true"
+            width="1100"
+            scrollable
+            draggable
+            v-model="openDrawer">
+            <Tabs value="name1">
+              <TabPane label="分配角色权限" icon="md-contacts" name="name1">
+                <el-button :loading="openDrawerLoading" icon="el-icon-refresh" type="primary" @click="refreshResourceBidingList">刷新</el-button>
+                <div>
+                  <br/>
+                </div>
+                <!--                警告提示-->
+                <Alert show-icon>当前选择绑定权限为：{{
+                    this.table.map(value => {
+                      return value.value;
+                    }).toString()
+                  }}</Alert>
+                <Table height="700" highlight-row :loading="openDrawerLoading" :columns="resourceLinkColumns" :data="resourceLinkData">
+                  <template slot-scope="{ row }" slot="name">
+                    <strong>{{ row.name }}</strong>
+                  </template>
+                  <template slot-scope="{ row }" slot="enabled" >
+                    <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
+                    <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
+                  </template>
+                  <template slot-scope="{ row }" slot="allow" >
+                    <Tag v-if="row.allow" type="dot" color="success">{{ row.allow }}</Tag>
+                    <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="action">
+                    <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">绑定</Button>
+                  </template>
+                </Table>
+              </TabPane>
+              <TabPane label="分配资源权限" icon="md-pulse" name="name2">
+
+              </TabPane>
+            </Tabs>
+          </Drawer>
+        </div>
         <!--    分割线-->
         <el-divider content-position="center">
           <el-tag effect="plain">
@@ -90,7 +142,7 @@
           </el-table-column>
           <el-table-column
             fixed="right"
-            width="170"
+            width="220"
             align="right">
             <template slot="header" slot-scope="scope">
               <el-input
@@ -172,16 +224,17 @@
 </template>
 
 <script>
-import {selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
-
+import {selectResourceLinkList, selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
 export default {
   name: "Permission",
   data() {
     return {
+      openDrawer: false,
       loading: true,
+      openDrawerLoading: false,
       dialogVisible: false,
       currentPage: 1,
-      pageSize:8,
+      pageSize:5,
       total: 0,
       pageCount: null,
       tableData: [],
@@ -207,13 +260,74 @@ export default {
         description: [
           { required: true, message: '请输入描述', trigger: 'change' }
         ]
-      }
+      },
+      resourceLinkData:[],
+      resourceLinkColumns: [
+        {
+          title: '资源名称',
+          align: 'center',
+          width: '120',
+          slot: 'name'
+        },
+        {
+          title: '资源URI',
+          align: 'center',
+          width: '300',
+          key: 'uri'
+        },
+        {
+          title: '请求方法',
+          align: 'center',
+          key: 'method',
+          width: '120'
+        },
+        {
+          title: '是否启用',
+          key: 'enabled',
+          width: '120',
+          align: 'center',
+          slot: 'enabled'
+        },
+        {
+          title: '是否放行',
+          key: 'allow',
+          width: '120',
+          align: 'center',
+          slot: 'allow'
+        },
+        {
+          title: '权限',
+          align: 'center',
+          key: 'permissions',
+        },
+        {
+          title: '操作',
+          slot: 'action',
+          width: 100,
+          align: 'center',
+          fixed: 'right'
+        }
+      ],
     }
   },
   created() {
     this.defaultChangePage()
   },
   methods: {
+    openPermissionDrawer() {
+      this.openDrawer = true
+      this.refreshResourceBidingList()
+    },
+    refreshResourceBidingList() {
+      this.openDrawerLoading = true
+      selectResourceLinkList()
+        .then(res => {
+          setTimeout(() => {
+            this.resourceLinkData = res.data
+            this.openDrawerLoading = false
+          }, 300)
+        })
+    },
     searchPermission() {
       this.tableData = this.tempData.filter(data => !this.search || data.value.toLowerCase().includes(this.search.toLowerCase()))
     },

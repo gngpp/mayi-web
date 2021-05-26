@@ -7,18 +7,18 @@
         <span slot="label"><svg-icon icon-class="peoples" /> OAuth客户端管理</span>
         <OAuth2Client></OAuth2Client>
       </el-tab-pane>
-      <el-tab-pane label="权限字典管理">
-        <span slot="label">
-        <svg-icon icon-class="permission" />
-          权限字典管理
-        </span>
-        <permission></permission>
-      </el-tab-pane>
       <el-tab-pane label="权限资源管理">
         <span slot="label">
           <svg-icon icon-class="tree" />接口资源管理
         </span>
         <resource></resource>
+      </el-tab-pane>
+      <el-tab-pane label="权限管理">
+        <span slot="label">
+        <svg-icon icon-class="permission" />
+         权限管理
+        </span>
+        <permission></permission>
       </el-tab-pane>
       <el-tab-pane label="接口测试平台">
         <span slot="label">

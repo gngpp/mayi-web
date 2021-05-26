@@ -49,7 +49,7 @@
           <span class="select-count">{{ this.selectList.length }}</span> 项
           <a class="select-clear" @click="clearSelectAll()">清空</a>
         </Alert>
-        <!--      表格-->
+<!--      表格-->
         <Table
           :data="tableData"
           ref="table"
@@ -265,7 +265,7 @@ export default {
       multipleTable: [],
       page: 1,
       total: 0,
-      size:8,
+      size:5,
       search: '',
       pages: null,
       select: 0,

@@ -39,14 +39,6 @@ export function deleteBatchClient(data) {
   })
 }
 
-export function selectResourcePage(data) {
-  return request({
-    url: '/oauth/security/resource/page',
-    method: 'post',
-    data
-  })
-}
-
 export function selectPermissionPage(data) {
   return request({
     url: '/oauth/security/permission/page',
@@ -98,3 +90,17 @@ export function deletePermissionByIds(data) {
   })
 }
 
+export function selectResourcePage(data) {
+  return request({
+    url: '/oauth/security/resource/page',
+    method: 'post',
+    data
+  })
+}
+
+export function selectResourceLinkList() {
+  return request({
+    url: '/oauth/security/resource/list',
+    method: 'post'
+  })
+}
