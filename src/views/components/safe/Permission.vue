@@ -37,7 +37,7 @@
           <Drawer
             title="角色与资源权限分配"
             :closable="true"
-            width="1100"
+            width="1300"
             scrollable
             draggable
             v-model="openDrawer">
@@ -48,11 +48,13 @@
                   <br/>
                 </div>
                 <!--                警告提示-->
-                <Alert show-icon>当前选择绑定权限值：{{
-                    this.table.map(value => {
-                      return value.value;
-                    }).toString()
-                  }}</Alert>
+                <Alert v-if="this.table.length != 0" show-icon>
+                  <span class="select-count">当前选择绑定权限值：{{
+                      this.table.map(value => {
+                        return value.value;
+                      }).toString()
+                    }}</span>
+                </Alert>
                 <Table height="600" highlight-row :loading="openDrawerLoading" :columns="resourceLinkColumns" :data="resourceLinkData">
                   <template slot-scope="{ row }" slot="name">
                     <strong>{{ row.name }}</strong>
@@ -65,8 +67,22 @@
                     <Tag v-if="row.allow" type="dot" color="success">{{ row.allow }}</Tag>
                     <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
                   </template>
+                  <template slot-scope="{ row }" slot="bindingPermissions">
+                    <tag color="blue">{{
+                        formatPermission(row.bindingPermissions)
+                      }}</tag>
+                  </template>
                   <template slot-scope="{ row, index }" slot="action">
-                    <Button type="primary" size="small" style="margin-right: 5px" @click="bindingPermission(row)">绑定</Button>
+                    <template>
+                      <Select prefix="ios-home"
+                              multiple
+                              placeholder="请选择解绑权限"
+                              style="width:200px">
+                        <Option v-for="item in row.bindingPermissions" :value="item.value" :key="item.id">{{ item.value }}</Option>
+                      </Select>
+                    </template>
+<!--                    <Button type="primary" size="small" style="margin-right: 5px" @click="bindingPermission(row)">绑定</Button>-->
+                    <Button type="primary" size="small" style="margin-right: 5px">解绑</Button>
                   </template>
                 </Table>
               </TabPane>
@@ -298,12 +314,13 @@ export default {
         {
           title: '权限',
           align: 'center',
+          slot: "bindingPermissions",
           key: 'permissions',
         },
         {
           title: '操作',
           slot: 'action',
-          width: 100,
+          width: 300,
           align: 'center',
           fixed: 'right'
         }
@@ -314,9 +331,19 @@ export default {
     this.defaultChangePage()
   },
   methods: {
+    formatPermission(bindingPermissions) {
+      let permissions = []
+      bindingPermissions.forEach(value => {
+        permissions.push(value.value)
+      })
+      return permissions.toString()
+    },
     bindingPermission(row){
       if (this.table.length === 0) {
-        this.$Message.warning("请选择权限进行绑定")
+        this.$Notice.warning({
+          title: '警告',
+          desc: "当前没有选择绑定权限"
+        });
         return
       }
 
@@ -335,10 +362,6 @@ export default {
       })
     },
     openPermissionDrawer() {
-      if (this.table.length === 0) {
-        this.$Message.warning("请选择权限进行绑定")
-        return
-      }
       this.openDrawer = true
       this.refreshResourceBidingList()
     },
