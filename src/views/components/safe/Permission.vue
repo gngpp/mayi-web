@@ -64,6 +64,7 @@
                         return value.value;
                       }).toString()
                     }}</span>
+                    <a class="select-clear" @click="clearSelectAll()">清空</a>
                   </Alert>
 <!--                  解绑操作对话框-->
                   <Modal v-model="openUnbindingResourceModel"
