@@ -105,10 +105,19 @@ export function selectResourceLinkList() {
   })
 }
 
-export function bindingPermission(id, data) {
+export function bindingResource(id, data) {
   return request({
     url: '/oauth/security/permission/binding/resource?' +'id=' + id,
     method: 'post',
     data
   })
 }
+
+export function unbindingResource(id, data) {
+  return request({
+    url: '/oauth/security/permission/unbinding/resource?' +'id=' + id,
+    method: 'put',
+    data
+  })
+}
+
