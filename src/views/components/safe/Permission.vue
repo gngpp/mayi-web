@@ -37,7 +37,7 @@
           <Drawer
             title="角色与资源权限分配"
             :closable="true"
-            width="1200"
+            width="1000"
             scrollable
             draggable
             v-model="openDrawer">
@@ -370,8 +370,6 @@ export default {
       this.selectResourcePermissionIdList =[]
     },
     unbindingResourcePermission(row) {
-      console.log(this.selectResource.id)
-      console.log(this.selectResourcePermissionIdList)
       unbindingResource(this.selectResource.id, this.selectResourcePermissionIdList)
       .then(res => {
         this.$Message.success("解绑成功")
@@ -380,11 +378,15 @@ export default {
       })
     },
     formatPermission(bindingPermissions) {
-      let permissions = []
-      bindingPermissions.forEach(value => {
-        permissions.push(value.value)
-      })
-      return permissions.toString()
+      try {
+        let permissions = []
+        bindingPermissions.forEach(value => {
+          permissions.push(value.value)
+        })
+        return permissions.toString()
+      }catch (e) {
+        return '无'
+      }
     },
     bindingPermission(row){
       row = row ? this.selectResource : row
