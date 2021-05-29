@@ -330,13 +330,13 @@ export default {
     },
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
-      if (crud.form.dataScope === '自定义' && this.departmentData.length === 0) {
+      if (crud.form.dataScope == 1 && this.departmentData.length === 0) {
         this.$message({
           message: '自定义数据权限不能为空',
           type: 'warning'
         })
         return false
-      } else if (crud.form.dataScope === '自定义') {
+      } else if (crud.form.dataScope == 1) {
         crud.form.menuIds = this.menuIds
         crud.form.departmentIds = this.departmentData
         delete crud.form.createTime

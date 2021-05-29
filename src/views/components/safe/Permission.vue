@@ -118,7 +118,13 @@
                 </Card>
               </TabPane>
               <TabPane label="角色权限绑定" icon="md-pulse" name="name2">
-
+                <Card>
+                  <el-tag effect="plain">
+                    <i class="el-icon-s-tools"></i>
+                    操作栏
+                  </el-tag>
+                  <el-divider direction="vertical"></el-divider>
+                </Card>
               </TabPane>
             </Tabs>
           </Drawer>
