@@ -100,7 +100,14 @@ export function selectResourcePage(data) {
 
 export function selectResourceLinkList() {
   return request({
-    url: '/oauth/security/resource/list',
+    url: '/oauth/security/permission/binding/resource/list',
+    method: 'post'
+  })
+}
+
+export function selectBindingRoleList() {
+  return request({
+    url: '/oauth/security/permission/binding/role/list',
     method: 'post'
   })
 }
