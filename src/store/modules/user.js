@@ -100,7 +100,7 @@ export const setUserInfo = (details, commit) => {
     commit('SET_ROLES', details.permission)
   }
   // console.log(res.userInfo)
-  commit('SET_USER', details.userInfo)
+  commit('SET_USER', details.user)
 }
 
 export default user
