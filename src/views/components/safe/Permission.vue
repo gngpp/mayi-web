@@ -41,7 +41,8 @@
             scrollable
             draggable
             v-model="openDrawer">
-            <Tabs value="name1">
+<!--            Tab面板-->
+            <Tabs value="name1" @on-click="handlerSelectTags">
               <TabPane label="资源权限绑定" icon="md-contacts" name="name1">
                 <Card>
                   <el-tag effect="plain">
@@ -49,7 +50,7 @@
                     操作栏
                   </el-tag>
                   <el-divider direction="vertical"></el-divider>
-                  <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshResourceBidingList">刷新</Button>
+                  <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshResourceLinkBidingList">刷新</Button>
                   <!--    分割线-->
                   <el-divider content-position="center">
                     <el-tag effect="plain">
@@ -90,7 +91,7 @@
                     show-context-menu
                     :loading="openDrawerLoading"
                     :columns="resourceLinkColumns"
-                    @on-contextmenu="handleContextMenu"
+                    @on-contextmenu="handleResourceLinkContextMenu"
                     :data="resourceLinkData">
                     <template slot-scope="{ row }" slot="name">
                       <strong>{{ row.name }}</strong>
@@ -109,21 +110,85 @@
                         }}</tag>
                     </template>
                     <template slot="contextMenu">
-                      <DropdownItem @click.native="refreshResourceBidingList">刷新</DropdownItem>
-                      <DropdownItem v-if="this.table.length != 0" @click.native="bindingPermission" style="color: #f69502">绑定</DropdownItem>
+                      <DropdownItem @click.native="refreshResourceLinkBidingList">刷新</DropdownItem>
+                      <DropdownItem v-if="this.table.length != 0" @click.native="bindingResourcePermission" style="color: #f69502">绑定</DropdownItem>
                       <DropdownItem @click.native="openUnbindingResourceModel = true" style="color: #e53d3d">解绑</DropdownItem>
                     </template>
                   </Table>
-
                 </Card>
               </TabPane>
-              <TabPane label="角色权限绑定" icon="md-pulse" name="name2">
+              <TabPane label="角色权限绑定" icon="md-pulse" name="name2" >
                 <Card>
                   <el-tag effect="plain">
                     <i class="el-icon-s-tools"></i>
                     操作栏
                   </el-tag>
                   <el-divider direction="vertical"></el-divider>
+                  <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshRoleBindingList">刷新</Button>
+                  <!--    分割线-->
+                  <el-divider content-position="center">
+                    <el-tag effect="plain">
+                      <svg-icon icon-class="role" />
+                      角色列表
+                    </el-tag>
+                  </el-divider>
+                  <!--                警告提示-->
+                  <Alert v-if="this.table.length != 0" show-icon>
+                  <span class="select-count">当前选择绑定权限值：{{
+                      this.table.map(value => {
+                        return value.value;
+                      }).toString()
+                    }}</span>
+                    <a class="select-clear" @click="clearSelectAll()">清空</a>
+                  </Alert>
+                  <!--                  解绑操作对话框-->
+                  <Modal v-model="openUnbindingRoleModel"
+                         @on-ok="unbindingRolePermission"
+                         @on-cancel="cleanUnbindingRolePermission"
+                         draggable scrollable title="解绑权限">
+                    <!--                警告提示-->
+                    <Alert show-icon type="warning">
+                       <span class="select-count">当前选择角色：{{
+                           this.selectRole.name
+                         }}</span>
+                    </Alert>
+                    <Select
+                      v-model="selectRolePermissionIdList"
+                      multiple
+                      style="width:200px">
+                      <Option  v-for="item in selectRole.bindingPermissions" :value="item.id" :key="item.id">{{ item.value }}</Option>
+                    </Select>
+                  </Modal>
+                  <Table
+                    height="600" highlight-row
+                    context-menu
+                    show-context-menu
+                    :loading="openDrawerLoading"
+                    :columns="roleColumns"
+                    :data="roleData"
+                    @on-contextmenu="handleRoleContextMenu"
+                  >
+                    <template slot-scope="{ row }" slot="name">
+                      <strong>{{ row.name }}</strong>
+                    </template>
+                    <template slot-scope="{ row }" slot="dataScope">
+                      <strong> {{ row.dataScope == 0? '用户部门': (row.dataScope==1? '自定义' : '全部') }} </strong>
+                    </template>
+                    <template slot-scope="{ row }" slot="enabled" >
+                      <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
+                      <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
+                    </template>
+                    <template slot-scope="{ row }" slot="bindingPermissions">
+                      <tag color="blue">{{
+                          formatPermission(row.bindingPermissions)
+                        }}</tag>
+                    </template>
+                    <template slot="contextMenu">
+                      <DropdownItem @click.native="refreshRoleBindingList">刷新</DropdownItem>
+                      <DropdownItem v-if="this.table.length != 0" @click.native="bindingRolePermission" style="color: #f69502">绑定</DropdownItem>
+                      <DropdownItem @click.native="openUnbindingRoleModel = true" style="color: #e53d3d">解绑</DropdownItem>
+                    </template>
+                  </Table>
                 </Card>
               </TabPane>
             </Tabs>
@@ -277,7 +342,19 @@
 </template>
 
 <script>
-import {unbindingResource, bindingResource, selectResourceLinkList, selectPermissionPage, deletePermissionByIds, updatePermission, savePermission, deletePermission} from "../../../api/system/security";
+import {
+  unbindingResource,
+  unbindingRole,
+  bindingRole,
+  bindingResource,
+  selectResourceLinkBindingList,
+  selectPermissionPage,
+  deletePermissionByIds,
+  updatePermission,
+  savePermission,
+  deletePermission,
+  selectRoleBindingList
+} from "../../../api/system/security";
 export default {
   name: "Permission",
   data() {
@@ -285,6 +362,7 @@ export default {
       openDrawer: false,
       loading: true,
       openUnbindingResourceModel: false,
+      openUnbindingRoleModel: false,
       openDrawerLoading: false,
       dialogVisible: false,
       currentPage: 1,
@@ -317,6 +395,7 @@ export default {
         ]
       },
       resourceLinkData:[],
+      roleData:[],
       resourceLinkColumns: [
         {
           title: '资源名称',
@@ -360,27 +439,85 @@ export default {
           key: 'permissions',
         },
       ],
+      roleColumns: [
+        {
+          title: '角色名称',
+          align: 'center',
+          width: '200',
+          key: 'name',
+          slot: 'name',
+          fixed: 'left'
+        },
+        {
+          title: '数据权限',
+          align: 'center',
+          width: '150',
+          slot: 'dataScope',
+          key: 'dataScope'
+        },
+        {
+          title: '状态',
+          align: 'center',
+          key: 'enabled',
+          slot: 'enabled',
+          width: '150'
+        },
+        {
+          title: '描述',
+          key: 'description',
+          width: '200',
+          align: 'center',
+        },
+        {
+          title: '权限',
+          sortable: true,
+          align: 'center',
+          slot: "bindingPermissions",
+          key: 'permissions',
+        },
+      ],
       selectResourcePermissionIdList: [],
-      selectResource: []
+      selectRolePermissionIdList:[],
+      selectResource: [],
+      selectRole:[]
     }
   },
   created() {
     this.defaultChangePage()
   },
   methods: {
-    handleContextMenu (row) {
+    handlerSelectTags() {
+      this.refreshRoleBindingList()
+      this.refreshResourceLinkBidingList()
+    },
+    handleResourceLinkContextMenu (row) {
       this.selectResource = row
+    },
+    handleRoleContextMenu(row) {
+      this.selectRole = row
     },
     cleanUnbindingResourcePermission() {
       this.selectResource = []
       this.selectResourcePermissionIdList =[]
     },
+    cleanUnbindingRolePermission() {
+      this.selectRole = []
+      this.selectRolePermissionIdList = []
+    },
     unbindingResourcePermission(row) {
       unbindingResource(this.selectResource.id, this.selectResourcePermissionIdList)
       .then(res => {
         this.$Message.success("解绑成功")
-        this.refreshResourceBidingList()
         this.cleanUnbindingResourcePermission()
+        this.refreshResourceLinkBidingList()
+      })
+    },
+    unbindingRolePermission(row) {
+      unbindingRole(this.selectRole.id, this.selectRolePermissionIdList)
+      .then(res => {
+        this.$Message.success("解绑成功")
+        this.cleanUnbindingRolePermission()
+        this.refreshRoleBindingList()
       })
     },
     formatPermission(bindingPermissions) {
@@ -389,12 +526,47 @@ export default {
         bindingPermissions.forEach(value => {
           permissions.push(value.value)
         })
-        return permissions.toString()
+        return permissions.length == 0 ? '无' :permissions.toString()
       }catch (e) {
         return '无'
       }
     },
-    bindingPermission(row){
+    bindingRolePermission(row) {
+      row = row ? this.selectRole : row
+      if (row == undefined) {
+        this.$Notice.warning({
+          title: '警告',
+          desc: "当前没有选择绑定资源"
+        });
+        return
+      }
+      if (this.table.length == 0) {
+        this.$Notice.warning({
+          title: '警告',
+          desc: "当前没有选择绑定权限"
+        });
+        return
+      }
+
+      if (row.value == '') {
+        this.$Message.warning("绑定权限值不能为空")
+        return;
+      }
+      let permissionList = []
+      this.table.forEach(value => {
+        permissionList.push(value.id)
+      })
+      if (permissionList.length == 0) {
+        this.$Message.warning("绑定权限列表不能为空")
+        return;
+      }
+      bindingRole(row.id, permissionList)
+        .then(res => {
+          this.openPermissionDrawer()
+          this.$Message.success("绑定成功")
+        })
+    },
+    bindingResourcePermission(row){
       row = row ? this.selectResource : row
       if (row == undefined) {
         this.$Notice.warning({
@@ -431,17 +603,28 @@ export default {
     },
     openPermissionDrawer() {
       this.openDrawer = true
-      this.refreshResourceBidingList()
+      this.refreshResourceLinkBidingList()
+      this.refreshRoleBindingList()
     },
-    refreshResourceBidingList() {
+    refreshResourceLinkBidingList() {
       this.openDrawerLoading = true
-      selectResourceLinkList()
+      selectResourceLinkBindingList()
         .then(res => {
           setTimeout(() => {
             this.resourceLinkData = res.data
             this.openDrawerLoading = false
           }, 300)
         })
+    },
+    refreshRoleBindingList() {
+      this.openDrawerLoading = true
+      selectRoleBindingList()
+      .then(res => {
+          setTimeout(()=>{
+            this.roleData = res.data
+            this.openDrawerLoading = false
+          }, 300)
+      })
     },
     searchPermission() {
       this.tableData = this.tempData.filter(data => !this.search || data.value.toLowerCase().includes(this.search.toLowerCase()))

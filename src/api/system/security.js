@@ -98,14 +98,14 @@ export function selectResourcePage(data) {
   })
 }
 
-export function selectResourceLinkList() {
+export function selectResourceLinkBindingList() {
   return request({
     url: '/oauth/security/permission/binding/resource/list',
     method: 'post'
   })
 }
 
-export function selectBindingRoleList() {
+export function selectRoleBindingList() {
   return request({
     url: '/oauth/security/permission/binding/role/list',
     method: 'post'
@@ -120,6 +120,14 @@ export function bindingResource(id, data) {
   })
 }
 
+export function bindingRole(id, data) {
+  return request({
+    url: '/oauth/security/permission/binding/role?' +'id=' + id,
+    method: 'post',
+    data
+  })
+}
+
 export function unbindingResource(id, data) {
   return request({
     url: '/oauth/security/permission/unbinding/resource?' +'id=' + id,
@@ -128,3 +136,10 @@ export function unbindingResource(id, data) {
   })
 }
 
+export function unbindingRole(id, data) {
+  return request({
+    url: '/oauth/security/permission/unbinding/role?' +'id=' + id,
+    method: 'put',
+    data
+  })
+}

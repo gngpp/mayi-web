@@ -20,7 +20,7 @@
         </el-form-item>
         <el-form-item label="数据范围" prop="dataScope">
           <el-radio-group v-model="form.dataScope" @change="loadDepartment">
-            <el-radio-button :label="0">用户级别</el-radio-button>
+            <el-radio-button :label="0">用户部门</el-radio-button>
             <el-radio-button :label="1" >自定义</el-radio-button>
             <el-radio-button :label="2">全部</el-radio-button>
           </el-radio-group>
@@ -92,7 +92,7 @@
             <el-table-column prop="name" label="名称"/>
             <el-table-column prop="dataScope" label="数据权限">
               <template slot-scope="scope">
-                {{ scope.row.dataScope == 0? '本级': (scope.row.dataScope==1? '自定义' : '全部') }}
+                {{ scope.row.dataScope == 0? '用户部门': (scope.row.dataScope==1? '自定义' : '全部') }}
               </template>
             </el-table-column>
             <el-table-column label="角色级别" prop="level" sortable/>
@@ -217,7 +217,7 @@ export default {
   data() {
     return {
       defaultProps: {children: 'children', label: 'label', isLeaf: 'leaf'},
-      dateScopes: ['全部', '本级', '自定义'],
+      dateScopes: ['全部', '用户部门', '自定义'],
       level: 3,
       currentId: 0,
       menuLoading: false,
@@ -260,7 +260,7 @@ export default {
   methods: {
     getScopeValue(val) {
       if (val == '0') {
-        return '本级'
+        return '用户部门'
       }
       if (val == '1') {
         return '自定义'
