@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: 'Ant-后台管理',
+      title: 'MaYi-Admin',
       logo: Logo
     }
   }
