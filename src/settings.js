@@ -26,7 +26,7 @@ module.exports = {
   /**
    * @description token key
    */
-  TokenKey: 'ANT-ADMIN-TOKEN',
+  TokenKey: 'MAYI-ADMIN-TOKEN',
   /**
    * @description remember key
    */
