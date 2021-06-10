@@ -41,7 +41,7 @@ export function deleteBatchClient(data) {
 
 export function selectPermissionPage(data) {
   return request({
-    url: '/oauth/security/permission/page',
+    url: '/api/security/permission/page',
     method: 'post',
     data
   })
@@ -49,7 +49,7 @@ export function selectPermissionPage(data) {
 
 export function savePermission(data) {
   return request({
-    url: '/oauth/security/permission/add',
+    url: '/api/security/permission/add',
     method: 'post',
     data
   })
@@ -57,7 +57,7 @@ export function savePermission(data) {
 
 export function updatePermission(data) {
   return request({
-    url: '/oauth/security/permission/edit',
+    url: '/api/security/permission/edit',
     method: 'put',
     data
   })
@@ -71,7 +71,7 @@ export function updatePermission(data) {
  */
 export function deletePermission(id) {
   return request({
-    url: '/oauth/security/permission/del?id=' + id,
+    url: '/api/security/permission/del?id=' + id,
     method: 'delete'
   })
 }
@@ -84,7 +84,7 @@ export function deletePermission(id) {
  */
 export function deletePermissionByIds(data) {
   return request({
-    url: '/oauth/security/permission/del/batch',
+    url: '/api/security/permission/del/batch',
     method: 'delete',
     data
   })
@@ -92,7 +92,7 @@ export function deletePermissionByIds(data) {
 
 export function selectResourcePage(data) {
   return request({
-    url: '/oauth/security/resource/page',
+    url: '/api/security/resource/page',
     method: 'post',
     data
   })
@@ -100,21 +100,21 @@ export function selectResourcePage(data) {
 
 export function selectResourceLinkBindingList() {
   return request({
-    url: '/oauth/security/permission/binding/resource/list',
+    url: '/api/security/permission/binding/resource/list',
     method: 'post'
   })
 }
 
 export function selectRoleBindingList() {
   return request({
-    url: '/oauth/security/permission/binding/role/list',
+    url: '/api/security/permission/binding/role/list',
     method: 'post'
   })
 }
 
 export function bindingResource(id, data) {
   return request({
-    url: '/oauth/security/permission/binding/resource?' +'id=' + id,
+    url: '/api/security/permission/binding/resource?' +'id=' + id,
     method: 'post',
     data
   })
@@ -122,7 +122,7 @@ export function bindingResource(id, data) {
 
 export function bindingRole(id, data) {
   return request({
-    url: '/oauth/security/permission/binding/role?' +'id=' + id,
+    url: '/api/security/permission/binding/role?' +'id=' + id,
     method: 'post',
     data
   })
@@ -130,7 +130,7 @@ export function bindingRole(id, data) {
 
 export function unbindingResource(id, data) {
   return request({
-    url: '/oauth/security/permission/unbinding/resource?' +'id=' + id,
+    url: '/api/security/permission/unbinding/resource?' +'id=' + id,
     method: 'put',
     data
   })
@@ -138,7 +138,7 @@ export function unbindingResource(id, data) {
 
 export function unbindingRole(id, data) {
   return request({
-    url: '/oauth/security/permission/unbinding/role?' +'id=' + id,
+    url: '/api/security/permission/unbinding/role?' +'id=' + id,
     method: 'put',
     data
   })
