@@ -27,7 +27,7 @@
           type="warning"
           icon="el-icon-share"
         >
-          权限分配
+          权限绑定管理
         </el-button>
         <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
             openTip ? "关闭提示" : "开启提示"
@@ -407,7 +407,6 @@ export default {
         {
           title: '资源URI',
           sortable: true,
-          align: 'center',
           width: '300',
           key: 'uri'
         },
@@ -466,7 +465,6 @@ export default {
           title: '描述',
           key: 'description',
           width: '200',
-          align: 'center',
         },
         {
           title: '权限',
