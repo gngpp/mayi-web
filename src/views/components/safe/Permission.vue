@@ -18,7 +18,7 @@
           操作栏
         </el-tag>
         <el-divider direction="vertical"></el-divider>
-        <el-button :loading="loading" icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
+        <el-button  icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
         <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteSelect">删除</el-button>
         <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteCurrentPage(tableData)">删除当页</el-button>
         <el-button

@@ -45,7 +45,6 @@
               placement="right"
               width="300"
               trigger="click">
-
               <el-button  icon="el-icon-tickets" slot="reference" size="mini" type="primary" plain>查看详情</el-button>
             </el-popover>
           </el-table-column>
@@ -197,7 +196,7 @@ export default {
     refreshTable() {
       this.loading = true
       let data = {
-        current: this.currentPage,
+        page: this.currentPage,
         size: this.pageSize
       }
       selectResourcePage(data)
