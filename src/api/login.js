@@ -12,7 +12,7 @@ export function login(username, password,grant_type, code, uuid, client_id, clie
       client_secret: encrypt(client_secret)
   }
   return request({
-    url: 'oauth/token',
+    url: '/oauth/token',
     method: 'post',
     params: params
   })
@@ -20,21 +20,21 @@ export function login(username, password,grant_type, code, uuid, client_id, clie
 
 export function getInfo() {
   return request({
-    url: 'oauth/info',
+    url: '/api/users/info',
     method: 'post'
   })
 }
 
 export function getCodeImg() {
   return request({
-    url: 'oauth/code',
+    url: '/oauth/code',
     method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: 'oauth/logout',
+    url: '/oauth/logout',
     method: 'post'
   })
 }

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function selectClientPage(data) {
   return request({
-    url: '/oauth/security/client/page',
+    url: '/api/security/client/page',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function selectClientPage(data) {
 
 export function addClient(data) {
   return request({
-    url: 'oauth/security/client/add',
+    url: '/api/security/client/add',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function addClient(data) {
 
 export function editClient(data) {
   return request({
-    url: 'oauth/security/client/edit',
+    url: '/api/security/client/edit',
     method: 'put',
     data
   })
@@ -26,14 +26,14 @@ export function editClient(data) {
 
 export function deleteClient(clientId) {
   return request({
-    url: '/oauth/security/client/del?clientId=' + clientId,
+    url: '/api/security/client/del?clientId=' + clientId,
     method: 'delete'
   })
 }
 
 export function deleteBatchClient(data) {
   return request({
-    url: '/oauth/security/client/del/batch',
+    url: '/api/security/client/del/batch',
     method: 'delete',
     data
   })

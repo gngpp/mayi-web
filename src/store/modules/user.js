@@ -38,7 +38,7 @@ const user = {
             setRememberMe(rememberMe)
             setToken(token, rememberMe)
             commit('SET_TOKEN', token)
-            setUserInfo(res.data.details, commit)
+            setUserInfo(res.data.user, commit)
             // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
             commit('SET_LOAD_MENUS', true)
             resolve()
@@ -91,16 +91,16 @@ export const logOut = (commit) => {
   removeToken()
 }
 
-export const setUserInfo = (details, commit) => {
+export const setUserInfo = (user, commit) => {
   // 如果没有任何权限，则赋予一个默认的权限，避免请求死循环
-  if (details.permission.length === 0) {
+  if (user.permissions.length === 0) {
     commit('SET_ROLES', ['ROLE_SYSTEM_DEFAULT'])
   } else {
     // console.log(res.permission)
-    commit('SET_ROLES', details.permission)
+    commit('SET_ROLES', user.permissions)
   }
   // console.log(res.userInfo)
-  commit('SET_USER', details.user)
+  commit('SET_USER', user)
 }
 
 export default user
