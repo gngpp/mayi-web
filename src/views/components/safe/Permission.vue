@@ -225,7 +225,7 @@
             width="150"
             prop="name">
             <template slot-scope="scope">
-              <svg-icon icon-class="message" />
+              <i class="el-icon-info" />
               <span style="margin-left: 10px">{{ scope.row.name }}</span>
             </template>
           </el-table-column>
