@@ -138,7 +138,7 @@
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/polar'
-
+import {getToken} from '@/utils/auth'
 export default {
   name: 'ServerMonitor',
   components: {
@@ -149,7 +149,7 @@ export default {
       show: false,
       monitor: null,
       socket: null,
-      url: 'api/monitor',
+      url: '/api/monitor',
       data: {},
       cpuInfo: {
         tooltip: {
@@ -240,7 +240,8 @@ export default {
       }
     },
     init() {
-      let url = 'ws://localhost:8888/' + this.url
+      let url = process.env.VUE_APP_WS_API + this.url
+      let token = getToken()
       this.socket = new WebSocket(url)
       // 获得消息事件
       let that = this;
