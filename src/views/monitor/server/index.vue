@@ -79,7 +79,7 @@
                 </div>
               </div>
               <div class="content">
-                <el-progress type="circle" :percentage="parseFloat(data.swap.usageRate)" />
+                <el-progress type="circle" :percentage="parseFloat(data.swap.usageRate) ? parseFloat(data.swap.usageRate) : 0" />
               </div>
             </el-tooltip>
             <div class="footer">{{ data.swap.used }} / {{ data.swap.total }}</div>
@@ -90,18 +90,18 @@
               <el-tooltip placement="top-end">
                 <div slot="content" style="font-size: 12px;">
                   <div style="padding: 3px">
-                    总量：{{ data.disk.total }}
+                    总量：{{ data.disk.total?data.disk.total:0 }}
                   </div>
                   <div style="padding: 3px">
-                    空闲：{{ data.disk.available }}
+                    空闲：{{ data.disk.available?data.disk.available:0 }}
                   </div>
                 </div>
                 <div class="content">
-                  <el-progress type="circle" :percentage="parseFloat(data.disk.usageRate)" />
+                  <el-progress type="circle" :percentage="parseFloat(data.disk.usageRate)? parseFloat(data.disk.usageRate) : 0" />
                 </div>
               </el-tooltip>
             </div>
-            <div class="footer">{{ data.disk.used }} / {{ data.disk.total }}</div>
+            <div class="footer">{{ data.disk.used? data.disk.used : 0 }} / {{ data.disk.total?data.disk.total:0 }}</div>
           </el-col>
         </div>
       </el-card>
@@ -252,6 +252,7 @@ export default {
         that.cpuInfo.series[0].data.push(parseFloat(that.data.cpu.used))
         that.memoryInfo.series[0].data.push(parseFloat(that.data.memory.usageRate))
       }
+
     }
   }
 }
