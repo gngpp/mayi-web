@@ -53,7 +53,7 @@
                   <el-radio-group v-model="form.gender" style="width: 190px">
                     <el-radio  :label=0>男</el-radio>
                     <el-radio  :label=1>女</el-radio>
-                    <el-radio  :label=2>未知</el-radio>
+                    <el-radio  :label=2>隐藏</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="">

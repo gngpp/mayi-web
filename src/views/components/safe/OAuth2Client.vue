@@ -69,10 +69,6 @@
               {{ row.clientSecret }}
             </Tag>
           </template>
-          <template slot-scope="{ row }" slot="scope">
-            <svg-icon icon-class="chain" />
-            {{ row.scope? row.scope:'未知' }}
-          </template>
           <template slot="opt" slot-scope="{ row, index }" >
             <el-button-group>
               <el-button
@@ -296,14 +292,7 @@ export default {
           align: 'center',
         },
         {
-          title: '权限范围',
-          width: 100,
-          key: 'scope',
-          slot: 'scope',
-          align: 'center'
-        },
-        {
-          width:"auto",
+          width: 70,
           type: 'expand',
           title: '详情',
           align: 'center',
