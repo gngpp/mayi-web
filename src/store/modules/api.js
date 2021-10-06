@@ -17,7 +17,7 @@ const api = {
     // Sql 监控
     sqlApi: baseUrl + '/druid/index.html',
     // admin 监控
-    adminApi: "http://localhost:10000/login",
+    adminApi: "http://localhost:4444/login",
     // swagger
     swaggerApi: baseUrl + '/swagger-ui.html',
     // 文件上传
