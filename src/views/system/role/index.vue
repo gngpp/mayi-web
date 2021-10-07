@@ -403,7 +403,6 @@ export default {
       if (_this.from.departmentIds == null) {
         _this.from.departmentIds = []
       }
-      console.log(_this.from)
       _this.from.menuIds = this.menuIds
       crudRoles.edit(this.from).then(() => {
         this.crud.notify('保存成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
