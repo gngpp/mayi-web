@@ -43,7 +43,6 @@
           @on-cancel="crud.cancelCU"
           closable
           scrollable
-          draggable
         >
           <p slot="header" style="color:#3e95ee;text-align:center">
             <Icon type="md-add-circle" />

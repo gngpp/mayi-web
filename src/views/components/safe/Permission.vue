@@ -178,11 +178,6 @@
                       <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
                       <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
                     </template>
-                    <template slot-scope="{ row }" slot="bindingPermissions">
-                      <tag color="blue">{{
-                          formatPermission(row.bindingPermissions)
-                        }}</tag>
-                    </template>
                     <template slot="contextMenu">
                       <DropdownItem @click.native="refreshRoleBindingList">刷新</DropdownItem>
                       <DropdownItem v-if="this.table.length != 0" @click.native="bindingRolePermission" style="color: #f69502">绑定</DropdownItem>
@@ -355,6 +350,8 @@ import {
   deletePermission,
   selectRoleBindingList
 } from "../../../api/system/security";
+
+import permissionExpand from "./permision-expand"
 export default {
   name: "Permission",
   data() {
@@ -440,12 +437,24 @@ export default {
       ],
       roleColumns: [
         {
+          type: 'expand',
+          width: 100,
+          title: '查看权限',
+          align: 'center',
+          render: (h, params) => {
+            return h(permissionExpand, {
+              props: {
+                row: params.row
+              }
+            })
+          }
+        },
+        {
           title: '角色名称',
           align: 'center',
-          width: '200',
+          width: '100',
           key: 'name',
           slot: 'name',
-          fixed: 'left'
         },
         {
           title: '数据权限',
@@ -463,15 +472,8 @@ export default {
         },
         {
           title: '描述',
-          key: 'description',
-          width: '200',
-        },
-        {
-          title: '权限',
-          sortable: true,
           align: 'center',
-          slot: "bindingPermissions",
-          key: 'permissions',
+          key: 'description',
         },
       ],
       selectResourcePermissionIdList: [],

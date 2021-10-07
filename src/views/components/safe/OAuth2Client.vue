@@ -1,4 +1,4 @@
-<style scoped>
+w<style scoped>
 .select-count {
   font-weight: 600;
   color: #40a9ff;
@@ -292,7 +292,6 @@ export default {
           align: 'center',
         },
         {
-          width: 70,
           type: 'expand',
           title: '详情',
           align: 'center',

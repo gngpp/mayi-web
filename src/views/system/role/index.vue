@@ -95,6 +95,15 @@
                 {{ scope.row.dataScope == 0? '用户部门': (scope.row.dataScope==1? '自定义' : '全部') }}
               </template>
             </el-table-column>
+            <el-table-column :show-overflow-tooltip="true" label="权限" prop="permissions" sortable width="168px">
+              <template slot-scope="scope">
+                <el-tag
+                  disable-transitions
+                >
+                  {{ formatPermission(scope.row.permissions) }}
+                </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="角色级别" prop="level" sortable/>
             <el-table-column :show-overflow-tooltip="true" prop="description" label="描述"/>
             <el-table-column align="center" label="状态" prop="enabled">
@@ -277,6 +286,13 @@ export default {
         return 'warning-row';
       }
     },
+    formatPermission(permissions) {
+      try {
+        return permissions.length == 0 ? '无' :permissions.toString()
+      }catch (e) {
+        return '无'
+      }
+    },
     clearSelectAll() {
       this.$refs.table.clearSelection()
     },
@@ -330,6 +346,7 @@ export default {
     },
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
+      crud.form.permissions = []
       if (crud.form.dataScope == 1 && this.departmentData.length === 0) {
         this.$message({
           message: '自定义数据权限不能为空',
@@ -341,6 +358,9 @@ export default {
         crud.form.departmentIds = this.departmentData
         delete crud.form.createTime
       } else {
+        crud.form.departmentIds = []
+      }
+      if (crud.form.departmentIds == null) {
         crud.form.departmentIds = []
       }
       if (crud.form.menuIds == null) {
@@ -357,6 +377,7 @@ export default {
         this.currentId = val.id
         // 初始化选中的key
         this.menuIds = val.menuIds
+
         this.from = val
         // 显示button
         this.showButton = true
@@ -379,9 +400,10 @@ export default {
       this.menuLoading = true
       // 得到已选中的 key 值
       const _this = this
-      // this.menuIds.forEach(function(id) {
-      //   _this.from.menuIds.push(id)
-      // })
+      if (_this.from.departmentIds == null) {
+        _this.from.departmentIds = []
+      }
+      console.log(_this.from)
       _this.from.menuIds = this.menuIds
       crudRoles.edit(this.from).then(() => {
         this.crud.notify('保存成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
@@ -395,7 +417,6 @@ export default {
     update() {
       // 无刷新更新 表格数据
       crudRoles.get(this.currentId).then(res => {
-        console.log(res.data)
         for (let i = 0; i < this.crud.data.length; i++) {
           if (res.data.id === this.crud.data[i].id) {
             this.crud.data[i] = res.data
