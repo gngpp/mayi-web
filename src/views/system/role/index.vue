@@ -343,6 +343,9 @@ export default {
       } else {
         crud.form.departmentIds = []
       }
+      if (crud.form.menuIds == null) {
+        crud.form.menuIds = []
+      }
       return true
     },
     // 触发单选
@@ -361,6 +364,9 @@ export default {
     },
     menuChange(menu) {
       // 判断是否在 menuIds 中，如果存在则删除，否则添加
+      if (this.menuIds == null) {
+        this.menuIds = []
+      }
       const index = this.menuIds.indexOf(menu.id)
       if (index !== -1) {
         this.menuIds.splice(index, 1)
@@ -373,16 +379,16 @@ export default {
       this.menuLoading = true
       // 得到已选中的 key 值
       const _this = this
-      this.menuIds.forEach(function(id) {
-        _this.from.menuIds.push(id)
-      })
+      // this.menuIds.forEach(function(id) {
+      //   _this.from.menuIds.push(id)
+      // })
+      _this.from.menuIds = this.menuIds
       crudRoles.edit(this.from).then(() => {
         this.crud.notify('保存成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
         this.menuLoading = false
         this.update()
       }).catch(err => {
         this.menuLoading = false
-        console.log(err.response.data.message)
       })
     },
     // 改变数据
