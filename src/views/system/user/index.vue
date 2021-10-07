@@ -561,7 +561,7 @@ export default {
         return false
       } else if (!this.positionData || this.positionData.length === 0) {
         this.$message({
-          message: '岗位不能为空',
+          message: '职位不能为空',
           type: 'warning'
         })
         return false
@@ -591,9 +591,8 @@ export default {
       getDept({
         page: 1,
         size: 999,
-        query: {
-          enabled: true
-        }}).then(res => {
+        query: {}
+      }).then(res => {
         const data = res.data.records
         this.buildDept(data)
         this.deptList = data
