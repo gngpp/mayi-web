@@ -27,7 +27,7 @@
           type="warning"
           icon="el-icon-share"
         >
-          权限绑定管理
+          权限分配
         </el-button>
         <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
             openTip ? "关闭提示" : "开启提示"

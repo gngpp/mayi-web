@@ -1,7 +1,7 @@
 {
-  "name": "ant-web",
+  "name": "mayi-web",
   "version": "1.1.0",
-  "description": "ANT-ADMIN 前端源码",
+  "description": "MAYI-ADMIN 前端源码",
   "author": "zf1976",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.4.0",
+    "@vue/babel-plugin-transform-vue-jsx": "^1.2.1",
     "axios": "0.18.1",
     "clipboard": "2.0.4",
     "codemirror": "^5.49.2",

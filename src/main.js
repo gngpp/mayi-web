@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css'
 
-import Element, {i18n} from 'element-ui'
+import Element from 'element-ui'
 // ViewUI CSS
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
