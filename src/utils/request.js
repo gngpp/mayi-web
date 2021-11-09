@@ -116,8 +116,8 @@ service.interceptors.response.use(
     }
     // 401 status 未认证
     if (error.response.status === 401 || errCode === 401) {
-      const oauthError = error.response.error
-      const oauthDescription = error.response.error_description
+      const oauthError = error.response.data.error
+      const oauthErrorDescription = error.response.data.error_description
       if (getToken()) {
         // 用户登录界面提示
         setPoint('point', 401)
@@ -125,10 +125,10 @@ service.interceptors.response.use(
           location.reload()
         })
       } if (errMsg === undefined) {
-        if (oauthError !== undefined && oauthDescription !== undefined) {
+        if (oauthError !== undefined && oauthErrorDescription !== undefined) {
           Notification.warning({
             title: oauthError,
-            message: oauthDescription,
+            message: oauthErrorDescription,
             duration: 5000
           })
         } else {
