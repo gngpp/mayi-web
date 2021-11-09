@@ -10,330 +10,337 @@
 }
 </style>
 <template>
-  <el-container>
-    <el-main>
-      <Card style="border-radius: 10px">
-        <el-tag effect="plain">
-          <i class="el-icon-s-tools"></i>
-          操作栏
-        </el-tag>
-        <el-divider direction="vertical"></el-divider>
-        <el-button  icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
-        <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteSelect">删除</el-button>
-        <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteCurrentPage(tableData)">删除当页</el-button>
-        <el-button
-          :loading="loading"
-          @click="openPermissionDrawer"
-          type="warning"
-          icon="el-icon-share"
-        >
-          权限分配
-        </el-button>
-        <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
-            openTip ? "关闭提示" : "开启提示"
-          }}</el-button>
-<!--        抽屉窗口-->
-        <div>
-          <Drawer
-            title="角色与资源权限分配"
-            :closable="true"
-            width="1000"
-            scrollable
-            draggable
-            v-model="openDrawer">
-<!--            Tab面板-->
-            <Tabs value="name1" @on-click="handlerSelectTags">
-              <TabPane label="资源权限绑定" icon="md-contacts" name="name1">
-                <Card>
-                  <el-tag effect="plain">
-                    <i class="el-icon-s-tools"></i>
-                    操作栏
-                  </el-tag>
-                  <el-divider direction="vertical"></el-divider>
-                  <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshResourceLinkBidingList">刷新</Button>
-                  <!--    分割线-->
-                  <el-divider content-position="center">
+  <div class="app-container">
+<!--    <el-main>-->
+<!--    -->
+<!--    </el-main>-->
+<!--    <el-main>-->
+<!--   -->
+<!--    </el-main>-->
+
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
+        <el-card>
+          <el-tag effect="plain">
+            <i class="el-icon-s-tools"></i>
+            操作栏
+          </el-tag>
+          <el-divider direction="vertical"></el-divider>
+          <el-button  icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
+          <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteSelect">删除</el-button>
+          <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteCurrentPage(tableData)">删除当页</el-button>
+          <el-button
+            :loading="loading"
+            @click="openPermissionDrawer"
+            type="warning"
+            icon="el-icon-share"
+          >
+            权限分配
+          </el-button>
+          <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
+              openTip ? "关闭提示" : "开启提示"
+            }}</el-button>
+          <!--        抽屉窗口-->
+          <div>
+            <Drawer
+              title="角色与资源权限分配"
+              :closable="true"
+              width="1000"
+              scrollable
+              draggable
+              v-model="openDrawer">
+              <!--            Tab面板-->
+              <Tabs value="name1" @on-click="handlerSelectTags">
+                <TabPane label="资源权限绑定" icon="md-contacts" name="name1">
+                  <Card>
                     <el-tag effect="plain">
-                      <svg-icon icon-class="tree" />
-                      资源列表
+                      <i class="el-icon-s-tools"></i>
+                      操作栏
                     </el-tag>
-                  </el-divider>
-                  <!--                警告提示-->
-                  <Alert v-if="this.table.length != 0" show-icon>
+                    <el-divider direction="vertical"></el-divider>
+                    <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshResourceLinkBidingList">刷新</Button>
+                    <!--    分割线-->
+                    <el-divider content-position="center">
+                      <el-tag effect="plain">
+                        <svg-icon icon-class="tree" />
+                        资源列表
+                      </el-tag>
+                    </el-divider>
+                    <!--                警告提示-->
+                    <Alert v-if="this.table.length != 0" show-icon>
                   <span class="select-count">当前选择绑定权限值：{{
                       this.table.map(value => {
                         return value.value;
                       }).toString()
                     }}</span>
-                    <a class="select-clear" @click="clearSelectAll()">清空</a>
-                  </Alert>
-<!--                  解绑操作对话框-->
-                  <Modal v-model="openUnbindingResourceModel"
-                         @on-ok="unbindingResourcePermission"
-                         @on-cancel="cleanUnbindingResourcePermission"
-                         draggable scrollable title="解绑权限">
-                    <!--                警告提示-->
-                    <Alert show-icon type="warning">
-                       <span class="select-count">当前选择解绑资源URI：{{
-                         this.selectResource.uri
-                         }}</span>
+                      <a class="select-clear" @click="clearSelectAll()">清空</a>
                     </Alert>
-                    <Select
-                      v-model="selectResourcePermissionIdList"
-                      multiple
-                      style="width:200px">
-                      <Option  v-for="item in selectResource.bindingPermissions" :value="item.id" :key="item.id">{{ item.value }}</Option>
-                    </Select>
-                  </Modal>
-                  <Table
-                    height="600" highlight-row
-                    context-menu
-                    show-context-menu
-                    :loading="openDrawerLoading"
-                    :columns="resourceLinkColumns"
-                    @on-contextmenu="handleResourceLinkContextMenu"
-                    :data="resourceLinkData">
-                    <template slot-scope="{ row }" slot="name">
-                      <strong>{{ row.name }}</strong>
-                    </template>
-                    <template slot-scope="{ row }" slot="enabled" >
-                      <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
-                      <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
-                    </template>
-                    <template slot-scope="{ row }" slot="allow" >
-                      <Tag v-if="row.allow" type="dot" color="success">{{ row.allow }}</Tag>
-                      <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
-                    </template>
-                    <template slot-scope="{ row }" slot="bindingPermissions">
-                      <tag color="blue">{{
-                          formatPermission(row.bindingPermissions)
-                        }}</tag>
-                    </template>
-                    <template slot="contextMenu">
-                      <DropdownItem @click.native="refreshResourceLinkBidingList">刷新</DropdownItem>
-                      <DropdownItem v-if="this.table.length != 0" @click.native="bindingResourcePermission" style="color: #f69502">绑定</DropdownItem>
-                      <DropdownItem @click.native="openUnbindingResourceModel = true" style="color: #e53d3d">解绑</DropdownItem>
-                    </template>
-                  </Table>
-                </Card>
-              </TabPane>
-              <TabPane label="角色权限绑定" icon="md-pulse" name="name2" >
-                <Card>
-                  <el-tag effect="plain">
-                    <i class="el-icon-s-tools"></i>
-                    操作栏
-                  </el-tag>
-                  <el-divider direction="vertical"></el-divider>
-                  <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshRoleBindingList">刷新</Button>
-                  <!--    分割线-->
-                  <el-divider content-position="center">
+                    <!--                  解绑操作对话框-->
+                    <Modal v-model="openUnbindingResourceModel"
+                           @on-ok="unbindingResourcePermission"
+                           @on-cancel="cleanUnbindingResourcePermission"
+                           draggable scrollable title="解绑权限">
+                      <!--                警告提示-->
+                      <Alert show-icon type="warning">
+                       <span class="select-count">当前选择解绑资源URI：{{
+                           this.selectResource.uri
+                         }}</span>
+                      </Alert>
+                      <Select
+                        v-model="selectResourcePermissionIdList"
+                        multiple
+                        style="width:200px">
+                        <Option  v-for="item in selectResource.bindingPermissions" :value="item.id" :key="item.id">{{ item.value }}</Option>
+                      </Select>
+                    </Modal>
+                    <Table
+                      height="600" highlight-row
+                      context-menu
+                      show-context-menu
+                      :loading="openDrawerLoading"
+                      :columns="resourceLinkColumns"
+                      @on-contextmenu="handleResourceLinkContextMenu"
+                      :data="resourceLinkData">
+                      <template slot-scope="{ row }" slot="name">
+                        <strong>{{ row.name }}</strong>
+                      </template>
+                      <template slot-scope="{ row }" slot="enabled" >
+                        <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
+                        <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
+                      </template>
+                      <template slot-scope="{ row }" slot="allow" >
+                        <Tag v-if="row.allow" type="dot" color="success">{{ row.allow }}</Tag>
+                        <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
+                      </template>
+                      <template slot-scope="{ row }" slot="bindingPermissions">
+                        <tag color="blue">{{
+                            formatPermission(row.bindingPermissions)
+                          }}</tag>
+                      </template>
+                      <template slot="contextMenu">
+                        <DropdownItem @click.native="refreshResourceLinkBidingList">刷新</DropdownItem>
+                        <DropdownItem v-if="this.table.length != 0" @click.native="bindingResourcePermission" style="color: #f69502">绑定</DropdownItem>
+                        <DropdownItem @click.native="openUnbindingResourceModel = true" style="color: #e53d3d">解绑</DropdownItem>
+                      </template>
+                    </Table>
+                  </Card>
+                </TabPane>
+                <TabPane label="角色权限绑定" icon="md-pulse" name="name2" >
+                  <Card>
                     <el-tag effect="plain">
-                      <svg-icon icon-class="role" />
-                      角色列表
+                      <i class="el-icon-s-tools"></i>
+                      操作栏
                     </el-tag>
-                  </el-divider>
-                  <!--                警告提示-->
-                  <Alert v-if="this.table.length != 0" show-icon>
+                    <el-divider direction="vertical"></el-divider>
+                    <Button :loading="openDrawerLoading" icon="el-icon-refresh" type="info" @click="refreshRoleBindingList">刷新</Button>
+                    <!--    分割线-->
+                    <el-divider content-position="center">
+                      <el-tag effect="plain">
+                        <svg-icon icon-class="role" />
+                        角色列表
+                      </el-tag>
+                    </el-divider>
+                    <!--                警告提示-->
+                    <Alert v-if="this.table.length != 0" show-icon>
                   <span class="select-count">当前选择绑定权限值：{{
                       this.table.map(value => {
                         return value.value;
                       }).toString()
                     }}</span>
-                    <a class="select-clear" @click="clearSelectAll()">清空</a>
-                  </Alert>
-                  <!--                  解绑操作对话框-->
-                  <Modal v-model="openUnbindingRoleModel"
-                         @on-ok="unbindingRolePermission"
-                         @on-cancel="cleanUnbindingRolePermission"
-                         draggable scrollable title="解绑权限">
-                    <!--                警告提示-->
-                    <Alert show-icon type="warning">
+                      <a class="select-clear" @click="clearSelectAll()">清空</a>
+                    </Alert>
+                    <!--                  解绑操作对话框-->
+                    <Modal v-model="openUnbindingRoleModel"
+                           @on-ok="unbindingRolePermission"
+                           @on-cancel="cleanUnbindingRolePermission"
+                           draggable scrollable title="解绑权限">
+                      <!--                警告提示-->
+                      <Alert show-icon type="warning">
                        <span class="select-count">当前选择角色：{{
                            this.selectRole.name
                          }}</span>
-                    </Alert>
-                    <Select
-                      v-model="selectRolePermissionIdList"
-                      multiple
-                      style="width:200px">
-                      <Option  v-for="item in selectRole.bindingPermissions" :value="item.id" :key="item.id">{{ item.value }}</Option>
-                    </Select>
-                  </Modal>
-                  <Table
-                    height="600" highlight-row
-                    context-menu
-                    show-context-menu
-                    :loading="openDrawerLoading"
-                    :columns="roleColumns"
-                    :data="roleData"
-                    @on-contextmenu="handleRoleContextMenu"
-                  >
-                    <template slot-scope="{ row }" slot="name">
-                      <strong>{{ row.name }}</strong>
-                    </template>
-                    <template slot-scope="{ row }" slot="dataScope">
-                      <strong> {{ row.dataScope == 0? '用户部门': (row.dataScope==1? '自定义' : '全部') }} </strong>
-                    </template>
-                    <template slot-scope="{ row }" slot="enabled" >
-                      <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
-                      <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
-                    </template>
-                    <template slot="contextMenu">
-                      <DropdownItem @click.native="refreshRoleBindingList">刷新</DropdownItem>
-                      <DropdownItem v-if="this.table.length != 0" @click.native="bindingRolePermission" style="color: #f69502">绑定</DropdownItem>
-                      <DropdownItem @click.native="openUnbindingRoleModel = true" style="color: #e53d3d">解绑</DropdownItem>
-                    </template>
-                  </Table>
-                </Card>
-              </TabPane>
-            </Tabs>
-          </Drawer>
-        </div>
-        <!--    分割线-->
-        <el-divider content-position="center">
-          <el-tag effect="plain">
-            <svg-icon icon-class="permission" />
-            权限字典列表
-          </el-tag>
-        </el-divider>
-        <Alert show-icon v-show="openTip">
-          已选择
-          <span class="select-count">{{ this.table.length }}</span> 项
-          <a class="select-clear" @click="clearSelectAll()">清空</a>
-        </Alert>
-        <!--    权限列表-->
-        <el-table
-          ref="table"
-          v-loading="loading"
-          highlight-current-row
-          :data="tableData"
-          @selection-change="handleSelectionChange"
-          style="width: 100%">
-          <el-table-column
-            type="selection"
-            fixed="left"
-            width="55">
-          </el-table-column>
-          <el-table-column
-            label="权限名"
-            sortable
-            width="150"
-            prop="name">
-            <template slot-scope="scope">
-              <i class="el-icon-info" />
-              <span style="margin-left: 10px">{{ scope.row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="权限值"
-            width="150"
-            sortable
-            prop="value"
-          >
-            <template slot-scope="scope">
-              <svg-icon icon-class="permission" />
-              <span style="margin-left: 10px">{{ scope.row.value }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="创建者"
-            width="90"
-            prop="createBy">
-            <template slot-scope="scope">
-              <svg-icon icon-class="role" />
-              <span style="margin-left: 10px">{{ scope.row.createBy }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="描述"
-            width="auto"
-            prop="description">
-            <template slot-scope="scope">
-              <svg-icon icon-class="message" />
-              <span style="margin-left: 10px">{{ scope.row.description }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            fixed="right"
-            width="220"
-            align="right">
-            <template slot="header" slot-scope="scope">
-              <el-input
-                v-model="search"
-                @input="searchPermission()"
-                size="mini"
-                placeholder="输入关键字搜索"/>
-            </template>
-            <template slot-scope="scope">
-              <el-button-group>
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit-outline"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="checkDelete(scope.$index, scope.row)">删除</el-button>
-              </el-button-group>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!--        分割线-->
-        <br/>
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next, jumper"
-          :page-sizes="[5, 10, 15]"
-          :page.sync="currentPage"
-          :page-size.sync="pageSize"
-          :page-count="pageCount"
-          :total.sync="total">
-        </el-pagination>
-      </Card>
-    </el-main>
-    <el-main>
-      <Card
-        style="border-radius: 10px"
-      >
-        <!--    分割线-->
-        <el-divider content-position="left">
-          <el-tag effect="plain">
-            <i class="el-icon-edit-outline"></i>
-            表单
-          </el-tag>
-        </el-divider>
-        <el-form
-          ref="form"
-          :rules="rules"
-          :model="form"
-          label-width="80px">
-          <el-form-item label="编辑状态">
-            <el-switch
-              v-model="isEdit"
-              disabled>
-            </el-switch>
-          </el-form-item>
-          <el-form-item label="权限名称" prop="name">
-            <el-input clearable v-model="form.name"></el-input>
-          </el-form-item>
-          <el-form-item label="权限值" prop="value">
-            <el-input clearable v-model="form.value"></el-input>
-          </el-form-item>
-          <el-form-item label="权限描述" prop="description">
-            <el-input type="textarea" v-model="form.description"></el-input>
-          </el-form-item>
-        </el-form>
-        <el-divider></el-divider>
-        <el-header>
-          <div align="center">
-            <el-button type="primary" icon="el-icon-paperclip"  @click="submitForm('form')">新增/更新</el-button>
-            <el-button type="primary" icon="el-icon-refresh"  @click="resetForm('form')">重置</el-button>
+                      </Alert>
+                      <Select
+                        v-model="selectRolePermissionIdList"
+                        multiple
+                        style="width:200px">
+                        <Option  v-for="item in selectRole.bindingPermissions" :value="item.id" :key="item.id">{{ item.value }}</Option>
+                      </Select>
+                    </Modal>
+                    <Table
+                      height="600" highlight-row
+                      context-menu
+                      show-context-menu
+                      :loading="openDrawerLoading"
+                      :columns="roleColumns"
+                      :data="roleData"
+                      @on-contextmenu="handleRoleContextMenu"
+                    >
+                      <template slot-scope="{ row }" slot="name">
+                        <strong>{{ row.name }}</strong>
+                      </template>
+                      <template slot-scope="{ row }" slot="dataScope">
+                        <strong> {{ row.dataScope == 0? '用户部门': (row.dataScope==1? '自定义' : '全部') }} </strong>
+                      </template>
+                      <template slot-scope="{ row }" slot="enabled" >
+                        <Tag v-if="row.enabled" type="dot" color="success">{{ row.enabled }}</Tag>
+                        <Tag v-if="!row.enabled" type="dot"  color="error">{{ row.enabled }}</Tag>
+                      </template>
+                      <template slot="contextMenu">
+                        <DropdownItem @click.native="refreshRoleBindingList">刷新</DropdownItem>
+                        <DropdownItem v-if="this.table.length != 0" @click.native="bindingRolePermission" style="color: #f69502">绑定</DropdownItem>
+                        <DropdownItem @click.native="openUnbindingRoleModel = true" style="color: #e53d3d">解绑</DropdownItem>
+                      </template>
+                    </Table>
+                  </Card>
+                </TabPane>
+              </Tabs>
+            </Drawer>
           </div>
-        </el-header>
-      </Card>
-    </el-main>
-  </el-container>
+          <!--    分割线-->
+          <el-divider content-position="center">
+            <el-tag effect="plain">
+              <svg-icon icon-class="permission" />
+              权限字典列表
+            </el-tag>
+          </el-divider>
+          <Alert show-icon v-show="openTip">
+            已选择
+            <span class="select-count">{{ this.table.length }}</span> 项
+            <a class="select-clear" @click="clearSelectAll()">清空</a>
+          </Alert>
+          <!--    权限列表-->
+          <el-table
+            ref="table"
+            v-loading="loading"
+            highlight-current-row
+            :data="tableData"
+            @selection-change="handleSelectionChange"
+            style="width: 100%">
+            <el-table-column
+              type="selection"
+              fixed="left"
+              width="55">
+            </el-table-column>
+            <el-table-column
+              label="权限名"
+              sortable
+              width="150"
+              prop="name">
+              <template slot-scope="scope">
+                <i class="el-icon-info" />
+                <span style="margin-left: 10px">{{ scope.row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="权限值"
+              width="150"
+              sortable
+              prop="value"
+            >
+              <template slot-scope="scope">
+                <svg-icon icon-class="permission" />
+                <span style="margin-left: 10px">{{ scope.row.value }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="创建者"
+              width="90"
+              prop="createBy">
+              <template slot-scope="scope">
+                <svg-icon icon-class="role" />
+                <span style="margin-left: 10px">{{ scope.row.createBy }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="描述"
+              width="auto"
+              prop="description">
+              <template slot-scope="scope">
+                <svg-icon icon-class="message" />
+                <span style="margin-left: 10px">{{ scope.row.description }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              width="220"
+              align="right">
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="search"
+                  @input="searchPermission()"
+                  size="mini"
+                  placeholder="输入关键字搜索"/>
+              </template>
+              <template slot-scope="scope">
+                <el-button-group>
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit-outline"
+                    @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="checkDelete(scope.$index, scope.row)">删除</el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--        分割线-->
+          <br/>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            layout="total, sizes, prev, pager, next, jumper"
+            :page-sizes="[5, 10, 15]"
+            :page.sync="currentPage"
+            :page-size.sync="pageSize"
+            :page-count="pageCount"
+            :total.sync="total">
+          </el-pagination>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="7">
+        <el-card>
+          <!--    分割线-->
+          <el-divider content-position="left">
+            <el-tag effect="plain">
+              <i class="el-icon-edit-outline"></i>
+              表单
+            </el-tag>
+          </el-divider>
+          <el-form
+            ref="form"
+            :rules="rules"
+            :model="form"
+            label-width="80px">
+            <el-form-item label="编辑状态">
+              <el-switch
+                v-model="isEdit"
+                disabled>
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="权限名称" prop="name">
+              <el-input clearable v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="权限值" prop="value">
+              <el-input clearable v-model="form.value"></el-input>
+            </el-form-item>
+            <el-form-item label="权限描述" prop="description">
+              <el-input type="textarea" v-model="form.description"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-divider></el-divider>
+          <el-header>
+            <div align="center">
+              <el-button type="primary" icon="el-icon-paperclip"  @click="submitForm('form')">新增/更新</el-button>
+              <el-button type="primary" icon="el-icon-refresh"  @click="resetForm('form')">重置</el-button>
+            </div>
+          </el-header>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>

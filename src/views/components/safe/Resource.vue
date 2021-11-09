@@ -1,9 +1,7 @@
 <template>
   <el-container>
     <el-main>
-      <Card
-        style="border-radius: 10px"
-      >
+      <el-card>
         <el-tag effect="plain">
           <i class="el-icon-s-tools"></i>
           操作栏
@@ -72,7 +70,7 @@
           :page-size="pageSize"
           :total="total">
         </el-pagination>
-      </Card>
+      </el-card>
     </el-main>
     <el-main>
       <el-card>

@@ -16,13 +16,13 @@
       <el-tab-pane label="权限管理">
         <span slot="label">
         <svg-icon icon-class="permission" />
-         权限管理
+         权限分配管理
         </span>
         <permission></permission>
       </el-tab-pane>
       <el-tab-pane label="接口测试平台">
         <span slot="label">
-          <svg-icon icon-class="search" />接口测试平台
+          <svg-icon icon-class="web" />接口测试平台
         </span>
         <div class="app-container">
           <el-form :label-position="'left'">
@@ -39,7 +39,10 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="系统备份">系统备份</el-tab-pane>
+      <el-tab-pane label="系统备份管理">  <span slot="label">
+          <svg-icon icon-class="database" />系统备份管理
+        </span>
+      </el-tab-pane>
       <el-tab-pane label="其他">其他</el-tab-pane>
     </el-tabs>
   </div>

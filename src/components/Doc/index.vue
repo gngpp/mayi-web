@@ -9,7 +9,7 @@ export default {
   name: 'Doc',
   methods: {
     click() {
-      window.open('https://el-admin.vip/guide/', '_blank')
+      window.open('https://github.com/zf1976/mayi', '_blank')
     }
   }
 }
