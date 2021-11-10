@@ -61,7 +61,7 @@
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="部门" prop="department.id">
+            <el-form-item v-if="department" label="部门" prop="department.id">
               <treeselect
                 v-model="form.department.id"
                 :options="deptList"
@@ -309,7 +309,7 @@
             <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"  align="center"/>
             <el-table-column :show-overflow-tooltip="true" width="135" align="center" prop="email" label="邮箱"/>
             <el-table-column :show-overflow-tooltip="true" label="部门" prop="department" align="center">
-              <template slot-scope="scope">
+              <template v-if="scope.row.department != null" slot-scope="scope">
                 <div>{{ scope.row.department.name }}</div>
               </template>
             </el-table-column>
