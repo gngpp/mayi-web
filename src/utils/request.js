@@ -107,8 +107,8 @@ service.interceptors.response.use(
         return Promise.reject(error)
       }
     }
-    let errMsg = "error"
-    let errCode = 500
+    let errMsg
+    let errCode
     // data
     if (data) {
       errMsg = data.errMsg
@@ -133,30 +133,24 @@ service.interceptors.response.use(
           })
         } else {
           Notification.warning({
-            title: "Authentication failed",
-            message: "You need to Authentication",
+            title: "warning",
+            message: "Authentication failed",
             duration: 5000
           })
         }
       } else {
         Notification.error({
-          title: '错误',
+          title: 'error',
           message: errMsg,
           duration: 5000
         })
       }
-      // Notification.error({
-      //   title: "认证失败，请重新登录",
-      //   duration: 5000
-      // })
-      // router.go()
-      // router.push({ path:'/login'})
     }
 
     // 403 status 无权访问
     if (error.response.status === 403 || errCode === 403) {
       Notification.error({
-        title: '错误',
+        title: 'error',
         message: 'Have no right to access',
         duration: 5000
       })
@@ -177,7 +171,7 @@ service.interceptors.response.use(
       }
       if (errorMsg !== undefined) {
         Notification.error({
-          title: '错误',
+          title: 'error',
           message: errorMsg,
           duration: 5000
         })
@@ -185,17 +179,16 @@ service.interceptors.response.use(
     }
 
     // 500 status 服务器错误
-    if (error.response.status === 500 || errCode === 500) {
-      const errorMsg = errMsg
-      if (errorMsg !== undefined) {
+    if (error.response.status === 500) {
+      if (errMsg !== undefined) {
         Notification.error({
-          title: '错误',
-          message: errorMsg,
+          title: 'error',
+          message: errMsg,
           duration: 5000
         })
       } else {
         Notification.error({
-          title: '错误',
+          title: 'error',
           message: 'API request failed！',
           duration: 5000
         })
@@ -206,13 +199,13 @@ service.interceptors.response.use(
       const errorMsg = error.response.data.error
       if (errorMsg !== undefined) {
         Notification.error({
-          title: '错误',
+          title: 'error',
           message: errorMsg,
           duration: 5000
         })
       } else {
         Notification.error({
-          title: '错误',
+          title: 'error',
           message: 'Service Unavailable',
           duration: 5000
         })

@@ -1,6 +1,7 @@
 import {getInfo, login, logout} from '@/api/login'
 import {getPoint, setPoint, getToken, removeToken, setRememberMe, setToken} from '@/utils/auth'
 import Config from '@/settings'
+import {error} from "autoprefixer/lib/utils";
 
 const user = {
   state: {
@@ -33,15 +34,21 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username, userInfo.password, userInfo.grant_type, userInfo.code, userInfo.uuid, Config.applyId, Config.applySecret)
           .then(res => {
-            const token = 'Bearer ' + res.data.oauth2AccessToken.access_token
+            const token = 'Bearer ' + res.data.accessToken.tokenValue
             // 保存->是否记住
             setRememberMe(rememberMe)
             setToken(token, rememberMe)
             commit('SET_TOKEN', token)
-            setUserInfo(res.data.user, commit)
-            // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
-            commit('SET_LOAD_MENUS', true)
-            resolve()
+
+            this.$store.dispatch("GetInfo")
+              .then(res => {
+                setUserInfo(res.data.user, commit)
+                // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
+                commit('SET_LOAD_MENUS', true)
+                resolve()
+              }).catch(error => {
+                reject(error)
+            })
           }).catch(error => {
             reject(error)
           })
