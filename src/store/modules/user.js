@@ -39,16 +39,14 @@ const user = {
             setRememberMe(rememberMe)
             setToken(token, rememberMe)
             commit('SET_TOKEN', token)
-
-            this.$store.dispatch("GetInfo")
-              .then(res => {
+              getInfo().then(res => {
                 setUserInfo(res.data.user, commit)
                 // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
                 commit('SET_LOAD_MENUS', true)
-                resolve()
               }).catch(error => {
                 reject(error)
             })
+            resolve(res)
           }).catch(error => {
             reject(error)
           })

@@ -1,6 +1,8 @@
 import request from '@/utils/request'
 import {encrypt} from '@/utils/rsaEncrypt'
 import {md5Encrypt} from "../utils/md5Encrypt";
+import Config from '@/settings'
+import {getToken} from "@/utils/auth";
 
 export function login(username, password,grant_type, code, uuid, client_id, client_secret) {
   let params = {
@@ -34,8 +36,13 @@ export function getCodeImg() {
 }
 
 export function logout() {
+  let tokenValue = getToken().toString().replace('Bearer ','')
   return request({
-    url: '/oauth2/logout',
-    method: 'post'
+    url: '/oauth2/revoke?token=' + tokenValue,
+    method: 'post',
+    auth: {
+      username: Config.applyId,
+      password: Config.applySecret
+    }
   })
 }
