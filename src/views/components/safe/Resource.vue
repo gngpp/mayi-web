@@ -130,7 +130,7 @@
 
 <script>
 
-import {selectResourcePage} from "../../../api/system/security";
+import {selectResourcePage} from "../../../api/seucirty/security";
 
 
 export default {

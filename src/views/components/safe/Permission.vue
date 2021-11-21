@@ -356,7 +356,7 @@ import {
   savePermission,
   deletePermission,
   selectRoleBindingList
-} from "../../../api/system/security";
+} from "../../../api/seucirty/security";
 
 import permissionExpand from "./permision-expand"
 export default {

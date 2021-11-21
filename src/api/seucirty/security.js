@@ -1,24 +1,24 @@
 import request from '@/utils/request'
 
-export function selectClientPage(data) {
+export function findByPage(data) {
   return request({
-    url: '/api/security/client/page',
+    url: '/security/client/page',
     method: 'post',
     data
   })
 }
 
-export function addClient(data) {
+export function saveClient(data) {
   return request({
-    url: '/api/security/client/add',
+    url: '/security/client/save',
     method: 'post',
     data
   })
 }
 
-export function editClient(data) {
+export function updateClient(data) {
   return request({
-    url: '/api/security/client/edit',
+    url: '/security/client/update',
     method: 'put',
     data
   })

@@ -250,7 +250,7 @@ w<style scoped>
 <script>
 
 import Config from '@/settings'
-import {deleteBatchClient, addClient, editClient, deleteClient, selectClientPage} from "../../../api/system/security";
+import {deleteBatchClient, saveClient, updateClient, deleteClient, findByPage} from "../../../api/seucirty/security";
 import OAuthTableExpend from "./OAuthTableExpend";
 export default {
   name: "OAuth2Client",
@@ -395,7 +395,7 @@ export default {
   methods: {
     changePage(data) {
       this.loading = true
-      selectClientPage(data)
+      findByPage(data)
         .then(res => {
           this.tableData = res.data.records
           this.tempData = this.tableData
@@ -432,13 +432,13 @@ export default {
       let  data = this.setForm();
       // 编辑状态
       if (this.isEdit) {
-        editClient(data).then(res => {
+        updateClient(data).then(res => {
           this.notifyYes('更新客户端成功')
           this.resetForm('ruleForm')
           this.defaultChangePage()
         })
       } else {
-        addClient(data).then(res => {
+        saveClient(data).then(res => {
           this.notifyYes('添加客户端成功')
           this.resetForm('ruleForm')
           this.defaultChangePage()

@@ -34,7 +34,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username, userInfo.password, userInfo.grant_type, userInfo.code, userInfo.uuid, Config.applyId, Config.applySecret)
           .then(res => {
-            const token = 'Bearer ' + res.data.accessToken.tokenValue
+            const token = 'Bearer ' + res.access_token
             // 保存->是否记住
             setRememberMe(rememberMe)
             setToken(token, rememberMe)

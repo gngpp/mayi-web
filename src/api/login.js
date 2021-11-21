@@ -10,6 +10,7 @@ export function login(username, password,grant_type, code, uuid, client_id, clie
       password: password,
       grant_type: grant_type,
       code: code,
+      scope: 'all read write',
       uuid: uuid,
       client_id: client_id,
       client_secret: md5Encrypt(client_secret)
