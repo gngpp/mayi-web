@@ -11,12 +11,6 @@ w<style scoped>
 </style>
 <template>
   <div class="app-container">
-<!--    <el-main>-->
-<!--      -->
-<!--    </el-main>-->
-<!--    <el-main>-->
-
-<!--    </el-main>-->
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card>
@@ -25,22 +19,20 @@ w<style scoped>
             操作栏
           </el-tag>
           <el-divider direction="vertical"></el-divider>
-          <el-button :loading="loading" type="primary" icon="el-icon-refresh" @click="defaultChangePage" >重置</el-button>
-          <el-button :loading="loading" type="danger" icon="el-icon-delete"  @click="handleDeleteBatch" >删除</el-button>
-          <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
+          <el-button :loading="loading" plain type="primary" icon="el-icon-refresh" @click="defaultChangePage" >重置</el-button>
+          <el-button :loading="loading" plain type="danger" icon="el-icon-delete"  @click="handleDeleteBatch" >删除</el-button>
+          <el-button type="primary" plain icon="el-icon-set-up" @click="openTip = !openTip">{{
               openTip ? "关闭提示" : "开启提示"
             }}</el-button>
-          <Poptip trigger="focus">
-            <Input
-              v-model="search"
+          <el-tooltip class="item" effect="dark" content="键入客户端ID" placement="right">
+            <el-input
               style="padding-top: revert;margin-bottom: revert; width: 130px"
               placeholder="键入客户端ID"
+              prefix-icon="el-icon-search"
               @on-change="searchClient()"
             >
-              <Icon type="ios-search" slot="prefix" />
-            </Input>
-            <div slot="content">{{ search }}</div>
-          </Poptip>
+            </el-input>
+          </el-tooltip>
           <!--    分割线-->
           <el-divider content-position="center">
             <el-tag effect="plain">
@@ -55,40 +47,119 @@ w<style scoped>
             <a class="select-clear" @click="clearSelectAll()">清空</a>
           </Alert>
           <!--      表格-->
-          <Table
+          <el-table
             :data="tableData"
+            v-loading="loading"
             ref="table"
-            width="90%"
-            :loading="loading"
-            :columns="columns"
-            sortable="custom"
-            @on-selection-change="handleSelectionChange"
+            max-height="400"
+            size="small"
+            @selection-change="handleSelectionChange"
+            tooltip-effect="dark"
+            style="width: 100%"
           >
-            <template slot-scope="{ row }" slot="clientId">
-              <Icon type="ios-person" />
-              {{ row.clientId }}
-            </template>
-            <template slot-scope="{ row }" slot="clientSecret">
-              <Tag>
-                <svg-icon icon-class="password" />
-                {{ row.clientSecret }}
-              </Tag>
-            </template>
-            <template slot="opt" slot-scope="{ row, index }" >
-              <el-button-group>
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit-outline"
-                  @click="handleEdit(index, row)">编辑
-                </el-button>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="handleDelete(index, row)">删除
-                </el-button>
-              </el-button-group>
-            </template>
-          </Table>
+            <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-descriptions :column="1" border>
+                  <el-descriptions-item label="客户端发布时间">{{ format(props.row.clientIdIssuedAt) }}</el-descriptions-item>
+                  <el-descriptions-item label="客户密钥到期时间">{{ format(props.row.clientSecretExpiresAt) }}</el-descriptions-item>
+                  <el-descriptions-item label="客户端认证方法" :span="2">
+                    <el-tag
+                      :key="tag"
+                      v-for="tag in formatSettingValue(props.row.clientAuthenticationMethods)"
+                      :disable-transitions="false"
+                      effect="plain"
+                      size="medium"
+                    >
+                      {{tag}}
+                    </el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="授权类型">
+                    <el-tag
+                      :key="tag"
+                      v-for="tag in formatSettingValue(props.row.authorizationGrantTypes)"
+                      :disable-transitions="false"
+                      effect="plain"
+                      size="medium"
+                    >
+                      {{tag}}
+                    </el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="重定向 Uris">
+                    <el-tag
+                      :key="tag"
+                      v-for="tag in props.row.redirectUris"
+                      :disable-transitions="false"
+                      effect="plain"
+                      size="medium"
+                    >
+                      {{tag}}
+                    </el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="scopes">
+                    <el-tag
+                      :key="tag"
+                      v-for="tag in props.row.scopes"
+                      :disable-transitions="false"
+                      effect="plain"
+                      size="medium"
+                    >
+                      {{tag}}
+                    </el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="需要证明密钥">{{ props.row.clientSettings.requireProofKey }}</el-descriptions-item>
+                  <el-descriptions-item label="需要授权同意">{{ props.row.clientSettings.requireAuthorizationConsent }}</el-descriptions-item>
+                  <el-descriptions-item label="刷新令牌生存时间/秒">{{ props.row.tokenSettings.refreshTokenTimeToLive }}</el-descriptions-item>
+                  <el-descriptions-item label="重用刷新令牌">{{ props.row.tokenSettings.reuseRefreshTokens }}</el-descriptions-item>
+                  <el-descriptions-item label="访问令牌生存时间/秒">{{ props.row.tokenSettings.accessTokenTimeToLive }}</el-descriptions-item>
+                  <el-descriptions-item label="Token签名算法">{{ props.row.tokenSettings.idTokenSignatureAlgorithm }}</el-descriptions-item>
+                </el-descriptions>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="id"
+              label="ID"
+              >
+            </el-table-column>
+            <el-table-column
+              prop="clientId"
+              label="客户端ID"
+              >
+            </el-table-column>
+            <el-table-column
+              prop="clientSecret"
+              label="客户端密钥"
+              >
+            </el-table-column>
+            <el-table-column
+              prop="clientName"
+              label="客户端名"
+              >
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="120"
+              >
+              <template slot-scope="{ row, index }">
+                <el-button-group>
+                  <el-button
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    @click="handleEdit(index, row)">编辑
+                  </el-button>
+                  <el-button
+                    type="text"
+                    icon="el-icon-delete"
+                    @click="handleDelete(index, row)">删除
+                  </el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
           <!--        分割线-->
           <br/>
           <!--      分页组件-->
@@ -115,8 +186,9 @@ w<style scoped>
               </el-tag>
             </el-button-group>
           </el-divider>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" size="mini">
-            <el-form-item size="mini" label="编辑状态">
+<!--          表单-->
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" :label-position="'right'">
+            <el-form-item label="编辑状态">
               <el-switch
                 v-model="isEdit"
                 active-color="#13ce66"
@@ -124,7 +196,7 @@ w<style scoped>
                 disabled>
               </el-switch>
             </el-form-item>
-            <el-form-item size="mini" label="客户端ID" prop="clientId" required>
+            <el-form-item label="客户端ID" prop="clientId" required>
               <el-input
                 clearable
                 prefix-icon="el-icon-user-solid"
@@ -134,7 +206,7 @@ w<style scoped>
                 <el-button slot="append" @click="autoGeneratorId">Auto</el-button>
               </el-input>
             </el-form-item>
-            <el-form-item size="mini" label="客户端Secret" prop="clientSecret" required>
+            <el-form-item label="客户端密钥" prop="clientSecret" required>
               <el-input
                 clearable
                 prefix-icon="el-icon-view"
@@ -145,60 +217,96 @@ w<style scoped>
                 </el-button>
               </el-input>
             </el-form-item>
-            <el-form-item size="mini" label="资源ID" >
-              <el-input clearable
-                        placeholder="多个资源时用逗号(,)分隔"
-                        v-model="ruleForm.resourceIds">
-              </el-input>
-            </el-form-item>
-            <el-form-item size="mini" label="权限范围">
+            <el-form-item label="客户端名称" prop="clientName" required>
               <el-input
-                disabled
-                prefix-icon="el-icon-success"
-                placeholder="服务端默认支持所有权限"
-                v-model="ruleForm.scope"
-                required
-              >
+                clearable
+                prefix-icon="el-icon-view"
+                placeholder="请输入名称"
+                v-model="ruleForm.clientName">
               </el-input>
             </el-form-item>
-            <el-form-item size="mini" label="认证方式" prop="authorizedGrantTypes" required>
+            <el-form-item label="客户端身份验证方法" prop="clientAuthenticationMethods" required>
               <el-select
-                v-model="ruleForm.authorizedGrantTypes"
-                placeholder="请选择"
+                v-model="ruleForm.clientAuthenticationMethods"
+                multiple
+                filterable
+                clearable
+                default-first-option
+                placeholder="请输入值">
+                <el-option
+                  v-for="item in authenticationMethodsOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="授权授予类型" prop="authorizationGrantTypes">
+              <el-select
+                v-model="ruleForm.authorizationGrantTypes"
+                multiple
+                filterable
+                clearable
+                default-first-option
+                placeholder="请输入值">
+                <el-option
+                  v-for="item in grantsOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="客户密钥到期时间" prop="clientSecretExpiresAt">
+              <el-date-picker
+                v-model="ruleForm.clientSecretExpiresAt"
+                type="datetime"
+                placeholder="选择日期时间"
+                value-format="timestamp"
+                :picker-options="pickerOptions">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="scopes" prop="scopes">
+              <el-select
+                v-model="ruleForm.scopes"
+                multiple
+                filterable
+                allow-create
+                clearable
+                default-first-option
+                placeholder="请输入值">
+              </el-select>
+            </el-form-item>
+            <el-form-item label="redirectUris" prop="redirectUris">
+              <el-select
+                v-model="ruleForm.redirectUris"
                 multiple
                 filterable
                 clearable
                 allow-create
-                default-first-option>
-                <el-option
-                  v-for="item in optionsAuth"
-                  :key="item.value"
-                  :label="item.value"
-                  :value="item.value">
-                  <span style="float: left">{{ item.value }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label }}</span>
-                </el-option>
+                default-first-option
+                placeholder="请输入值">
               </el-select>
             </el-form-item>
-            <el-form-item size="mini" label="重定向" prop="webServerRedirectUri">
-              <el-input v-model="ruleForm.webServerRedirectUri"
-                        placeholder="协议://域名:端口"
-                        class="input-with-select"
-                        clearable
-              >
-                <el-select v-model="ruleForm.webServerRedirectUri" slot="prepend" placeholder="请选择">
-                  <el-option label="http" value="http://"></el-option>
-                  <el-option label="https" value="https://"></el-option>
-                </el-select>
-                <template slot="append">.com</template>
-              </el-input>
+<!--            client settings-->
+            <el-form-item label="需要证明密钥" prop="clientSettings.requireProofKey">
+              <el-switch v-model="ruleForm.clientSettings.requireProofKey"></el-switch>
             </el-form-item>
-            <el-form-item size="mini" label="权限值" prop="authorities">
-              <el-input v-model="ruleForm.authorities" placeholder="若有多个权限值,用逗号(,)分隔"></el-input>
+            <el-form-item label="需要授权同意" prop="clientSettings.requireAuthorizationConsent">
+              <el-switch v-model="ruleForm.clientSettings.requireAuthorizationConsent"></el-switch>
             </el-form-item>
-            <el-form-item size="mini" label="令牌有效期/秒" prop="accessTokenValidity">
+<!--            token settings-->
+            <el-form-item label="Token签名算法	" prop="tokenSettings.idTokenSignatureAlgorithm">
+              <el-autocomplete
+                v-model="ruleForm.tokenSettings.idTokenSignatureAlgorithm"
+                :fetch-suggestions="loadAlg"
+                clearable
+                placeholder="单击选择"
+              ></el-autocomplete>
+            </el-form-item>
+            <el-form-item label="令牌有效期/秒" prop="tokenSettings.accessTokenTimeToLive">
               <el-input-number
-                v-model="ruleForm.accessTokenValidity"
+                v-model="ruleForm.tokenSettings.accessTokenTimeToLive"
                 controls-position="right"
                 placeholder="秒"
                 :min="tokenMinTime"
@@ -206,9 +314,9 @@ w<style scoped>
               >
               </el-input-number>
             </el-form-item>
-            <el-form-item size="mini" label="刷新令牌有效期/秒" prop="refreshTokenValidity" >
+            <el-form-item label="刷新令牌有效期/秒" prop="tokenSettings.refreshTokenTimeToLive" >
               <el-input-number
-                v-model="ruleForm.refreshTokenValidity"
+                v-model="ruleForm.tokenSettings.refreshTokenTimeToLive"
                 controls-position="right"
                 placeholder="秒"
                 :min="tokenRefreshMinTime"
@@ -216,28 +324,12 @@ w<style scoped>
               >
               </el-input-number>
             </el-form-item>
-            <el-form-item size="mini" label="预选属性" prop="additionalInformation">
-              <el-input v-model="ruleForm.additionalInformation" placeholder="必须为JSON"></el-input>
-            </el-form-item>
-            <el-form-item size="mini" label="自动批准" prop="autoApprove">
-              <el-select
-                v-model="ruleForm.autoApprove"
-                placeholder="请选择"
-                filterable
-                clearable
-                allow-create
-                default-first-option>
-                <el-option
-                  v-for="item in optionsApprove"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label">
-                </el-option>
-              </el-select>
+            <el-form-item label="重用刷新令牌" prop="tokenSettings.reuseRefreshTokens" >
+              <el-switch v-model="ruleForm.tokenSettings.reuseRefreshTokens"></el-switch>
             </el-form-item>
             <div align="center">
-              <el-button type="primary" icon="el-icon-paperclip" @click="submitForm('ruleForm')">新增/更新</el-button>
-              <el-button type="primary" icon="el-icon-refresh" @click="resetForm('ruleForm')">重置</el-button>
+              <el-button type="primary" plain icon="el-icon-paperclip" @click="submitForm('ruleForm')">新增/更新</el-button>
+              <el-button type="warning" plain icon="el-icon-refresh" @click="resetForm('ruleForm')">重置</el-button>
             </div>
           </el-form>
 
@@ -250,11 +342,18 @@ w<style scoped>
 <script>
 
 import Config from '@/settings'
-import {deleteBatchClient, saveClient, updateClient, deleteClient, findByPage} from "../../../api/seucirty/security";
-import OAuthTableExpend from "./OAuthTableExpend";
+import {
+  deleteBatchClient,
+  saveClient,
+  updateClient,
+  deleteClient,
+  findByPage,
+  loadTokenSignatureAlgorithm,
+  loadAuthorizationGrantTypes,
+  loadClientAuthenticationMethods
+} from "../../../api/seucirty/security";
 export default {
   name: "OAuth2Client",
-  components: {OAuthTableExpend},
   data() {
     return {
       tokenMinTime: 3600,
@@ -274,95 +373,30 @@ export default {
       openTip: true,
       tableData: [],
       selectList: [],
-      tempData: [],
-      columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
-        {
-          sortable: true,
-          title: '客户端ID',
-          key: 'clientId',
-          slot: 'clientId',
-          align: 'center'
-        },
-        {
-          sortable: true,
-          title: '客户端Secret',
-          key: 'clientSecret',
-          slot: 'clientSecret',
-          align: 'center',
-        },
-        {
-          type: 'expand',
-          title: '详情',
-          width: 90,
-          align: 'center',
-          render: (h, params) => {
-            return h(OAuthTableExpend, {
-              props: {
-                row: params.row
-              }
-            })
-          }
-        },
-        {
-          title: '操作',
-          key: 'opt',
-          slot: 'opt',
-          width: '185px',
-          align: 'center',
-          fixed: 'right'
-        }
-      ],
-      optionsApprove:[{
-        value: 1,
-        label: 'true',
-      },{
-        value: 2,
-        label: 'false',
-      },{
-        value: 3,
-        label: 'read',
-      },{
-        value: 4,
-        label: 'write',
-      }
-      ],
-      optionsAuth:[{
-          value: 'password',
-          label: '账号密码&认证',
-      },{
-       value: 'password_code',
-          label: '账号密码，验证码&认证',
-      },{
-       value: 'implicit',
-          label: '隐式认证',
-      },{
-       value: 'client_credentials',
-          label: '客户端凭证&认证',
-      },{
-       value: 'authorization_code',
-          label: '授权码认证',
-      },{
-       value: 'refresh_token',
-          label: 'refresh令牌认证',
-      }
-      ],
+      algOptions: [],
+      authenticationMethodsOptions:[],
+      grantsOptions:[],
       ruleForm: {
+        id: '',
         clientId: '',
         clientSecret: '',
-        resourceIds: '',
-        scope: 'all',
-        authorizedGrantTypes: [],
-        webServerRedirectUri: '',
-        authorities: '',
-        accessTokenValidity: '',
-        refreshTokenValidity: '',
-        additionalInformation: '',
-        autoApprove: ''
+        clientName: '',
+        clientIdIssuedAt: '',
+        clientSecretExpiresAt: '',
+        clientAuthenticationMethods: [],
+        authorizationGrantTypes: [],
+        redirectUris: [],
+        scopes: [],
+        tokenSettings: {
+          accessTokenTimeToLive: '',
+          refreshTokenTimeToLive: '',
+          reuseRefreshTokens: false,
+          idTokenSignatureAlgorithm: '',
+        },
+        clientSettings: {
+          requireProofKey: false,
+          requireAuthorizationConsent: false
+        }
       },
       rules: {
         clientId: [
@@ -373,17 +407,14 @@ export default {
           { required: true, message: '请输入客户端密钥', trigger: 'blur' },
           { min: 10, max: 20, message: '长度在 10 到 20 个数字和大小写字母组合字符', trigger: 'blur' }
         ],
-        resourceIds: [
-          { required: true, message: '多个资源时用逗号(,)分隔', trigger: 'change' }
+        clientName: [
+          { required: true, message: '请输入客户端ID', trigger: 'blur' },
         ],
-        scope: [
-          {  required: true, message: '请选择授权范围', trigger: 'change' }
-        ],
-        authorizedGrantTypes: [
+        authorizationGrantTypes: [
           { required: true, message: '请至少选择一种认证方式', trigger: 'change' }
         ],
-        autoApprove: [
-          { required: true, message: '请选择批准授予权限操作', trigger: 'change' }
+        requireAuthorizationConsent: [
+          { required: true, message: '需要授权同意', trigger: 'change' }
         ]
       }
     }
@@ -391,16 +422,56 @@ export default {
   },
   created() {
     this.defaultChangePage()
+    loadAuthorizationGrantTypes()
+    .then(res => {
+      this.grantsOptions = res.data
+    })
+    loadClientAuthenticationMethods()
+    .then(res => {
+      this.authenticationMethodsOptions = res.data
+    })
   },
   methods: {
+    pickerOptions: {
+      shortcuts: [{
+        text: '今天',
+        onClick(picker) {
+          picker.$emit('pick', new Date());
+        }
+      }, {
+        text: '昨天',
+        onClick(picker) {
+          const date = new Date();
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          picker.$emit('pick', date);
+        }
+      }, {
+        text: '一周前',
+        onClick(picker) {
+          const date = new Date();
+          date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+          picker.$emit('pick', date);
+        }
+      }]
+    },
+    formatSettingValue(data) {
+      try {
+        let target = []
+        data.forEach(value => {
+          target.push(value)
+        })
+        return (target.length == 0 ? '无' :target)
+      }catch (e) {
+        return  ['无']
+      }
+    },
     changePage(data) {
       this.loading = true
       findByPage(data)
         .then(res => {
           this.tableData = res.data.records
-          this.tempData = this.tableData
-          this.total = res.data.total
-          this.pages = res.data.pages
+          this.total = res.data.totalRecord
+          this.pages = res.data.totalPage
           setTimeout(() => {
             this.loading = false
           },300)
@@ -422,14 +493,14 @@ export default {
       });
     },
     resetForm(formName) {
-      this.isEdit = false
       this.$refs[formName].resetFields();
+      this.isEdit = false
     },
     clearSelectAll() {
       this.$refs.table.selectAll(false);
     },
     savaOrUpdate() {
-      let  data = this.setForm();
+      let  data = JSON.parse(JSON.stringify(this.ruleForm));
       // 编辑状态
       if (this.isEdit) {
         updateClient(data).then(res => {
@@ -438,6 +509,7 @@ export default {
           this.defaultChangePage()
         })
       } else {
+        data.id = null
         saveClient(data).then(res => {
           this.notifyYes('添加客户端成功')
           this.resetForm('ruleForm')
@@ -445,37 +517,38 @@ export default {
         })
       }
     },
-    setForm() {
-      let data = {
-          clientId: this.ruleForm.clientId,
-          clientSecret: this.ruleForm.clientSecret,
-          resourceIds: this.ruleForm.resourceIds,
-          scope: 'all',
-          authorizedGrantTypes: this.ruleForm.authorizedGrantTypes.toString(),
-          webServerRedirectUri: this.ruleForm.webServerRedirectUri,
-          authorities: this.ruleForm.authorities,
-          accessTokenValidity: this.ruleForm.accessTokenValidity,
-          refreshTokenValidity: this.ruleForm.refreshTokenValidity,
-          additionalInformation: this.ruleForm.additionalInformation,
-          autoApprove: this.ruleForm.autoApprove
-        }
-      return data
+    loadAlg(queryString, cb) {
+      let map = []
+      loadTokenSignatureAlgorithm()
+        .then(res => {
+          setTimeout(() => {
+            this.loading = false
+            for (const index in res.data) {
+                map.push({
+                  label: res.data[index],
+                  value: res.data[index]
+                })
+            }
+            cb(map)
+          }, 200);
+        })
     },
     copyForm(tableData) {
-      let data = {
-        clientId: tableData.clientId,
-        clientSecret: tableData.clientSecret,
-        resourceIds: tableData.resourceIds,
-        scope: 'all',
-        authorizedGrantTypes: tableData.authorizedGrantTypes.split(','),
-        webServerRedirectUri: tableData.webServerRedirectUri,
-        authorities: tableData.authorities,
-        accessTokenValidity: tableData.accessTokenValidity,
-        refreshTokenValidity: tableData.refreshTokenValidity,
-        additionalInformation: tableData.additionalInformation,
-        autoApprove: tableData.autoApprove
+      // 直接赋值会使用同一个地址，reset后数据将改变
+      return JSON.parse(JSON.stringify(tableData))
+    },
+    format(time) {
+      if (!time) {
+        return '无'
       }
-      return data
+      let date = new Date(time);
+      let year = date.getFullYear();
+      let month = date.getMonth();
+      let day = date.getDate();
+      let hour = date.getHours();
+      let min = date.getMinutes();
+      let second = date.getSeconds();
+      return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + second;
     },
     notifyYes(message){
       this.$Message.success(message);

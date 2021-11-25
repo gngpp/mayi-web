@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: '',
+      title: 'MAYI',
       logo: Logo
     }
   }

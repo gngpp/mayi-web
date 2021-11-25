@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function findByPage(data) {
   return request({
-    url: '/security/client/page',
+    url: '/oauth2/security/client/page',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function findByPage(data) {
 
 export function saveClient(data) {
   return request({
-    url: '/security/client/save',
+    url: '/oauth2/security/client/save',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function saveClient(data) {
 
 export function updateClient(data) {
   return request({
-    url: '/security/client/update',
+    url: '/oauth2/security/client/update',
     method: 'put',
     data
   })
@@ -26,16 +26,37 @@ export function updateClient(data) {
 
 export function deleteClient(clientId) {
   return request({
-    url: '/api/security/client/del?clientId=' + clientId,
+    url: '/oauth2/security/client//delete/client_id/' + clientId,
     method: 'delete'
   })
 }
 
 export function deleteBatchClient(data) {
   return request({
-    url: '/api/security/client/del/batch',
+    url: '/oauth2/security/client/del/batch',
     method: 'delete',
     data
+  })
+}
+
+export function loadTokenSignatureAlgorithm() {
+  return request({
+    url: '/oauth2/security/client/alg',
+    method: 'get',
+  })
+}
+
+export function loadAuthorizationGrantTypes() {
+  return request({
+    url: '/oauth2/security/client/grants',
+    method: 'get',
+  })
+}
+
+export function loadClientAuthenticationMethods() {
+  return request({
+    url: '/oauth2/security/client/authentication_methods',
+    method: 'get',
   })
 }
 

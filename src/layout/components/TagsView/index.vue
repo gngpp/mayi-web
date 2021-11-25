@@ -82,11 +82,13 @@ export default {
     handleCommand(command) {
       if (command === 'closeAll') {
         this.closeAllTags(this.selectedTag)
-        this.$message({
-          showClose: true,
-          message: '已关闭所有页面',
-          type: 'success'
-        });
+        // this.$message({
+        //   center: true,
+        //   showClose: true,
+        //   message: '已关闭所有页面',
+        //   type: 'success'
+        // });
+        this.$Message.success("已关闭所有页面");
       }
     },
     isActive(route) {
