@@ -89,19 +89,23 @@
             @current-change="handleCurrentChange"
           >
             <el-table-column :selectable="checkboxT" type="selection" width="55"/>
+            <el-table-column type="expand" :show-overflow-tooltip="true" label="权限" prop="permissions">
+              <template slot-scope="scope">
+                <el-tag
+                  :key="tag"
+                  v-for="tag in scope.row.permissions"
+                  :disable-transitions="false"
+                  effect="plain"
+                  size="medium"
+                >
+                  {{tag}}
+                </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column prop="name" label="名称"/>
             <el-table-column prop="dataScope" label="数据权限">
               <template slot-scope="scope">
                 {{ scope.row.dataScope == 0? '用户部门': (scope.row.dataScope==1? '自定义' : '全部') }}
-              </template>
-            </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" label="权限" prop="permissions" sortable width="168px">
-              <template slot-scope="scope">
-                <el-tag
-                  disable-transitions
-                >
-                  {{ formatPermission(scope.row.permissions) }}
-                </el-tag>
               </template>
             </el-table-column>
             <el-table-column label="角色级别" prop="level" sortable/>
