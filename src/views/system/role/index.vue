@@ -182,11 +182,18 @@
             :load="getMenuDataList"
             :props="defaultProps"
             check-strictly
+            highlight-current-row
             accordion
+            :expand-on-click-node="false"
             show-checkbox
             node-key="id"
-            @check="menuChange"
-          />
+            @check="menuChange">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>
+                <svg-icon :icon-class="data.icon"></svg-icon>{{ '  ' + data.label }}
+              </span>
+            </span>
+          </el-tree>
         </el-card>
       </el-col>
 
@@ -271,6 +278,9 @@ export default {
     })
   },
   methods: {
+    getIconName(node) {
+      return node.icon
+    },
     getScopeValue(val) {
       if (val == '0') {
         return '用户部门'
