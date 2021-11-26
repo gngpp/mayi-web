@@ -190,7 +190,9 @@
             @check="menuChange">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>
-                <svg-icon :icon-class="data.icon"></svg-icon>{{ '  ' + data.label }}
+                <svg-icon v-if="data.icon" :icon-class="data.icon"/>
+                <svg-icon v-if="!data.icon" icon-class="menu" />
+                {{ '  ' + data.label }}
               </span>
             </span>
           </el-tree>
