@@ -276,12 +276,12 @@
               <template slot-scope="scope">
                 <el-button-group>
                   <el-button
-                    type="primary"
+                    type="text"
                     plain
                     icon="el-icon-edit-outline"
                     @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                   <el-button
-                    type="danger"
+                    type="text"
                     plain
                     icon="el-icon-delete"
                     @click="checkDelete(scope.$index, scope.row)">删除</el-button>
@@ -336,8 +336,8 @@
           <el-divider></el-divider>
           <el-header>
             <div align="center">
-              <el-button type="primary" icon="el-icon-paperclip"  @click="submitForm('form')">新增/更新</el-button>
-              <el-button type="primary" icon="el-icon-refresh"  @click="resetForm('form')">重置</el-button>
+              <el-button type="primary" plain icon="el-icon-paperclip"  @click="submitForm('form')">新增/更新</el-button>
+              <el-button type="primary" plain icon="el-icon-refresh"  @click="resetForm('form')">重置</el-button>
             </div>
           </el-header>
         </el-card>

@@ -39,14 +39,16 @@ const user = {
             setRememberMe(rememberMe)
             setToken(token, rememberMe)
             commit('SET_TOKEN', token)
-              getInfo().then(res => {
-                setUserInfo(res.data.user, commit)
-                // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
-                commit('SET_LOAD_MENUS', true)
-              }).catch(error => {
-                reject(error)
-            })
-            resolve(res)
+            // getInfo().then(res => {
+            //   setUserInfo(res.data.user, commit)
+            //   // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
+            //   commit('SET_LOAD_MENUS', true)
+            // }).catch(error => {
+            //   reject(error)
+            // })
+            setTimeout(() => {
+              resolve(res)
+            }, 500)
           }).catch(error => {
             reject(error)
           })

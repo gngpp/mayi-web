@@ -370,7 +370,7 @@ import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import Avatar from '@/assets/images/avatar.png'
 import checkPermission from "../../../utils/permission";
-import {setUserStatus} from "../../../api/system/user";
+import {setUserStatus, getUserDepartment} from "../../../api/system/user";
 
 let userRoles = []
 let userPositions = []
@@ -424,7 +424,8 @@ export default {
       positionList: [],
       level: 3,
       roleList: [],
-      positionData: [], roleData: [], // 多选时使用
+      positionData: [],
+      roleData: [], // 多选时使用
       defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
       permission: {
         add: ['ROLE_root', 'user:add'],
@@ -536,14 +537,22 @@ export default {
       this.positionData = []
       this.roleData = []
       this.getPositionList()
-      crudUser.getUserRoleIds(form.id).then(res => {
+      crudUser.getUserRoleIds(form.id)
+        .then(res => {
         this.roleData = res.data
         userRoles = res.data
       })
-      crudUser.getUserJobIds(form.id).then(res => {
+      crudUser.getUserJobIds(form.id)
+        .then(res => {
         this.positionData = res.data
         userPositions = res.data
       })
+      if (form.departmentId) {
+        crudUser.getUserDepartment(form.departmentId)
+          .then(res => {
+            form.department = res.data
+          })
+      }
     },
     // 提交前做的操作
     [CRUD.HOOK.afterValidateCU](crud) {
@@ -641,7 +650,7 @@ export default {
       if (!val) {
         value = 1
       }
-      data.departmentId = data.department.id
+      // data.departmentId = data.department.id
       data.positionIds = []
       data.roleIds = []
       this.$confirm('此操作将 "' + this.dict.user_status[value].label + '" ' + data.username + ', 是否继续？', '提示', {
@@ -674,14 +683,13 @@ export default {
       }
       getAllPosition(params).then(res => {
         this.positionList = res.data.records
-      }).catch(() => {
       })
     },
     // 获取权限级别
     getRoleLevel() {
       getLevel().then(res => {
         this.level = res.data
-      }).catch(() => { })
+      })
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id

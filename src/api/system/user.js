@@ -31,6 +31,13 @@ export function getUserJobIds(id) {
   })
 }
 
+export function getUserDepartment(id) {
+  return request({
+    url: 'api/users/department/' + id,
+    method: 'post'
+  })
+}
+
 export function edit(data) {
   return request({
     url: 'api/users/update',
@@ -78,5 +85,5 @@ export function updateEmail(form) {
   })
 }
 
-export default { add, edit, del, getUserJobIds, getUserRoleIds }
+export default { add, edit, del, getUserJobIds, getUserRoleIds, getUserDepartment }
 
