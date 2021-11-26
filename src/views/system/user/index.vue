@@ -308,16 +308,11 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"  align="center"/>
             <el-table-column :show-overflow-tooltip="true" width="135" align="center" prop="email" label="邮箱"/>
-            <el-table-column :show-overflow-tooltip="true" label="部门" prop="department" align="center">
-              <template v-if="scope.row.department != null" slot-scope="scope">
-                <div>{{ scope.row.department.name }}</div>
-              </template>
-            </el-table-column>
             <el-table-column label="状态" prop="enabled" required>
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.enabled"
-                  :disabled="user.id === scope.row.id || !checkPermission(['ROLE_admin'])"
+                  :disabled="user.id === scope.row.id || !checkPermission(['ROLE_root'])"
                   active-color="#409EFF"
                   inactive-color="#F56C6C"
                   @change="changeEnabled(scope.row, scope.row.enabled)"
@@ -335,7 +330,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              v-permission="['ROLE_admin','user:edit','user:del']"
+              v-permission="['ROLE_root','user:edit','user:del']"
               label="操作"
               width="115"
               align="center"
@@ -432,9 +427,9 @@ export default {
       positionData: [], roleData: [], // 多选时使用
       defaultProps: {children: 'children', label: 'name', isLeaf: 'leaf'},
       permission: {
-        add: ['ROLE_admin', 'user:add'],
-        edit: ['ROLE_admin', 'user:edit'],
-        del: ['ROLE_admin', 'user:del']
+        add: ['ROLE_root', 'user:add'],
+        edit: ['ROLE_root', 'user:edit'],
+        del: ['ROLE_root', 'user:del']
       },
       enabledTypeOptions: [
         {key: 'true', display_name: '激活'},

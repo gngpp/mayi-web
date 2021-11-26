@@ -56,7 +56,7 @@
         <el-table-column prop="label" label="字典标签" />
         <el-table-column prop="value" label="字典值" />
         <el-table-column prop="dictSort" label="排序" />
-        <el-table-column v-permission="['ROLE_admin','dict:edit','dict:del']" label="操作" width="130px" align="center" fixed="right">
+        <el-table-column v-permission="['ROLE_root','dict:edit','dict:del']" label="操作" width="130px" align="center" fixed="right">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -118,9 +118,9 @@ export default {
         ]
       },
       permission: {
-        add: ['ROLE_admin', 'dict:add'],
-        edit: ['ROLE_admin', 'dict:edit'],
-        del: ['ROLE_admin', 'dict:del']
+        add: ['ROLE_root', 'dict:add'],
+        edit: ['ROLE_root', 'dict:edit'],
+        del: ['ROLE_root', 'dict:del']
       },
       formatBoolean: function(row, column, cellValue) {
         let ret

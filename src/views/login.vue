@@ -56,7 +56,7 @@ export default {
       codeUrl: '',
       cookiePass: '',
       loginForm: {
-        username: 'admin',
+        username: 'root',
         password: '123456',
         grant_type: 'password',
         code: '',

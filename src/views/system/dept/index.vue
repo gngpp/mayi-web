@@ -136,7 +136,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-permission="['ROLE_admin','dept:edit','dept:del']" label="操作" width="130px" align="center" fixed="right">
+        <el-table-column v-permission="['ROLE_root','dept:edit','dept:del']" label="操作" width="130px" align="center" fixed="right">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -197,9 +197,9 @@ export default {
         ]
       },
       permission: {
-        add: ['ROLE_admin', 'dept:add'],
-        edit: ['ROLE_admin', 'dept:edit'],
-        del: ['ROLE_admin', 'dept:del']
+        add: ['ROLE_root', 'dept:add'],
+        edit: ['ROLE_root', 'dept:edit'],
+        del: ['ROLE_root', 'dept:del']
       },
       enabledTypeOptions: [
         { key: 'true', display_name: '正常' },

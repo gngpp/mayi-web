@@ -50,7 +50,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column  v-permission="['ROLE_admin']" fixed="right" label="操作" width="70px">
+        <el-table-column  v-permission="['ROLE_root']" fixed="right" label="操作" width="70px">
           <template slot-scope="scope">
             <el-popover
               v-if="user.id !== scope.row.id"

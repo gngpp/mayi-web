@@ -114,7 +114,7 @@
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.enabled"
-                  :disabled="!checkPermission(['ROLE_admin'])"
+                  :disabled="!checkPermission(['ROLE_root'])"
                   active-color="#409EFF"
                   inactive-color="#F56C6C"
                   @change="changeEnabled(scope.row, scope.row.enabled)"
@@ -132,7 +132,7 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-permission="['ROLE_admin','role:edit','role:del']" label="操作" width="130px" align="center" fixed="right">
+            <el-table-column v-permission="['ROLE_root','role:edit','role:del']" label="操作" width="130px" align="center" fixed="right">
               <template slot-scope="scope">
                 <udOperation
                   v-if="scope.row.level >= level"
@@ -154,7 +154,7 @@
               <span class="role-span">菜单分配</span>
             </el-tooltip>
             <el-button
-              v-permission="['ROLE_admin','role:edit']"
+              v-permission="['ROLE_root','role:edit']"
               :disabled="!showButton"
               :loading="menuLoading"
               icon="el-icon-check"
@@ -165,7 +165,7 @@
               @click="saveMenu"
             >保存</el-button>
             <el-button
-              v-permission="['ROLE_admin','role:edit']"
+              v-permission="['ROLE_root','role:edit']"
               icon="el-icon-check"
               size="mini"
               style="float: right; padding: 6px 10px"
@@ -248,9 +248,9 @@ export default {
       departmentList: [],
       departmentData: [], // 多选时使用
       permission: {
-        add: ['ROLE_admin', 'role:add'],
-        edit: ['ROLE_admin', 'role:edit'],
-        del: ['ROLE_admin', 'role:del']
+        add: ['ROLE_root', 'role:add'],
+        edit: ['ROLE_root', 'role:edit'],
+        del: ['ROLE_root', 'role:del']
       },
       rules: {
         name: [

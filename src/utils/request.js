@@ -159,21 +159,18 @@ service.interceptors.response.use(
 
     // 400 status 坏的请求
     if (error.response.status === 400 || errCode === 400) {
-      const errorMsg = error.response.data.errMsg
-      const oauthError = error.response.data.error
-      const oauthDescription = error.response.data.error_description
-      if (oauthError !== undefined && oauthDescription !== undefined) {
-        Notification.error({
-          title: oauthError,
-          message: oauthDescription,
-          duration: 5000
-        })
-      }
+      const errorMsg = error.response.error
       if (errorMsg !== undefined) {
         Notification.error({
           title: 'error',
           message: errorMsg,
           duration: 5000
+        })
+      } else {
+        Notification.error({
+          title: 'error',
+          message: 'request failed!',
+          duration: 3000
         })
       }
     }

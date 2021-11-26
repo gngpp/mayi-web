@@ -84,7 +84,7 @@
           <div slot="header" class="clearfix">
             <span>字典详情</span>
             <el-button
-              v-if="checkPermission(['ROLE_admin','dict:add']) && this.$refs.dictDetail && this.$refs.dictDetail.query.dictName"
+              v-if="checkPermission(['ROLE_root','dict:add']) && this.$refs.dictDetail && this.$refs.dictDetail.query.dictName"
               class="filter-item"
               size="mini"
               style="float: right;padding: 4px 10px"
@@ -137,9 +137,9 @@ export default {
         ],
       },
       permission: {
-        add: ['ROLE_admin', 'dict:add'],
-        edit: ['ROLE_admin', 'dict:edit'],
-        del: ['ROLE_admin', 'dict:del']
+        add: ['ROLE_root', 'dict:add'],
+        edit: ['ROLE_root', 'dict:edit'],
+        del: ['ROLE_root', 'dict:del']
       }
     }
   },

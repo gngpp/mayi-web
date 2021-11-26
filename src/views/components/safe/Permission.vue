@@ -26,18 +26,19 @@
             操作栏
           </el-tag>
           <el-divider direction="vertical"></el-divider>
-          <el-button  icon="el-icon-refresh" type="primary" @click="refreshTable()">重置</el-button>
-          <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteSelect">删除</el-button>
-          <el-button :loading="loading" type="danger" icon="el-icon-delete"   @click="deleteCurrentPage(tableData)">删除当页</el-button>
+          <el-button  icon="el-icon-refresh" type="primary" plain @click="refreshTable()">重置</el-button>
+          <el-button :loading="loading" type="danger" icon="el-icon-delete" plain  @click="deleteSelect">删除</el-button>
+          <el-button :loading="loading" type="danger" icon="el-icon-delete" plain  @click="deleteCurrentPage(tableData)">删除当页</el-button>
           <el-button
             :loading="loading"
             @click="openPermissionDrawer"
             type="warning"
+            plain
             icon="el-icon-share"
           >
             权限分配
           </el-button>
-          <el-button type="primary" icon="el-icon-set-up" @click="openTip = !openTip">{{
+          <el-button type="primary" plain icon="el-icon-set-up" @click="openTip = !openTip">{{
               openTip ? "关闭提示" : "开启提示"
             }}</el-button>
           <!--        抽屉窗口-->
@@ -276,10 +277,12 @@
                 <el-button-group>
                   <el-button
                     type="primary"
+                    plain
                     icon="el-icon-edit-outline"
                     @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                   <el-button
                     type="danger"
+                    plain
                     icon="el-icon-delete"
                     @click="checkDelete(scope.$index, scope.row)">删除</el-button>
                 </el-button-group>
