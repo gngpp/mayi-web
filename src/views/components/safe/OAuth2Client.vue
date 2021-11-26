@@ -64,7 +64,6 @@ w<style scoped>
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-descriptions :column="1" border>
-                  <el-descriptions-item label="客户端发布时间">{{ format(props.row.clientIdIssuedAt) }}</el-descriptions-item>
                   <el-descriptions-item label="客户密钥到期时间">{{ format(props.row.clientSecretExpiresAt) }}</el-descriptions-item>
                   <el-descriptions-item label="客户端认证方法" :span="2">
                     <el-tag
@@ -138,6 +137,16 @@ w<style scoped>
               prop="clientName"
               label="客户端名"
               >
+            </el-table-column>
+            <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="clientIdIssuedAt" sortable width="168px"  align="center">
+              <template slot-scope="scope">
+                <el-tag
+                  disable-transitions
+                >
+                  <i class="el-icon-time"></i>
+                  {{ format(scope.row.clientIdIssuedAt) }}
+                </el-tag>
+              </template>
             </el-table-column>
             <el-table-column
               fixed="right"
