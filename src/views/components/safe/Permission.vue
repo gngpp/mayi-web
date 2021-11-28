@@ -50,6 +50,7 @@
               scrollable
               draggable
               v-model="openDrawer">
+              <Alert show-icon>default权限是指用户在客户端认证时所分配的权限</Alert>
               <!--            Tab面板-->
               <Tabs value="name1" @on-click="handlerSelectTags">
                 <TabPane label="资源权限绑定" icon="md-contacts" name="name1">
@@ -114,9 +115,14 @@
                         <Tag v-if="!row.allow" type="dot"  color="error">{{ row.allow }}</Tag>
                       </template>
                       <template slot-scope="{ row }" slot="bindingPermissions">
-                        <tag color="blue">{{
-                            formatPermission(row.bindingPermissions)
-                          }}</tag>
+                        <el-tag
+                          :key="tag"
+                          v-for="tag in formatPermission(row.bindingPermissions)"
+                          :disable-transitions="false"
+                          size="medium"
+                        >
+                          {{tag}}
+                        </el-tag>
                       </template>
                       <template slot="contextMenu">
                         <DropdownItem @click.native="refreshResourceLinkBidingList">刷新</DropdownItem>
@@ -536,9 +542,9 @@ export default {
         bindingPermissions.forEach(value => {
           permissions.push(value.value)
         })
-        return permissions.length == 0 ? '无' :permissions.toString()
+        return permissions.length == 0 ? ['default'] :permissions
       }catch (e) {
-        return '无'
+        return ['default']
       }
     },
     bindingRolePermission(row) {

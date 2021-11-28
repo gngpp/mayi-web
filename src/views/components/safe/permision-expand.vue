@@ -11,8 +11,7 @@
         <el-tag
           :key="tag"
           v-for="tag in formatPermission(row.bindingPermissions)"
-          :disable-transitions="false"dd
-          effect="plain"
+          :disable-transitions="false"
           size="medium"
         >
           {{tag}}
@@ -39,9 +38,9 @@ export default {
         bindingPermissions.forEach(value => {
           permissions.push(value.value)
         })
-        return (permissions.length == 0 ? '无' :permissions)
+        return (permissions.length == 0 ? ['default'] :permissions)
       }catch (e) {
-        return  ['无']
+        return  ['default']
       }
     },
   }

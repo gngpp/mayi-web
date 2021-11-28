@@ -16,7 +16,7 @@
       <el-tab-pane label="权限管理">
         <span slot="label">
         <svg-icon icon-class="permission" />
-         权限分配管理
+         权限分配设置
         </span>
         <permission></permission>
       </el-tab-pane>
@@ -40,7 +40,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="系统备份管理">  <span slot="label">
-          <svg-icon icon-class="database" />系统备份管理
+          <svg-icon icon-class="database" />系统备份设置
         </span>
       </el-tab-pane>
       <el-tab-pane label="其他">

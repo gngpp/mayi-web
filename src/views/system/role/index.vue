@@ -73,6 +73,7 @@
             </el-tag>
           </el-divider>
           <!--        提示-->
+          <Alert show-icon>default权限是指用户在客户端认证时所分配的权限</Alert>
           <Alert show-icon v-show="crud.openTip">
             已选择
             <span class="select-count">{{ crud.selections.length }}</span> 项
@@ -91,15 +92,17 @@
             <el-table-column :selectable="checkboxT" type="selection" width="55"/>
             <el-table-column type="expand" :show-overflow-tooltip="true" label="权限" prop="permissions">
               <template slot-scope="scope">
-                <el-tag
-                  :key="tag"
-                  v-for="tag in scope.row.permissions"
-                  :disable-transitions="false"
-                  effect="plain"
-                  size="medium"
-                >
-                  {{tag}}
-                </el-tag>
+                <Alert>
+                  <span class="expand-key">权限值: </span>
+                  <el-tag
+                    :key="tag"
+                    v-for="tag in formatPermission(scope.row.permissions)"
+                    :disable-transitions="false"
+                    size="medium"
+                  >
+                    {{tag}}
+                  </el-tag>
+                </Alert>
               </template>
             </el-table-column>
             <el-table-column prop="name" label="名称"/>
@@ -304,9 +307,9 @@ export default {
     },
     formatPermission(permissions) {
       try {
-        return permissions.length == 0 ? '无' :permissions.toString()
+        return permissions.length == 0 ? ['default'] : permissions
       }catch (e) {
-        return '无'
+        return  ['default']
       }
     },
     clearSelectAll() {

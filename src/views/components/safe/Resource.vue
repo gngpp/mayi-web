@@ -10,8 +10,8 @@
         <el-button-group>
           <el-button @click="dialogVisible = true">添加</el-button>
           <el-button>查看资源所有节点</el-button>
-          <el-button @click="refreshTable()">刷新</el-button>
         </el-button-group>
+        <el-button type="primary" icon="el-icon-refresh" plain  @click="refreshTable()">刷新</el-button>
         <el-divider content-position="center">
           <el-tag effect="plain">
             <svg-icon icon-class="tree" />
@@ -25,17 +25,28 @@
           style="width: 100%"
           row-key="id"
           highlight-current-row
-          :row-class-name="tableRowClassName"
           :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
           <el-table-column
             prop="name"
+            fixed
             label="资源名称"
+            width="200"
             sortable>
+            <template slot-scope="scope">
+              <el-tag
+                size="medium">{{ scope.row.name }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             sortable
-            prop="uri"
-            label="资源URI">
+            prop="fullUri"
+            label="URI">
+            <template slot-scope="scope">
+              <el-tag
+                v-if="scope.row.fullUri"
+                size="medium"
+              >{{ scope.row.fullUri }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column  label="细节" width="100">
             <el-popover
@@ -220,14 +231,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    tableRowClassName({row, rowIndex}) {
-      if (row.leaf) {
-        return 'warning-row';
-      } else {
-        return 'success-row';
-      }
-      return '';
     },
     load(tree, treeNode, resolve) {
       setTimeout(() => {
