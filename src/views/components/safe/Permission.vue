@@ -17,7 +17,6 @@
 <!--    <el-main>-->
 <!--   -->
 <!--    </el-main>-->
-
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card>
@@ -307,6 +306,15 @@
             :page-count="pageCount"
             :total.sync="total">
           </el-pagination>
+          <div style="margin-top: 20px">
+            <Alert type="warning" show-icon>
+              <Icon type="ios-bulb-outline" slot="icon"></Icon>
+              系统提示
+              <template slot="desc">
+                删除权限时，将删除对应的角色、资源绑定的权限
+              </template>
+            </Alert>
+          </div>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="7">

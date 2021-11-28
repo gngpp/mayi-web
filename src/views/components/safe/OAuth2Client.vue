@@ -19,7 +19,7 @@ w<style scoped>
             操作栏
           </el-tag>
           <el-divider direction="vertical"></el-divider>
-          <el-button :loading="loading" plain type="primary" icon="el-icon-refresh" @click="defaultChangePage" >重置</el-button>
+          <el-button :loading="loading" plain type="primary" icon="el-icon-refresh" @click="defaultChangePage" >刷新</el-button>
           <el-button :loading="loading" plain type="danger" icon="el-icon-delete"  @click="handleDeleteBatch" >删除</el-button>
           <el-button type="primary" plain icon="el-icon-set-up" @click="openTip = !openTip">{{
               openTip ? "关闭提示" : "开启提示"

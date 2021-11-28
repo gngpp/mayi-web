@@ -8,6 +8,7 @@
         v-permission="permission.add"
         class="filter-item"
         size="mini"
+        plain
         type="primary"
         icon="el-icon-plus"
         @click="crud.toAdd"
@@ -19,7 +20,8 @@
         v-permission="permission.edit"
         class="filter-item"
         size="mini"
-        type="success"
+        plain
+        type="warning"
         icon="el-icon-edit"
         :disabled="crud.selections.length !== 1"
         @click="crud.toEdit(crud.selections[0])"
@@ -31,6 +33,7 @@
         slot="reference"
         v-permission="permission.del"
         class="filter-item"
+        plain
         type="danger"
         icon="el-icon-delete"
         size="mini"
@@ -46,23 +49,26 @@
         :disabled="!crud.data.length"
         class="filter-item"
         size="mini"
-        type="warning"
+        plain
+        type="success"
         icon="el-icon-download"
         @click="crud.doExport"
       >导出</el-button>
-            <el-button class="filter-item" type="primary" icon="el-icon-set-up" @click="crud.openTip = !crud.openTip">{{ crud.openTip ? "关闭提示" : "开启提示" }}</el-button>
+            <el-button plain class="filter-item" type="primary" icon="el-icon-set-up" @click="crud.openTip = !crud.openTip">{{ crud.openTip ? "关闭提示" : "开启提示" }}</el-button>
       <!--右侧-->
       <slot name="right" />
     </span>
-    <el-button-group plain class="crud-opts-right">
+    <el-button-group class="crud-opts-right">
       <el-button
         circle
+        plain
         size="mini"
         type="primary"
         icon="el-icon-search"
         @click="toggleSearch()"
       />
       <el-button
+        plain
         size="mini"
         type="primary"
         icon="el-icon-refresh"
@@ -74,6 +80,7 @@
         trigger="click"
       >
         <el-button
+          plain
           slot="reference"
           type="primary"
           size="mini"

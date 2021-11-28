@@ -7,11 +7,9 @@
           操作栏
         </el-tag>
         <el-divider direction="vertical"></el-divider>
-        <el-button-group>
-          <el-button @click="dialogVisible = true">添加</el-button>
-          <el-button>查看资源所有节点</el-button>
-        </el-button-group>
-        <el-button type="primary" icon="el-icon-refresh" plain  @click="refreshTable()">刷新</el-button>
+        <el-button :loading="loading" type="primary" icon="el-icon-refresh" plain  @click="refreshTable()">刷新</el-button>
+        <el-button :loading="loading" plain type="danger" icon="el-icon-delete">删除</el-button>
+        <el-button @click="dialogVisible = true">添加</el-button>
         <el-divider content-position="center">
           <el-tag effect="plain">
             <svg-icon icon-class="tree" />
@@ -33,8 +31,8 @@
             width="200"
             sortable>
             <template slot-scope="scope">
-              <el-tag
-                size="medium">{{ scope.row.name }}</el-tag>
+              <svg-icon icon-class="tree-table" />
+              {{ scope.row.name }}
             </template>
           </el-table-column>
           <el-table-column

@@ -147,6 +147,17 @@
           </el-table>
           <!--分页组件-->
           <pagination />
+          <div style="margin-top: 20px">
+            <Alert type="warning" show-icon>
+              <Icon type="ios-bulb-outline" slot="icon"></Icon>
+              系统提示
+              <template slot="desc">
+                1. 当角色存在绑定用户，不允许删除/禁用操作。
+                <br/>
+                2. 数据权限是指，能访问到绑定的数据范围内的用户
+              </template>
+            </Alert>
+          </div>
         </el-card>
       </el-col>
       <!-- 菜单授权 -->
@@ -156,26 +167,26 @@
             <el-tooltip class="item" effect="dark" content="选择指定角色分配菜单" placement="top">
               <span class="role-span">菜单分配</span>
             </el-tooltip>
-            <el-button
-              v-permission="['ROLE_root','role:edit']"
-              :disabled="!showButton"
-              :loading="menuLoading"
-              icon="el-icon-check"
-              size="mini"
-              style="float: right; padding: 6px 10px"
-              type="primary"
-              plain
-              @click="saveMenu"
-            >保存</el-button>
-            <el-button
-              v-permission="['ROLE_root','role:edit']"
-              icon="el-icon-check"
-              size="mini"
-              style="float: right; padding: 6px 10px"
-              type="warning"
-              plain
-              @click="resetChecked"
-            >清空</el-button>
+            <div  style="float: right; padding: 6px 0px">
+              <el-button
+                plain
+                v-permission="['ROLE_root','role:edit']"
+                :disabled="!showButton"
+                :loading="menuLoading"
+                icon="el-icon-check"
+                size="mini"
+                type="primary"
+                @click="saveMenu"
+              >保存</el-button>
+              <el-button
+                plain
+                v-permission="['ROLE_root','role:edit']"
+                icon="el-icon-check"
+                size="mini"
+                type="warning"
+                @click="resetChecked"
+              >清空</el-button>
+            </div>
           </div>
           <el-tree
             ref="menu"
