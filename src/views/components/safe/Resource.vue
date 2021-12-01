@@ -37,12 +37,6 @@
                 {{ scope.row.name }}
               </template>
             </el-table-column>
-<!--            <el-tag-->
-<!--              :key="tag"-->
-<!--              v-for="tag in formatPermission(props.row.bindingPermissions)"-->
-<!--              size="medium"-->
-<!--            >{{ tag }}</el-tag>>-->
-
             <el-table-column
               prop="fullUri"
               width="250"
@@ -131,6 +125,17 @@
                         active-color="#13ce66"
                         inactive-color="#ff4949">
                       </el-switch>
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template slot="label">
+                        <i class="el-icon-office-building"></i>
+                        权限绑定
+                      </template>
+                      <el-tag
+                        :key="tag"
+                        v-for="tag in formatPermission(scope.row.bindingPermissions)"
+                        size="medium"
+                      >{{ tag }}</el-tag>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-button type="text" slot="reference">查看</el-button>
@@ -289,9 +294,9 @@ export default {
         bindingPermissions.forEach(value => {
           permissions.push(value.value)
         })
-        return (permissions.length == 0 ? ['default'] :permissions)
+        return (permissions.length == 0 ? ['none'] :permissions)
       }catch (e) {
-        return  ['default']
+        return  ['none']
       }
     },
     refreshTable() {

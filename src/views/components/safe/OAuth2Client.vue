@@ -544,9 +544,9 @@ export default {
         data.forEach(value => {
           target.push(value)
         })
-        return (target.length == 0 ? '无' :target)
+        return (target.length == 0 ? 'none' :target)
       }catch (e) {
-        return  ['无']
+        return  ['none']
       }
     },
     changePage(data) {
