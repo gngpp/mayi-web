@@ -341,11 +341,13 @@
           <!--分页组件-->
           <pagination/>
          <div style="margin-top: 20px">
-           <Alert type="warning" show-icon>
+           <Alert type="info" show-icon>
              <Icon type="ios-bulb-outline" slot="icon"></Icon>
              系统提示
              <template slot="desc">
-               1. 禁用用户，系统将撤销向用户颁发的所有令牌
+               1. 禁用/删除用户，系统将撤销向用户颁发的所有令牌
+               <br/>
+               2. 更新分配用户角色，系统将撤销更新前颁发的所有令牌
              </template>
            </Alert>
          </div>

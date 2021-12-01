@@ -63,59 +63,135 @@ w<style scoped>
             </el-table-column>
             <el-table-column type="expand">
               <template slot-scope="props">
-                <el-descriptions :column="1" border>
-                  <el-descriptions-item label="客户密钥到期时间">{{ format(props.row.clientSecretExpiresAt) }}</el-descriptions-item>
-                  <el-descriptions-item label="客户端认证方法" :span="2">
-                    <el-tag
-                      :key="tag"
-                      v-for="tag in formatSettingValue(props.row.clientAuthenticationMethods)"
-                      :disable-transitions="false"
-                      effect="plain"
-                      size="medium"
-                    >
-                      {{tag}}
-                    </el-tag>
-                  </el-descriptions-item>
-                  <el-descriptions-item label="授权类型">
-                    <el-tag
-                      :key="tag"
-                      v-for="tag in formatSettingValue(props.row.authorizationGrantTypes)"
-                      :disable-transitions="false"
-                      effect="plain"
-                      size="medium"
-                    >
-                      {{tag}}
-                    </el-tag>
-                  </el-descriptions-item>
-                  <el-descriptions-item label="重定向 Uris">
-                    <el-tag
-                      :key="tag"
-                      v-for="tag in props.row.redirectUris"
-                      :disable-transitions="false"
-                      effect="plain"
-                      size="medium"
-                    >
-                      {{tag}}
-                    </el-tag>
-                  </el-descriptions-item>
-                  <el-descriptions-item label="scopes">
-                    <el-tag
-                      :key="tag"
-                      v-for="tag in props.row.scopes"
-                      :disable-transitions="false"
-                      effect="plain"
-                      size="medium"
-                    >
-                      {{tag}}
-                    </el-tag>
-                  </el-descriptions-item>
-                  <el-descriptions-item label="需要证明密钥">{{ props.row.clientSettings.requireProofKey }}</el-descriptions-item>
-                  <el-descriptions-item label="需要授权同意">{{ props.row.clientSettings.requireAuthorizationConsent }}</el-descriptions-item>
-                  <el-descriptions-item label="刷新令牌生存时间/秒">{{ props.row.tokenSettings.refreshTokenTimeToLive }}</el-descriptions-item>
-                  <el-descriptions-item label="重用刷新令牌">{{ props.row.tokenSettings.reuseRefreshTokens }}</el-descriptions-item>
-                  <el-descriptions-item label="访问令牌生存时间/秒">{{ props.row.tokenSettings.accessTokenTimeToLive }}</el-descriptions-item>
-                  <el-descriptions-item label="Token签名算法">{{ props.row.tokenSettings.idTokenSignatureAlgorithm }}</el-descriptions-item>
-                </el-descriptions>
+                <el-card>
+                  <el-descriptions class="margin-top" border :column="1">
+                    <el-descriptions-item label="客户密钥到期时间">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        客户密钥到期时间
+                      </template>
+                      <Tag type="dot" color="primary"> {{ format(props.row.clientSecretExpiresAt) }} </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="客户端认证方法" :span="2">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        客户端认证方法
+                      </template>
+                      <Tag type="dot" color="primary"
+                        :key="tag"
+                        v-for="tag in formatSettingValue(props.row.clientAuthenticationMethods)"
+                        :disable-transitions="false"
+                        effect="plain"
+                        size="medium"
+                      >
+                        {{tag}}
+                      </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="授权类型">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        授权类型
+                      </template>
+                      <Tag type="dot" color="primary"
+                        :key="tag"
+                        v-for="tag in formatSettingValue(props.row.authorizationGrantTypes)"
+                        :disable-transitions="false"
+                        effect="plain"
+                        size="medium"
+                      >
+                        {{tag}}
+                      </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="重定向 Uris">
+                      <template slot="label">
+                        <i class="el-icon-location-outline"></i>
+                        重定向 Uris
+                      </template>
+                      <Tag
+                        type="dot" color="primary"
+                        :key="tag"
+                        v-for="tag in props.row.redirectUris"
+                        :disable-transitions="false"
+                        effect="plain"
+                        size="medium"
+                      >
+                        {{tag}}
+                      </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="scopes">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        scopes
+                      </template>
+                      <Tag type="dot" color="primary"
+                        :key="tag"
+                        v-for="tag in props.row.scopes"
+                        :disable-transitions="false"
+                        effect="plain"
+                        size="medium"
+                      >
+                        {{tag}}
+                      </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="需要证明密钥">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        需要证明密钥
+                      </template>
+                      <el-switch
+                        v-model="props.row.clientSettings.requireProofKey"
+                        disabled
+                        active-color="#13ce66"
+                        inactive-color="#ff4949">
+                      </el-switch>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="需要授权同意">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        需要授权同意
+                      </template>
+                      <el-switch
+                        v-model="props.row.clientSettings.requireAuthorizationConsent"
+                        disabled
+                        active-color="#13ce66"
+                        inactive-color="#ff4949">
+                      </el-switch>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="刷新令牌生存时间/秒">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        刷新令牌生存时间/秒
+                      </template>
+                      <Tag type="dot"  color="primary"> {{ props.row.tokenSettings.refreshTokenTimeToLive }}</Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="重用刷新令牌">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        重用刷新令牌
+                      </template>
+                      <el-switch
+                        v-model="props.row.tokenSettings.tokenSettings"
+                        disabled
+                        active-color="#13ce66"
+                        inactive-color="#ff4949">
+                      </el-switch>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="访问令牌生存时间/秒">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        访问令牌生存时间/秒
+                      </template>
+                      <Tag type="dot"  color="primary"> {{ props.row.tokenSettings.accessTokenTimeToLive }} </Tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="Token签名算法">
+                      <template slot="label">
+                        <i class="el-icon-tickets"></i>
+                        Token签名算法
+                      </template>
+                      <Tag type="dot"  color="primary"> {{ props.row.tokenSettings.idTokenSignatureAlgorithm }}</Tag>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                </el-card>
               </template>
             </el-table-column>
             <el-table-column

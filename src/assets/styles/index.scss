@@ -124,7 +124,10 @@ aside {
 .app-container {
   padding: 20px 20px 45px 20px;
 }
-
+// 表格
+body .el-table th.gutter {
+  display: table-cell !important;
+}
 // 提示全局样式
 .select-count {
   font-weight: 600;

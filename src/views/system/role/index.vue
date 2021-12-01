@@ -73,7 +73,7 @@
             </el-tag>
           </el-divider>
           <!--        提示-->
-          <Alert show-icon>default权限是指用户在客户端认证时所分配的权限</Alert>
+          <Alert show-icon>default 权限是指用户在客户端认证时所分配的权限</Alert>
           <Alert show-icon v-show="crud.openTip">
             已选择
             <span class="select-count">{{ crud.selections.length }}</span> 项
@@ -94,18 +94,24 @@
               <template slot-scope="scope">
                 <Alert>
                   <span class="expand-key">权限值: </span>
-                  <el-tag
+                  <Tag type="dot" color="primary"
                     :key="tag"
                     v-for="tag in formatPermission(scope.row.permissions)"
                     :disable-transitions="false"
                     size="medium"
                   >
                     {{tag}}
-                  </el-tag>
+                  </Tag>
                 </Alert>
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="名称"/>
+            <el-table-column prop="name" label="名称" width="200">
+              <template slot-scope="scope">
+                <Tag type="dot" color="primary">
+                  {{ scope.row.name }}
+                </Tag>
+              </template>
+            </el-table-column>
             <el-table-column prop="dataScope" label="数据权限">
               <template slot-scope="scope">
                 {{ scope.row.dataScope == 0? '用户部门': (scope.row.dataScope==1? '自定义' : '全部') }}
@@ -148,13 +154,15 @@
           <!--分页组件-->
           <pagination />
           <div style="margin-top: 20px">
-            <Alert type="warning" show-icon>
+            <Alert type="info" show-icon>
               <Icon type="ios-bulb-outline" slot="icon"></Icon>
               系统提示
               <template slot="desc">
                 1. 当角色存在绑定用户，不允许删除/禁用操作。
                 <br/>
                 2. 数据权限是指，能访问到绑定的数据范围内的用户
+                <br/>
+                3. 默认情况，用户部门数据权限只能查看相关部门内数据，无论部门是否关闭
               </template>
             </Alert>
           </div>

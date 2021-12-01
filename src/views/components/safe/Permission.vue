@@ -11,12 +11,6 @@
 </style>
 <template>
   <div class="app-container">
-<!--    <el-main>-->
-<!--    -->
-<!--    </el-main>-->
-<!--    <el-main>-->
-<!--   -->
-<!--    </el-main>-->
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card>
