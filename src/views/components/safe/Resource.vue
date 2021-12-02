@@ -92,7 +92,7 @@
                     <el-descriptions-item v-if="scope.row.leaf">
                       <template slot="label">
                         <i class="el-icon-location-outline"></i>
-                        请求URI
+                        请求pattern
                       </template>
                       <Tag
                         type="dot" color="primary"

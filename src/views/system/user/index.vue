@@ -314,12 +314,15 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="createTime" sortable width="168px"  align="center">
               <template slot-scope="scope">
-                <el-tag
-                  disable-transitions
+                <el-button
+                  type="primary"
+                  round
+                  icon="el-icon-date"
+                  size="mini"
+                  style="margin-top: 4px;"
                 >
-                  <i class="el-icon-time"></i>
                   {{ parseTime(scope.row.createTime) }}
-                </el-tag>
+                </el-button>
               </template>
             </el-table-column>
             <el-table-column

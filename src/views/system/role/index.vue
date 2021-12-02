@@ -132,13 +132,15 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="createTime" sortable width="168px">
               <template slot-scope="scope">
-                <el-tag
-                  disable-transitions
-                  type=""
+                <el-button
+                  type="primary"
+                  round
+                  icon="el-icon-date"
+                  size="mini"
+                  style="margin-top: 4px;"
                 >
-                  <i class="el-icon-time"></i>
                   {{ parseTime(scope.row.createTime) }}
-                </el-tag>
+                </el-button>
               </template>
             </el-table-column>
             <el-table-column v-permission="['ROLE_root','role:edit','role:del']" label="操作" width="130px" align="center" fixed="right">

@@ -216,12 +216,15 @@ w<style scoped>
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="clientIdIssuedAt" sortable width="168px"  align="center">
               <template slot-scope="scope">
-                <el-tag
-                  disable-transitions
+                <el-button
+                  type="primary"
+                  round
+                  size="mini"
+                  icon="el-icon-date"
+                  style="margin-top: 4px;"
                 >
-                  <i class="el-icon-time"></i>
                   {{ format(scope.row.clientIdIssuedAt) }}
-                </el-tag>
+                </el-button>
               </template>
             </el-table-column>
             <el-table-column
@@ -394,7 +397,6 @@ w<style scoped>
                 v-model="ruleForm.tokenSettings.accessTokenTimeToLive"
                 controls-position="right"
                 placeholder="秒"
-                :min="tokenMinTime"
                 :max="tokenMaxTime"
               >
               </el-input-number>
@@ -404,7 +406,6 @@ w<style scoped>
                 v-model="ruleForm.tokenSettings.refreshTokenTimeToLive"
                 controls-position="right"
                 placeholder="秒"
-                :min="tokenRefreshMinTime"
                 :max="tokenRefreshMaxTime"
               >
               </el-input-number>
