@@ -27,6 +27,7 @@
             highlight-current-row
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
             <el-table-column
+              align="left"
               prop="name"
               fixed
               label="资源名称"
@@ -38,26 +39,45 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="fullUri"
               width="250"
-              label="URI">
+              label="Pattern">
               <template slot-scope="scope">
                 <Tag
                   type="dot" color="primary"
-                  v-if="scope.row.uri"
+                  v-if="scope.row.leaf"
+                  size="medium"
+                >{{ scope.row.fullUri }}</Tag>
+                <Tag
+                  type="dot" color="primary"
+                  v-if="!scope.row.leaf"
                   size="medium"
                 >{{ scope.row.uri }}</Tag>
-                <i v-if="!scope.row.uri" class="el-icon-error"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态/开关">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.enabled"
+                  @change="setEnabledStatus(scope.row)"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949">
+                </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column label="Allow">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.allow"
+                  @change="setAllowStatus(scope.row)"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949">
+                </el-switch>
               </template>
             </el-table-column>
             <el-table-column width="100" label="leaf">
               <template slot-scope="scope">
-                <el-switch
-                  disabled
-                  v-model="scope.row.leaf"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949">
-                </el-switch>
+                <Tag v-if="scope.row.leaf" type="dot" color="success">{{ scope.row.leaf }}</Tag>
+                <Tag v-if="!scope.row.leaf" type="dot"  color="error">{{ scope.row.leaf }}</Tag>
               </template>
             </el-table-column>
             <el-table-column
@@ -81,7 +101,6 @@
                       </template>
                       <Tag
                         type="dot" color="primary"
-                        :key="tag"
                         :disable-transitions="false"
                         effect="plain"
                         size="medium"
@@ -96,7 +115,6 @@
                       </template>
                       <Tag
                         type="dot" color="primary"
-                        :key="tag"
                         :disable-transitions="false"
                         effect="plain"
                         size="medium"
@@ -106,36 +124,15 @@
                     </el-descriptions-item>
                     <el-descriptions-item>
                       <template slot="label">
-                        <i class="el-icon-tickets"></i>
-                        接口状态
-                      </template>
-                      <el-switch
-                        v-model="scope.row.enabled"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949">
-                      </el-switch>
-                    </el-descriptions-item>
-                    <el-descriptions-item>
-                      <template slot="label">
-                        <i class="el-icon-office-building"></i>
-                        接口放行
-                      </template>
-                      <el-switch
-                        v-model="scope.row.allow"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949">
-                      </el-switch>
-                    </el-descriptions-item>
-                    <el-descriptions-item>
-                      <template slot="label">
                         <i class="el-icon-office-building"></i>
                         权限绑定
                       </template>
-                      <el-tag
+                      <Tag
+                        type="dot" color="primary"
                         :key="tag"
                         v-for="tag in formatPermission(scope.row.bindingPermissions)"
                         size="medium"
-                      >{{ tag }}</el-tag>
+                      >{{ tag }}</Tag>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-button type="text" slot="reference">查看</el-button>
@@ -216,7 +213,11 @@
 
 <script>
 
-import {selectResourcePage} from "../../../api/seucirty/security";
+import {
+  selectResourcePage,
+  setEnableStatus,
+  setAllowStatus,
+} from "../../../api/seucirty/resource";
 
 
 export default {
@@ -277,16 +278,59 @@ export default {
      this.refreshTable()
   },
   methods: {
-    open(data) {
-      this.$alert('这是一段内容', '接口信息', {
-        confirmButtonText: '确定',
-        callback: action => {
-          this.$message({
-            type: 'info',
-            message: `action: ${ action }`
-          });
-        }
-      });
+    setEnabledStatus(row) {
+      if (!row.enabled) {
+        this.$confirm('此操作将关闭此级资源节点，包含所有子节点，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setEnableStatus(row.id, false)
+          .then(res => {
+            this.$Message.success("关闭成功!")
+            this.refreshTable()
+          })
+        }).catch(() => {
+          this.$Message.info("已取消")
+          row.enabled = true
+        });
+      } else {
+        setEnableStatus(row.id, true)
+          .then(res => {
+            this.$Message.success("开启成功!")
+            this.refreshTable()
+          }).catch(reason => {
+            row.enabled = false
+        })
+      }
+    },
+    setAllowStatus(row) {
+      if (!row.allow) {
+        this.$confirm('此操作将设置不允许放行此级资源节点，包含所有子节点，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setAllowStatus(row.id, false)
+            .then(res => {
+              this.$Message.success("设置成功!")
+              this.refreshTable()
+            }).catch(reason => {
+              row.allow = false
+          })
+        }).catch(() => {
+          this.$Message.info("已取消")
+          row.allow = true
+        });
+      } else {
+        setAllowStatus(row.id, true)
+          .then(res => {
+            this.$Message.success('放行成功!')
+            this.refreshTable()
+          }).catch(reason => {
+            row.allow = false
+        })
+      }
     },
     formatPermission(bindingPermissions) {
       try {
