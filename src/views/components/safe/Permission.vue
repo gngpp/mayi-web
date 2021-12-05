@@ -301,7 +301,7 @@
             :total.sync="total">
           </el-pagination>
           <div style="margin-top: 20px">
-            <Alert type="warning" show-icon>
+            <Alert type="info" show-icon>
               <Icon type="ios-bulb-outline" slot="icon"></Icon>
               系统提示
               <template slot="desc">

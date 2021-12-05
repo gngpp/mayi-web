@@ -20,6 +20,7 @@
           </el-divider>
           <!--    资源表格-->
           <el-table
+            max-height="1000"
             :data="tableData"
             v-loading="loading"
             style="width: 100%"
@@ -145,12 +146,33 @@
           <!--    分页组件-->
           <el-pagination
             background
-            layout="prev, pager, next"
-            :page-sizes="[10, 100, 200, 300]"
+            layout="prev,sizes, pager, next"
+            :page-sizes="[5, 10, 20, 50]"
             :current-page="currentPage"
+            @size-change="pageSizeChange"
+            @current-change="pageCurrentChange"
             :page-size="pageSize"
             :total="total">
           </el-pagination>
+          <div style="margin-top: 20px">
+            <el-collapse v-model="activeName" accordion>
+              <el-collapse-item name="1">
+                <template slot="title">
+                  系统提示<i class="header-icon el-icon-info"></i>
+                </template>
+                <Alert type="info" show-icon>
+                  <Icon type="ios-bulb-outline" slot="icon"></Icon>
+                  <template slot="desc">
+                    1. allow使接口无需权限访问，但仍然需要通过系统认证
+                    <br/>
+                    2. 如果接口属于关闭状态，不允许allow
+                    <br/>
+                    3. 如果接口属于开启状态，允许allow
+                  </template>
+                </Alert>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
         </el-card>
       </el-col>
 <!--      表单-->
@@ -223,10 +245,11 @@ import {
 export default {
   data() {
     return {
+      activeName: '1',
       dialogVisible: false,
       loading: true,
       currentPage: 1,
-      pageSize:10,
+      pageSize:5,
       total: 0,
       pages: null,
       tableData: [],
@@ -278,6 +301,14 @@ export default {
      this.refreshTable()
   },
   methods: {
+    pageSizeChange(val) {
+      this.pageSize = val
+      this.refreshTable()
+    },
+    pageCurrentChange(val) {
+      this.currentPage = val
+      this.refreshTable()
+    },
     setEnabledStatus(row) {
       if (!row.enabled) {
         this.$confirm('此操作将关闭此级资源节点，包含所有子节点，是否继续?', '提示', {
@@ -352,7 +383,9 @@ export default {
       selectResourcePage(data)
         .then(res => {
           this.tableData = res.data.records
-
+          this.total = res.data.total
+          this.currentPage = res.data.current
+          this.pages = res.data.pages
           setTimeout(() => {
             this.loading = false
           }, 300)
