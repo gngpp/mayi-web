@@ -154,7 +154,7 @@
             :page-size="pageSize"
             :total="total">
           </el-pagination>
-          <div style="margin-top: 20px">
+          <div>
             <el-collapse v-model="activeName" accordion>
               <el-collapse-item name="1">
                 <template slot="title">

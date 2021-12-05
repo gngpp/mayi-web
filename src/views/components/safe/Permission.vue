@@ -301,13 +301,20 @@
             :total.sync="total">
           </el-pagination>
           <div style="margin-top: 20px">
-            <Alert type="info" show-icon>
-              <Icon type="ios-bulb-outline" slot="icon"></Icon>
-              系统提示
-              <template slot="desc">
-                删除权限时，将删除对应的角色、资源绑定的权限
-              </template>
-            </Alert>
+            <el-collapse v-model="activeName" accordion>
+              <el-collapse-item name="1">
+                <template slot="title">
+                  系统提示<i class="header-icon el-icon-info"></i>
+                </template>
+                <Alert type="info" show-icon>
+                  <Icon type="ios-bulb-outline" slot="icon"></Icon>
+                  系统提示
+                  <template slot="desc">
+                    删除权限时，将删除对应的角色、资源绑定的权限
+                  </template>
+                </Alert>
+              </el-collapse-item>
+            </el-collapse>
           </div>
         </el-card>
       </el-col>
@@ -374,6 +381,7 @@ export default {
   name: "Permission",
   data() {
     return {
+      activeName:'1',
       openDrawer: false,
       loading: true,
       openUnbindingResourceModel: false,

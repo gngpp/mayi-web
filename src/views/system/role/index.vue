@@ -155,18 +155,24 @@
           </el-table>
           <!--分页组件-->
           <pagination />
-          <div style="margin-top: 20px">
-            <Alert type="info" show-icon>
-              <Icon type="ios-bulb-outline" slot="icon"></Icon>
-              系统提示
-              <template slot="desc">
-                1. 当角色存在绑定用户，不允许删除/禁用操作。
-                <br/>
-                2. 数据权限是指，能访问到绑定的数据范围内的用户
-                <br/>
-                3. 默认情况，用户部门数据权限只能查看相关部门内数据，无论部门是否关闭
-              </template>
-            </Alert>
+          <div >
+            <el-collapse v-model="activeName" accordion>
+              <el-collapse-item name="1">
+                <template slot="title">
+                  系统提示<i class="header-icon el-icon-info"></i>
+                </template>
+                <Alert type="info" show-icon>
+                  <Icon type="ios-bulb-outline" slot="icon"></Icon>
+                  <template slot="desc">
+                    1. 当角色存在绑定用户，不允许删除/禁用操作。
+                    <br/>
+                    2. 数据权限是指，能访问到绑定的数据范围内的用户
+                    <br/>
+                    3. 默认情况，用户部门数据权限只能查看相关部门内数据，无论部门是否关闭
+                  </template>
+                </Alert>
+              </el-collapse-item>
+            </el-collapse>
           </div>
         </el-card>
       </el-col>
@@ -262,6 +268,7 @@ export default {
   dicts: ['role_status'],
   data() {
     return {
+      activeName: '1',
       defaultProps: {children: 'children', label: 'label', isLeaf: 'leaf'},
       dateScopes: ['全部', '用户部门', '自定义'],
       level: 3,

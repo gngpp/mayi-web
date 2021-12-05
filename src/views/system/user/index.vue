@@ -343,16 +343,22 @@
           </el-table>
           <!--分页组件-->
           <pagination/>
-         <div style="margin-top: 20px">
-           <Alert type="info" show-icon>
-             <Icon type="ios-bulb-outline" slot="icon"></Icon>
-             系统提示
-             <template slot="desc">
-               1. 禁用/删除用户，系统将撤销向用户颁发的所有令牌
-               <br/>
-               2. 更新分配用户角色，系统将撤销更新前颁发的所有令牌
-             </template>
-           </Alert>
+         <div>
+           <el-collapse v-model="activeName" accordion>
+             <el-collapse-item name="1">
+               <template slot="title">
+                 系统提示<i class="header-icon el-icon-info"></i>
+               </template>
+               <Alert type="info" show-icon>
+                 <Icon type="ios-bulb-outline" slot="icon"></Icon>
+                 <template slot="desc">
+                   1. 禁用/删除用户，系统将撤销向用户颁发的所有令牌
+                   <br/>
+                   2. 更新分配用户角色，系统将撤销更新前颁发的所有令牌
+                 </template>
+               </Alert>
+             </el-collapse-item>
+           </el-collapse>
          </div>
         </el-card>
       </el-col>
@@ -420,6 +426,7 @@ export default {
       }
     }
     return {
+      activeName: '1',
       selectList:[],
       avatar: Avatar,
       height: document.documentElement.clientHeight - 180 + 'px;',
