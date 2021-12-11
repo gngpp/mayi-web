@@ -94,7 +94,7 @@
                   placement="right"
                   width="400"
                   trigger="click">
-                  <el-descriptions class="margin-top" title="带边框列表" :column="1" border>
+                  <el-descriptions class="margin-top" title="详情" :column="1" border>
                     <el-descriptions-item v-if="scope.row.leaf">
                       <template slot="label">
                         <i class="el-icon-user"></i>
@@ -126,7 +126,7 @@
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-office-building"></i>
-                        权限绑定
+                        权限
                       </template>
                       <Tag
                         type="dot" color="primary"
